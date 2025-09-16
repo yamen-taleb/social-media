@@ -5,8 +5,8 @@
 </script>
 
 <template>
-    <div class="py-6 px-4 border rounded-md bg-white shadow-sm mb-3">
-        <div class="py-4 px-3 text-gray-500 border rounded mb-4" @click="postCreation = !postCreation" :class="postCreation ? 'bg-gray-100' : 'hover:bg-gray-50 cursor-pointer'">
+    <div class="py-3 px-2 border rounded-md bg-white shadow-sm mb-3">
+        <div class="py-3 px-2 text-gray-500 border rounded mb-2" @click="postCreation = !postCreation" :class="postCreation ? 'bg-gray-100' : 'hover:bg-gray-50 cursor-pointer'">
             Create Post Here!
         </div>
         <div class="flex justify-end gap-2" v-if="postCreation">
