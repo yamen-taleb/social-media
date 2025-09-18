@@ -33,7 +33,7 @@ class ProfileImageService
     {
         $imagePath = auth()->user()->$field;
 
-        if (Storage::disk('public')->exists($imagePath))
+        if (!empty($imagePath) && Storage::disk('public')->exists($imagePath))
             Storage::disk('public')->delete($imagePath);
     }
 }

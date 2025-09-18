@@ -1,11 +1,10 @@
 <template>
     <AuthenticatedLayout>
         <div class="w-[768px] mx-auto h-full overflow-auto">
-            <div class="group relative bg-white">
+            <div class="bg-white">
                 <CoverPicture :cover-path="user.cover"/>
                 <div class="flex">
-                    <img src="https://cdn.iconscout.com/icon/free/png-256/free-avatar-370-456322.png?f=webp"
-                         class="ml-[48px] w-[128px] h-[128px] -mt-[64px]">
+                    <ProfilePicture :avatar="user.avatar"/>
                     <div class="flex justify-between items-center flex-1 p-4">
                         <h2 class="font-bold text-lg">{{ user.name }}</h2>
                         <PrimaryButton v-if="isMyProfile">
@@ -69,6 +68,7 @@ import TabItem from "@/Components/App/TabItem.vue";
 import Pen from "@/Components/Icons/Pen.vue";
 import Photo from "@/Components/Icons/Photo.vue";
 import CoverPicture from "@/Pages/Profile/Partials/CoverPicture.vue";
+import ProfilePicture from "@/Pages/Profile/Partials/ProfilePicture.vue";
 
 const authUser = usePage().props.auth.user;
 

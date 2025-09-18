@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+    .file-input-overlay {
+        @apply absolute inset-0 w-full h-full opacity-0 cursor-pointer;
+    }
+}

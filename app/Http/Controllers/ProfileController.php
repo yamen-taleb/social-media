@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Http\Requests\ValidateImageRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Services\ProfileImageService;
@@ -74,12 +75,13 @@ class ProfileController extends Controller
         return Redirect::to('/');
     }
 
-    public function updateCover(Request $request)
+    public function updateCover(ValidateImageRequest $request)
     {
-        $request->validate([
-            'cover' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
-        ]);
+        $this->profileImageService->update($request->file('image'), 'cover_path', 'covers');
+    }
 
-        $this->profileImageService->update($request->file('cover'), 'cover_path', 'covers');
+    public function updateAvatar(ValidateImageRequest $request)
+    {
+       $this->profileImageService->update($request->file('image'), 'avatar_path', 'avatars');
     }
 }
