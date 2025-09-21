@@ -56,20 +56,4 @@ const searchKeyword = ref('')
 </template>
 
 <style scoped>
-.scrollbar-thin::-webkit-scrollbar {
-    width: 7px;
-}
-
-.scrollbar-thin::-webkit-scrollbar-thumb {
-    background-color: #d1d5db; /* gray-300 */
-    border-radius: 4px;
-}
-
-.scrollbar-thin::-webkit-scrollbar-thumb:hover {
-    background-color: #9ca3af; /* gray-400 */
-}
-
-.scrollbar-thin::-webkit-scrollbar-track {
-    background-color: #f3f4f6; /* gray-100 */
-}
 </style>

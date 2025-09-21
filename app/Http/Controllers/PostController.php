@@ -5,9 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Models\Post;
+use App\Services\PostService;
 
 class PostController extends Controller
 {
+    public function __construct(public PostService $postService)
+    {
+    }
     /**
      * Display a listing of the resource.
      */
@@ -29,7 +33,11 @@ class PostController extends Controller
      */
     public function store(StorePostRequest $request)
     {
-        //
+        $post = $request->validated();
+
+        $this->postService->create($post);
+
+        return redirect()->back();
     }
 
     /**

@@ -3,10 +3,11 @@ import {Disclosure, DisclosureButton, DisclosurePanel} from "@headlessui/vue";
 import Download from "@/Components/Icons/Download.vue";
 import Like from "@/Components/Icons/Like.vue";
 import Comment from "@/Components/Icons/Comment.vue";
+import {Link} from "@inertiajs/vue3";
 
-    defineProps({
-        post: Object
-    })
+defineProps({
+    post: Object
+})
 
     const isImage = (attachment) => {
         return attachment.type.startsWith('image/')
@@ -16,14 +17,23 @@ import Comment from "@/Components/Icons/Comment.vue";
 <template>
     <div class="shadow-sm rounded-md bg-white mb-6 py-4 px-3 border">
         <div class="flex gap-3 items-center px-2 py-4">
-            <a href="javascript:void(0)">
-                <img class="w-14 h-14 rounded-full border border-2 hover:border-blue-700 transition-all" :src="post.user.avatar" alt="">
-            </a>
+            <Link
+                :href="route('profile', {
+                username: post.user.username
+            })"
+            >
+                <img class="w-14 h-14 rounded-full border border-2 hover:border-blue-700 transition-all object-cover" :src="post.user.avatar" alt="">
+            </Link>
             <div>
                 <h3 class="text-gray-600 font-semibold flex items-center gap-1">
-                    <a class="hover:text-gray-800 hover:underline" href="javascript:void(0)">
+                    <Link
+                        class="hover:text-gray-800 hover:underline"
+                        :href="route('profile', {
+                            username: post.user.username
+                        })"
+                    >
                         {{ post.user.name }}
-                    </a>
+                    </Link>
                     <template v-if="post.group?.name">
                         >
                         <a href="javascript:void(0)" >
@@ -31,7 +41,7 @@ import Comment from "@/Components/Icons/Comment.vue";
                         </a>
                     </template>
                 </h3>
-                <small class="text-gray-400">{{ post.create_at }}</small>
+                <small class="text-gray-400">{{ post.created_at }}</small>
             </div>
         </div>
         <div class="mb-3">
