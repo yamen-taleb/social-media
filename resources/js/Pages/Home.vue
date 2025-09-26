@@ -4,6 +4,13 @@ import GroupList from "@/Components/App/GroupList.vue";
 import FollowingList from "@/Components/App/FollowingList.vue";
 import PostList from "@/Components/App/PostList.vue";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
+
+const props = defineProps({
+    posts: {
+        type: Object,
+        required: true,
+    }
+})
 </script>
 
 <template>
@@ -14,7 +21,7 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
                 <GroupList/>
             </div>
             <div class="lg:col-span-6">
-                <PostList/>
+                <PostList :posts="posts.data"/>
             </div>
             <div class="lg:col-span-3 hidden lg:block">
                 <FollowingList/>

@@ -19,6 +19,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/profile/cover', [ProfileController::class, 'updateCover'])->name('profile.cover');
     Route::post('/profile/avatar', [ProfileController::class, 'updateAvatar'])->name('profile.avatar');
     Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
+    Route::put('/posts/{post:id}', [PostController::class, 'update'])->name('posts.update');
 });
 
 require __DIR__.'/auth.php';

@@ -3,47 +3,31 @@ import {Disclosure, DisclosureButton, DisclosurePanel} from "@headlessui/vue";
 import Download from "@/Components/Icons/Download.vue";
 import Like from "@/Components/Icons/Like.vue";
 import Comment from "@/Components/Icons/Comment.vue";
+import PostMenu from "@/Components/App/PostMenu.vue";
 import {Link} from "@inertiajs/vue3";
+import PostUserHeader from "@/Components/App/PostUserHeader.vue";
 
-defineProps({
+const props = defineProps({
     post: Object
-})
+});
 
-    const isImage = (attachment) => {
-        return attachment.type.startsWith('image/')
-    }
+const isImage = (attachment) => {
+    return attachment.type.startsWith('image/')
+}
+
+const emit = defineEmits(['editClick'])
+const openEditModel = () => {
+    emit('editClick', props.post)
+}
 </script>
 
 <template>
     <div class="shadow-sm rounded-md bg-white mb-6 py-4 px-3 border">
-        <div class="flex gap-3 items-center px-2 py-4">
-            <Link
-                :href="route('profile', {
-                username: post.user.username
-            })"
-            >
-                <img class="w-14 h-14 rounded-full border border-2 hover:border-blue-700 transition-all object-cover" :src="post.user.avatar" alt="">
-            </Link>
-            <div>
-                <h3 class="text-gray-600 font-semibold flex items-center gap-1">
-                    <Link
-                        class="hover:text-gray-800 hover:underline"
-                        :href="route('profile', {
-                            username: post.user.username
-                        })"
-                    >
-                        {{ post.user.name }}
-                    </Link>
-                    <template v-if="post.group?.name">
-                        >
-                        <a href="javascript:void(0)" >
-                            <h3 class="hover:text-gray-800 hover:underline">{{ post.group.name }}</h3>
-                        </a>
-                    </template>
-                </h3>
-                <small class="text-gray-400">{{ post.created_at }}</small>
-            </div>
+        <div class="flex items-center justify-between py-4 px-2">
+            <PostUserHeader :post/>
+            <PostMenu :post="post" @edit="openEditModel"/>
         </div>
+        <!-- Rest of your template remains the same -->
         <div class="mb-3">
             <Disclosure v-slot="{ open }">
                 <div v-html="post.description.substring(0, 200)" v-if="!open"/>

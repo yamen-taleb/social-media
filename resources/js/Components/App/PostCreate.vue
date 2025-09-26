@@ -2,9 +2,9 @@
 import {ref} from "vue";
 import {useForm} from "@inertiajs/vue3";
 import {useToast} from "vue-toastification";
+import AutoResizeTextarea from './AutoResizeTextarea.vue';
 
 const postCreation = ref(false);
-const textarea = ref(null);
 const toast = useToast();
 
 const postForm = useForm({
@@ -13,20 +13,14 @@ const postForm = useForm({
     attachments: null,
     group_id: null,
 })
-const adjustHeight = () => {
-    if (textarea.value) {
-        textarea.value.style.height = 'auto';
-        textarea.value.style.height = `${Math.min(textarea.value.scrollHeight, 200)}px`;
-    }
-}
 
 const submitPost = () => {
     postForm.post(route('posts.store'), {
+        preserveScroll: true,
         onSuccess: () => {
             toast.success('Post created successfully');
             postForm.reset();
             postCreation.value = false;
-            window.location.reload();
         },
 
         onError: (e) => {
@@ -43,16 +37,13 @@ const submitPost = () => {
 
 <template>
     <form @submit.prevent="submitPost" class="py-3 px-2 border rounded-md bg-white shadow-sm mb-3">
-        <textarea
+        <AutoResizeTextarea
             v-model="postForm.description"
-            ref="textarea"
-            class="w-full p-3 text-gray-700 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all duration-200 resize-none overflow-hidden min-h-[44px] max-h-48"
-            :class="postCreation ? 'bg-white' : 'hover:bg-gray-50 cursor-pointer'"
-            rows="1"
-            placeholder="What's on your mind?"
-            @input="adjustHeight"
-            @click="postCreation = !postCreation"
-        ></textarea>
+            :placeholder="'What\'s on your mind?'"
+            :is-active="postCreation"
+            @click="postCreation = true"
+            class="w-full"
+        />
         <div class="flex justify-end gap-2" v-if="postCreation">
             <button type="button" class="rounded-md px-3 py-2 text-sm font-semibold text-gray-900 bg-gray-200 shadow-xs inset-ring inset-ring-gray-300 hover:bg-gray-300 relative">
                 Attach Files

@@ -21,4 +21,12 @@ class PostService
             'group_id' => $post['group_id'],
         ]);
     }
+
+    public function update(Post $post, array $postData)
+    {
+       $post->update([
+           'title' => $postData['title'],
+           'description' => $postData['description'],
+       ]);
+    }
 }
