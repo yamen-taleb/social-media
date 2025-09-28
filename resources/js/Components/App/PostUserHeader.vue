@@ -1,7 +1,8 @@
 <script setup>
 
-import {Link} from "@inertiajs/vue3";
+import {Link, usePage} from "@inertiajs/vue3";
 
+const authUser = usePage().props.auth.user
 defineProps({
     post: {
         type: Object,
@@ -18,20 +19,20 @@ defineProps({
     <div class="flex gap-3 items-center">
         <Link
             :href="route('profile', {
-                username: post.user.username
+                username: authUser.username
             })"
         >
-            <img class="w-14 h-14 rounded-full border border-2 hover:border-blue-700 transition-all object-cover" :src="post.user.avatar" alt="">
+            <img class="w-14 h-14 rounded-full border border-2 hover:border-blue-700 transition-all object-cover" :src="authUser.avatar" alt="">
         </Link>
         <div>
             <h3 class="text-gray-600 font-semibold flex items-center gap-1">
                 <Link
                     class="hover:text-gray-800 hover:underline"
                     :href="route('profile', {
-                            username: post.user.username
+                            username: authUser.username
                         })"
                 >
-                    {{ post.user.name }}
+                    {{ authUser.name }}
                 </Link>
                 <template v-if="post.group?.name">
                     >

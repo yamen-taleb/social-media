@@ -9,8 +9,9 @@ import {
 } from '@headlessui/vue'
 import AutoResizeTextarea from "@/Components/App/AutoResizeTextarea.vue";
 import PostUserHeader from "@/Components/App/PostUserHeader.vue";
-import {useForm} from "@inertiajs/vue3";
+import {useForm, usePage} from "@inertiajs/vue3";
 import {useToast} from "vue-toastification";
+import RichEditor from "@/Components/App/RichEditor.vue";
 
 const props = defineProps({
     post: {
@@ -36,26 +37,36 @@ const show =  computed({
 })
 
 const closeModal = () => show.value = false
-
+const submit = () => {
+    if (props.post.is_new)
+        submitPost()
+    else
+        updatePost()
+}
+const getOptions = (isNew = false) => ({
+    preserveScroll: true,
+    onSuccess: () => {
+        toast.success(`Post ${isNew ? 'created' : 'updated'} successfully`);
+        show.value = false;
+        postForm.reset();
+    },
+    onError: (e) => {
+        if (typeof e === 'object') {
+            const firstErrorKey = Object.keys(e)[0];
+            toast.error(e[firstErrorKey]);
+        } else {
+            toast.error(`Post failed to ${isNew ? 'create' : 'update'}`);
+        }
+    }
+});
 const updatePost = () => {
    postForm.put(route('posts.update', {
        id: props.post.id
-   }), {
-       preserveScroll: true,
-       onSuccess: () => {
-           toast.success('Post updated successfully');
-           show.value = false
-           postForm.reset();
-       },
-       onError: (e) => {
-           if (typeof e === 'object') {
-               const firstErrorKey = Object.keys(e)[0];
-               toast.error(e[firstErrorKey]);
-           }
-           else
-               toast.error('Post failed to update');
-       }
-   })
+   }), getOptions(false))
+}
+
+const submitPost = () => {
+    postForm.post(route('posts.store'), getOptions(true));
 }
 watch(() => props.post, (newValue, oldValue) => {
    postForm.description = newValue.description;
@@ -98,7 +109,7 @@ watch(() => props.post, (newValue, oldValue) => {
                                     as="h3"
                                     class="text-lg font-medium leading-6 text-gray-800"
                                 >
-                                    Update Post
+                                    {{post.is_new ? 'Create Post' : 'Update Post'}}
                                 </DialogTitle>
                                 <div class="mt-4">
                                     <p class="text-sm text-gray-500">
@@ -107,7 +118,8 @@ watch(() => props.post, (newValue, oldValue) => {
                                             :show-time="false"
                                             class="mb-3"
                                         />
-                                        <AutoResizeTextarea v-model="postForm.description"/>
+                                        <RichEditor v-model="postForm.description" />
+                                        <!--                                        <AutoResizeTextarea v-model="postForm.description"/>-->
                                     </p>
                                 </div>
 
@@ -121,7 +133,7 @@ watch(() => props.post, (newValue, oldValue) => {
                                     </button>
                                     <button
                                         class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                                        @click="updatePost"
+                                        @click="submit"
                                     >
                                         Save
                                     </button>

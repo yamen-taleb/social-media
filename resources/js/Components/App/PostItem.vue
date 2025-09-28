@@ -28,14 +28,14 @@ const openEditModel = () => {
             <PostMenu :post="post" @edit="openEditModel"/>
         </div>
         <!-- Rest of your template remains the same -->
-        <div class="mb-3">
+        <div class="mb-3 ck-content-output">
             <Disclosure v-slot="{ open }">
-                <div v-html="post.description.substring(0, 200)" v-if="!open"/>
+                <div v-html="post.description?.substring(0, 200)" v-if="!open"/>
                 <DisclosurePanel>
                     <div v-html="post.description"/>
                 </DisclosurePanel>
 
-                <div class="flex justify-end" v-if="post.description.length > 200">
+                <div class="flex justify-end" v-if="post.description?.length > 200">
                     <DisclosureButton class="text-blue-500 hover:text-blue-600 hover:underline">
                         <span v-if="!open">Read more</span>
                         <span v-else>Show less</span>
