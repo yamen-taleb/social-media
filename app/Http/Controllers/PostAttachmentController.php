@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StorePostAttachmentRequest;
 use App\Http\Requests\UpdatePostAttachmentRequest;
 use App\Models\PostAttachment;
+use Illuminate\Support\Facades\Storage;
 
 class PostAttachmentController extends Controller
 {
@@ -62,5 +63,10 @@ class PostAttachmentController extends Controller
     public function destroy(PostAttachment $postAttachment)
     {
         //
+    }
+
+    public function download(PostAttachment $postAttachment)
+    {
+        return response()->download(Storage::disk('public')->path($postAttachment->path));
     }
 }

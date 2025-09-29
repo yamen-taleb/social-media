@@ -4,7 +4,6 @@ import Download from "@/Components/Icons/Download.vue";
 import Like from "@/Components/Icons/Like.vue";
 import Comment from "@/Components/Icons/Comment.vue";
 import PostMenu from "@/Components/App/PostMenu.vue";
-import { Link } from "@inertiajs/vue3";
 import PostUserHeader from "@/Components/App/PostUserHeader.vue";
 
 const props = defineProps({
@@ -63,12 +62,13 @@ const openEditModel = () => {
                 :key="attachment.id"
                 class="relative group mb-3"
             >
-                <div
+                <a
+                    :href="route('post-attachments.download', attachment)"
                     v-if="!(index === 3 && post.attachments.length > 4)"
                     class="absolute top-2 right-2 bg-gray-700 rounded p-1 shadow hover:bg-gray-800 text-white opacity-0 group-hover:opacity-100 transition-all"
                 >
                     <Download />
-                </div>
+                </a>
                 <div
                     v-if="index === 3 && post.attachments.length > 4"
                     class="absolute inset-0 bg-black/50 z-10 flex items-center justify-center text-white text-2xl hover:bg-black/60 transition-all duration-200 cursor-pointer"

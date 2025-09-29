@@ -1,17 +1,17 @@
 <?php
 
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PostAttachmentController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 Route::get('/', [HomeController::class, 'index'])
     ->middleware(['auth', 'verified'])->name('home');;
 
 Route::get('/user/{user:username}', [ProfileController::class, 'index'])
     ->name('profile');;
+Route::get('/post-attachments/{postAttachment}', [PostAttachmentController::class, 'download'])->name('post-attachments.download');
 
 Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
