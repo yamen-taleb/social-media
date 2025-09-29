@@ -14,9 +14,13 @@ const isImage = (attachment) => {
     return attachment.type.startsWith("image/");
 };
 
-const emit = defineEmits(["editClick"]);
+const emit = defineEmits(["editClick", "showAttachmentPreview"]);
 const openEditModel = () => {
     emit("editClick", props.post);
+};
+
+const showAttachmentPreview = (attachments, index) => {
+    emit("showAttachmentPreview", attachments, index);
 };
 </script>
 
@@ -61,6 +65,7 @@ const openEditModel = () => {
                 v-for="(attachment, index) in post.attachments?.slice(0, 4)"
                 :key="attachment.id"
                 class="relative group mb-3"
+                @click="showAttachmentPreview(post.attachments, index)"
             >
                 <a
                     :href="route('post-attachments.download', attachment)"
