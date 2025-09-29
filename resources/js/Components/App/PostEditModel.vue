@@ -1,94 +1,131 @@
 <script setup>
-import {computed, watch} from 'vue'
+import { computed, ref, watch } from "vue";
 import {
     TransitionRoot,
     TransitionChild,
     Dialog,
     DialogPanel,
     DialogTitle,
-} from '@headlessui/vue'
-import AutoResizeTextarea from "@/Components/App/AutoResizeTextarea.vue";
+} from "@headlessui/vue";
 import PostUserHeader from "@/Components/App/PostUserHeader.vue";
-import {useForm, usePage} from "@inertiajs/vue3";
-import {useToast} from "vue-toastification";
+import { useForm } from "@inertiajs/vue3";
+import { useToast } from "vue-toastification";
+import { PaperClipIcon } from "@heroicons/vue/24/outline";
 import RichEditor from "@/Components/App/RichEditor.vue";
+import PostUploadedImage from "@/Components/App/PostUploadedImage.vue";
 
 const props = defineProps({
     post: {
         type: Object,
         required: true,
     },
-    modelValue: Boolean
-})
+    modelValue: Boolean,
+});
 
-const toast = useToast()
+const attachments = ref([]);
+const toast = useToast();
 const postForm = useForm({
     title: null,
     description: props.post.description,
-    attachments: null,
+    attachments: [],
     group_id: null,
-})
+});
 
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(["update:modelValue"]);
 
-const show =  computed({
+const show = computed({
     get: () => props.modelValue,
-    set: (value) => emit('update:modelValue', value)
-})
+    set: (value) => emit("update:modelValue", value),
+});
 
-const closeModal = () => show.value = false
+const closeModal = () => {
+    show.value = false;
+    postForm.reset();
+    attachments.value = [];
+};
 const submit = () => {
-    if (props.post.is_new)
-        submitPost()
-    else
-        updatePost()
-}
+    postForm.attachments = attachments.value?.map(
+        (attachment) => attachment.file,
+    );
+    if (props.post.is_new) submitPost();
+    else updatePost();
+};
 const getOptions = (isNew = false) => ({
     preserveScroll: true,
     onSuccess: () => {
-        toast.success(`Post ${isNew ? 'created' : 'updated'} successfully`);
-        show.value = false;
-        postForm.reset();
+        toast.success(`Post ${isNew ? "created" : "updated"} successfully`);
+        closeModal();
     },
     onError: (e) => {
-        if (typeof e === 'object') {
+        if (typeof e === "object") {
             const firstErrorKey = Object.keys(e)[0];
             toast.error(e[firstErrorKey]);
         } else {
-            toast.error(`Post failed to ${isNew ? 'create' : 'update'}`);
+            toast.error(`Post failed to ${isNew ? "create" : "update"}`);
         }
-    }
+    },
 });
 const updatePost = () => {
-   postForm.put(route('posts.update', {
-       id: props.post.id
-   }), getOptions(false))
-}
+    postForm.put(
+        route("posts.update", {
+            id: props.post.id,
+        }),
+        getOptions(false),
+    );
+};
 
 const submitPost = () => {
-    postForm.post(route('posts.store'), getOptions(true));
+    postForm.post(route("posts.store"), getOptions(true));
+};
+watch(
+    () => props.post,
+    (newValue) => {
+        postForm.description = newValue.description;
+    },
+);
+
+const handleFileChange = async (e) => {
+    for (const file of e.target.files) {
+        const fileExists = attachments.value.some(
+            (attachment) =>
+                attachment.file.name === file.name &&
+                attachment.file.size === file.size,
+        );
+        if (!fileExists) {
+            const myFile = {
+                file,
+                url: await readFile(file),
+            };
+            attachments.value.push(myFile);
+        }
+    }
+    e.target.value = null;
+};
+
+async function readFile(file) {
+    return new Promise((res, rej) => {
+        if (isImage(file)) {
+            const reader = new FileReader();
+            reader.onload = () => {
+                res(reader.result);
+            };
+            reader.onerror = rej;
+            reader.readAsDataURL(file);
+        } else {
+            res(null);
+        }
+    });
 }
-watch(() => props.post, (newValue, oldValue) => {
-   postForm.description = newValue.description;
-})
+
+const isImage = (attachment) => {
+    return attachment.type.startsWith("image/");
+};
 </script>
 
 <template>
     <teleport to="body">
         <TransitionRoot appear :show="show" as="template">
             <Dialog as="div" @close="closeModal" class="relative z-10">
-                <TransitionChild
-                    as="template"
-                    enter="duration-300 ease-out"
-                    enter-from="opacity-0"
-                    enter-to="opacity-100"
-                    leave="duration-200 ease-in"
-                    leave-from="opacity-100"
-                    leave-to="opacity-0"
-                >
-                    <div class="fixed inset-0 bg-black/25" />
-                </TransitionChild>
-
                 <div class="fixed inset-0 overflow-y-auto">
                     <div
                         class="flex min-h-full items-center justify-center p-4 text-center"
@@ -109,21 +146,51 @@ watch(() => props.post, (newValue, oldValue) => {
                                     as="h3"
                                     class="text-lg font-medium leading-6 text-gray-800"
                                 >
-                                    {{post.is_new ? 'Create Post' : 'Update Post'}}
+                                    {{
+                                        post.is_new
+                                            ? "Create Post"
+                                            : "Update Post"
+                                    }}
                                 </DialogTitle>
                                 <div class="mt-4">
-                                    <p class="text-sm text-gray-500">
-                                        <PostUserHeader
-                                            :post
-                                            :show-time="false"
-                                            class="mb-3"
+                                    <div class="text-sm text-gray-500">
+                                        <div
+                                            class="flex justify-between items-center"
+                                        >
+                                            <PostUserHeader
+                                                :post
+                                                :show-time="false"
+                                                class="mb-3"
+                                            />
+                                            <button
+                                                type="button"
+                                                class="rounded-md px-4 py-2 text-sm font-semibold text-white bg-gradient-to-r from-indigo-500 to-purple-600 shadow-md hover:from-indigo-600 hover:to-purple-700 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-400 transition-all duration-300 relative"
+                                                title="Select files"
+                                            >
+                                                <PaperClipIcon
+                                                    class="size-6 text-white"
+                                                />
+                                                <input
+                                                    type="file"
+                                                    multiple
+                                                    @change="handleFileChange"
+                                                    class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                                />
+                                            </button>
+                                        </div>
+                                        <RichEditor
+                                            v-model="postForm.description"
+                                            autofocus
                                         />
-                                        <RichEditor v-model="postForm.description" />
-                                        <!--                                        <AutoResizeTextarea v-model="postForm.description"/>-->
-                                    </p>
+                                        <PostUploadedImage
+                                            v-model="attachments"
+                                        />
+                                    </div>
                                 </div>
 
-                                <div class="mt-4 flex gap-2 items-center justify-end">
+                                <div
+                                    class="mt-4 flex gap-2 items-center justify-end"
+                                >
                                     <button
                                         type="submit"
                                         class="inline-flex justify-center rounded-md border border-transparent bg-gray-100 px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:ring-offset-2"
@@ -146,4 +213,3 @@ watch(() => props.post, (newValue, oldValue) => {
         </TransitionRoot>
     </teleport>
 </template>
-

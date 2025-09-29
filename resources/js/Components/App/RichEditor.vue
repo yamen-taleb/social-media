@@ -9,20 +9,20 @@ import {
     Link,
     List,
     BlockQuote,
-    Heading
-} from 'ckeditor5';
-import { Ckeditor } from '@ckeditor/ckeditor5-vue';
-import { ref, watch, onBeforeUnmount } from 'vue';
-import 'ckeditor5/ckeditor5.css';
-import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
+    Heading,
+} from "ckeditor5";
+import { Ckeditor } from "@ckeditor/ckeditor5-vue";
+import { ref, watch, onBeforeUnmount } from "vue";
+import "ckeditor5/ckeditor5.css";
+import "ckeditor5-premium-features/ckeditor5-premium-features.css";
 const props = defineProps({
     modelValue: {
         type: String,
-        default: ''
+        default: "",
     },
 });
 
-const emit = defineEmits(['update:modelValue']);
+const emit = defineEmits(["update:modelValue"]);
 
 const editorInstance = ref(null);
 const editorData = ref(props.modelValue);
@@ -35,30 +35,36 @@ const onReady = (editor) => {
 
     // Listen for changes
     const modelDocument = editor.model.document;
-    modelDocument.on('change:data', () => {
+    modelDocument.on("change:data", () => {
         if (isUpdating.value) return;
 
         const data = editor.getData();
-        emit('update:modelValue', data);
+        emit("update:modelValue", data);
     });
 };
 
 // Watch for changes from parent
-watch(() => props.modelValue, (newValue) => {
-    if (!editorInstance.value || newValue === editorInstance.value.getData()) {
-        return;
-    }
+watch(
+    () => props.modelValue,
+    (newValue) => {
+        if (
+            !editorInstance.value ||
+            newValue === editorInstance.value.getData()
+        ) {
+            return;
+        }
 
-    isUpdating.value = true;
-    try {
-        editorInstance.value.setData(newValue);
-    } finally {
-        // Use nextTick to ensure the update is complete
-        setTimeout(() => {
-            isUpdating.value = false;
-        }, 0);
-    }
-});
+        isUpdating.value = true;
+        try {
+            editorInstance.value.setData(newValue);
+        } finally {
+            // Use nextTick to ensure the update is complete
+            setTimeout(() => {
+                isUpdating.value = false;
+            }, 0);
+        }
+    },
+);
 
 // Cleanup
 onBeforeUnmount(() => {
@@ -69,7 +75,7 @@ onBeforeUnmount(() => {
 });
 
 const config = {
-    licenseKey: 'GPL',
+    licenseKey: "GPL",
     plugins: [
         Essentials,
         Paragraph,
@@ -79,41 +85,60 @@ const config = {
         Undo,
         Link,
         BlockQuote,
-        Heading
+        Heading,
     ],
     toolbar: [
-        'heading',
-        '|',
-        'bold',
-        'italic',
-        'link',
-        '|',
-        'bulletedList',
-        'numberedList',
-        'blockQuote',
-        '|',
-        'undo',
-        'redo'
+        "heading",
+        "|",
+        "bold",
+        "italic",
+        "link",
+        "|",
+        "bulletedList",
+        "numberedList",
+        "blockQuote",
+        "|",
+        "undo",
+        "redo",
     ],
     typing: {
-        undoStep: 1
+        undoStep: 1,
     },
     undo: {
-        undoStep: 1
+        undoStep: 1,
     },
     heading: {
         options: [
-            { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
-            { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
-            { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' },
-            { model: 'heading4', view: 'h4', title: 'Heading 4', class: 'ck-heading_heading4' }
-        ]
-    }
+            {
+                model: "paragraph",
+                title: "Paragraph",
+                class: "ck-heading_paragraph",
+            },
+            {
+                model: "heading2",
+                view: "h2",
+                title: "Heading 2",
+                class: "ck-heading_heading2",
+            },
+            {
+                model: "heading3",
+                view: "h3",
+                title: "Heading 3",
+                class: "ck-heading_heading3",
+            },
+            {
+                model: "heading4",
+                view: "h4",
+                title: "Heading 4",
+                class: "ck-heading_heading4",
+            },
+        ],
+    },
 };
 </script>
 
 <template>
-    <div class="rich-editor-wrapper">
+    <div class="ck-content rich-editor-wrapper">
         <ckeditor
             :editor="ClassicEditor"
             :config="config"
@@ -183,7 +208,9 @@ const config = {
 
 :deep(.ck.ck-dropdown__panel) {
     border-radius: 0.375rem;
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    box-shadow:
+        0 1px 3px 0 rgba(0, 0, 0, 0.1),
+        0 1px 2px 0 rgba(0, 0, 0, 0.06);
 }
 
 :deep(blockquote) {

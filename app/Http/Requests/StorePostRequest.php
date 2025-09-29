@@ -31,8 +31,8 @@ class StorePostRequest extends FormRequest
         return [
             'title' => ['nullable', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:1000'],
-            'attachments' => ['nullable', 'array', 'max:4'],
-            'attachments.*' => ['image', 'mimes:jpg,jpeg,png,gif,webp', 'max:5120'],
+            'attachments' => ['nullable', 'array', 'max:10'],
+            'attachments.*' => ['required', 'file', 'mimes:jpg,jpeg,png,gif,webp,mp4,webm,mov,avi', 'max:10240'],
             'group_id' => ['nullable', 'exists:groups,id'],
             'user_id' => ['required'],
         ];

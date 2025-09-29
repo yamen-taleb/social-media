@@ -2,38 +2,23 @@
 
 namespace App\Services;
 
-
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
 class ProfileImageService
 {
+    public function __construct(public FileUploadService $fileUploadService)
+    {
+    }
+
     public function update(UploadedFile $image, string $field, string $directory)
     {
-        $this->destroy($field);
-
-        $path = $this->store($image, $directory);
+        $this->fileUploadService->delete(auth()->user()->$field);
+        $path = $this->fileUploadService->update($image, auth()->user()->$field, $directory);
 
         auth()->user()->$field  = $path;
         auth()->user()->save();
 
         return $path;
-    }
-
-    public function store(UploadedFile $image, string $directory): string
-    {
-        $name = time() . '.' . $image->getClientOriginalName();
-
-        $name = $image->storeAs($directory, $name, 'public');
-
-        return $name;
-    }
-
-    public function destroy(string $field): void
-    {
-        $imagePath = auth()->user()->$field;
-
-        if (!empty($imagePath) && Storage::disk('public')->exists($imagePath))
-            Storage::disk('public')->delete($imagePath);
     }
 }
