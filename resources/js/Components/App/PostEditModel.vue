@@ -1,11 +1,11 @@
 <script setup>
 import { computed, ref, watch } from "vue";
 import {
-    TransitionRoot,
-    TransitionChild,
     Dialog,
     DialogPanel,
     DialogTitle,
+    TransitionChild,
+    TransitionRoot,
 } from "@headlessui/vue";
 import PostUserHeader from "@/Components/App/PostUserHeader.vue";
 import { useForm } from "@inertiajs/vue3";
@@ -28,10 +28,12 @@ const postForm = useForm({
     title: null,
     description: props.post.description,
     attachments: [],
+    deletedAttachmentsIds: [],
     group_id: null,
+    _method: "post",
 });
 
-const emit = defineEmits(["update:modelValue"]);
+const emit = defineEmits(["update:modelValue", "hide"]);
 
 const show = computed({
     get: () => props.modelValue,
@@ -41,12 +43,13 @@ const show = computed({
 const closeModal = () => {
     show.value = false;
     postForm.reset();
+    emit("hide");
     attachments.value = [];
 };
 const submit = () => {
-    postForm.attachments = attachments.value?.map(
-        (attachment) => attachment.file,
-    );
+    postForm.attachments = attachments.value
+        ?.map((attachment) => attachment.file)
+        .filter((file) => file !== null && file !== undefined);
     if (props.post.is_new) submitPost();
     else updatePost();
 };
@@ -66,7 +69,8 @@ const getOptions = (isNew = false) => ({
     },
 });
 const updatePost = () => {
-    postForm.put(
+    postForm._method = "put";
+    postForm.post(
         route("posts.update", {
             id: props.post.id,
         }),
@@ -81,6 +85,8 @@ watch(
     () => props.post,
     (newValue) => {
         postForm.description = newValue.description;
+        if (JSON.stringify(newValue) !== "{}" && !newValue.is_new)
+            attachments.value.push(...newValue?.attachments);
     },
 );
 
@@ -88,15 +94,15 @@ const handleFileChange = async (e) => {
     for (const file of e.target.files) {
         const fileExists = attachments.value.some(
             (attachment) =>
-                attachment.file.name === file.name &&
-                attachment.file.size === file.size,
+                attachment.file?.name === file.name &&
+                attachment.file?.size === file.size,
         );
         if (!fileExists) {
             const myFile = {
                 file,
                 url: await readFile(file),
             };
-            attachments.value.push(myFile);
+            attachments.value.unshift(myFile);
         }
     }
     e.target.value = null;
@@ -183,6 +189,10 @@ const isImage = (attachment) => {
                                             autofocus
                                         />
                                         <PostUploadedImage
+                                            @delete-attachment="
+                                                postForm.deletedAttachmentsIds =
+                                                    $event
+                                            "
                                             v-model="attachments"
                                         />
                                     </div>

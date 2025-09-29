@@ -25,13 +25,13 @@ const props = defineProps({
 const emit = defineEmits(["update:modelValue"]);
 
 const editorInstance = ref(null);
-const editorData = ref(props.modelValue);
+const editorData = ref(props.modelValue || "");
 const isUpdating = ref(false);
 
 // Handle editor initialization
 const onReady = (editor) => {
     editorInstance.value = editor;
-    editor.setData(props.modelValue);
+    editor.setData(props.modelValue || "");
 
     // Listen for changes
     const modelDocument = editor.model.document;
@@ -142,8 +142,9 @@ const config = {
         <ckeditor
             :editor="ClassicEditor"
             :config="config"
-            :model-value="editorData"
+            :model-value="editorData || ''"
             @ready="onReady"
+            @input="(value) => emit('update:modelValue', value)"
         />
     </div>
 </template>

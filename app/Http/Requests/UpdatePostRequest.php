@@ -28,6 +28,7 @@ class UpdatePostRequest extends FormRequest
             'attachments' => ['nullable', 'array', 'max:4'],
             'attachments.*' => ['image', 'mimes:jpg,jpeg,png,gif,webp', 'max:5120'],
             'group_id' => ['nullable', 'exists:groups,id'],
+            'deletedAttachmentsIds' => ['array', 'exists:post_attachments,id']
         ];
     }
 }
