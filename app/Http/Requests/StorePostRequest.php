@@ -6,6 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class StorePostRequest extends FormRequest
 {
+    public static $attachmentExtensions = 'jpg,jpeg,png,gif,webp,mp4,webm,mov,avi';
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -32,9 +33,16 @@ class StorePostRequest extends FormRequest
             'title' => ['nullable', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:1000'],
             'attachments' => ['nullable', 'array', 'max:10'],
-            'attachments.*' => ['required', 'file', 'mimes:jpg,jpeg,png,gif,webp,mp4,webm,mov,avi', 'max:10240'],
+            'attachments.*' => ['required', 'file', 'mimes:' . self::$attachmentExtensions, 'max:10240'],
             'group_id' => ['nullable', 'exists:groups,id'],
             'user_id' => ['required'],
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'attachments.*.mimes' => 'Invalid file.',
         ];
     }
 }

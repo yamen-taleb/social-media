@@ -8,7 +8,7 @@ import {
     TransitionRoot,
 } from "@headlessui/vue";
 import PostUserHeader from "@/Components/App/PostUserHeader.vue";
-import { useForm } from "@inertiajs/vue3";
+import { useForm, usePage } from "@inertiajs/vue3";
 import { useToast } from "vue-toastification";
 import { PaperClipIcon } from "@heroicons/vue/24/outline";
 import RichEditor from "@/Components/App/RichEditor.vue";
@@ -23,6 +23,7 @@ const props = defineProps({
 });
 
 const attachments = ref([]);
+const attachmentErrors = ref([]);
 const toast = useToast();
 const postForm = useForm({
     title: null,
@@ -45,8 +46,10 @@ const closeModal = () => {
     postForm.reset();
     emit("hide");
     attachments.value = [];
+    attachmentErrors.value = [];
 };
 const submit = () => {
+    attachmentErrors.value = [];
     postForm.attachments = attachments.value
         ?.map((attachment) => attachment.file)
         .filter((file) => file !== null && file !== undefined);
@@ -60,6 +63,12 @@ const getOptions = (isNew = false) => ({
         closeModal();
     },
     onError: (e) => {
+        for (const key in e) {
+            if (key.includes(".")) {
+                const [, index] = key.split(".");
+                attachmentErrors.value[index] = e[key];
+            }
+        }
         if (typeof e === "object") {
             const firstErrorKey = Object.keys(e)[0];
             toast.error(e[firstErrorKey]);
@@ -193,6 +202,7 @@ const isImage = (attachment) => {
                                                 postForm.deletedAttachmentsIds =
                                                     $event
                                             "
+                                            :attachment-errors
                                             v-model="attachments"
                                         />
                                     </div>

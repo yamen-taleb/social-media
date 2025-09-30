@@ -4,16 +4,22 @@ import {
     XMarkIcon,
     ArrowUturnLeftIcon,
 } from "@heroicons/vue/24/outline/index.js";
+import { usePage } from "@inertiajs/vue3";
 
 const props = defineProps({
     modelValue: {
         type: Array,
         required: true,
     },
+    attachmentErrors: {
+        type: Array,
+        default: () => [],
+    },
 });
 const deletedAttachmentIds = ref([]);
 const emit = defineEmits(["update:modelValue", "deleteAttachment"]);
 const attachments = ref(props.modelValue);
+const attachmentExtensions = usePage().props.attachmentExtensions || [];
 
 const isImage = (attachment) => {
     return (
@@ -45,6 +51,13 @@ const revertRemoveFile = (attachment) => {
 </script>
 
 <template>
+    <div
+        v-if="attachmentErrors.length"
+        class="border-l-4 border-amber-500 py-2 px-3 bg-amber-100 mt-3 text-gray-800"
+    >
+        Valid extensions:
+        <small class="block">{{ attachmentExtensions.join(", ") }}</small>
+    </div>
     <div
         class="grid gap-2 mt-2 bg-gray-100 p-1 rounded relative"
         :class="[attachments?.length === 1 ? 'grid-cols-1' : 'grid-cols-2']"
@@ -91,6 +104,9 @@ const revertRemoveFile = (attachment) => {
                     }}</span>
                 </div>
             </template>
+            <span v-if="attachmentErrors[index]" class="text-red-500 text-xs">{{
+                attachmentErrors[index]
+            }}</span>
         </div>
     </div>
 </template>

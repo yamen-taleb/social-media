@@ -26,9 +26,16 @@ class UpdatePostRequest extends FormRequest
             'title' => ['nullable', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:1000'],
             'attachments' => ['nullable', 'array', 'max:4'],
-            'attachments.*' => ['image', 'mimes:jpg,jpeg,png,gif,webp', 'max:5120'],
+            'attachments.*' => ['file', 'mimes:' . StorePostRequest::$attachmentExtensions, 'max:5120'],
             'group_id' => ['nullable', 'exists:groups,id'],
             'deletedAttachmentsIds' => ['array', 'exists:post_attachments,id']
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'attachments.*.mimes' => 'Invalid file.',
         ];
     }
 }
