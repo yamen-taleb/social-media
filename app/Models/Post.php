@@ -35,4 +35,9 @@ class Post extends Model
     {
         return $this->belongsTo(Group::class);
     }
+
+    public function reactions(): HasMany
+    {
+        return $this->hasMany(Reaction::class);
+    }
 }

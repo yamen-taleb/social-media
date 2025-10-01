@@ -4,10 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreReactionRequest;
 use App\Http\Requests\UpdateReactionRequest;
+use App\Models\Post;
 use App\Models\Reaction;
+use App\Services\ReactionService;
 
 class ReactionController extends Controller
 {
+    public function __construct(public ReactionService $reactionService)
+    {
+
+    }
     /**
      * Display a listing of the resource.
      */
@@ -62,5 +68,25 @@ class ReactionController extends Controller
     public function destroy(Reaction $reaction)
     {
         //
+    }
+
+    public function react(StoreReactionRequest $request, int $postId)
+    {
+        $type = $request->get('type');
+        $reaction = $this->reactionService->reaction($postId);
+        $hasReaction  = false;
+
+        if ($reaction)
+            $reaction->delete();
+        else {
+            $this->reactionService->create($type, $postId);
+            $hasReaction = true;
+        }
+
+        $count = $this->reactionService->countPostReactions($postId);
+        return response()->json([
+            'num_of_reactions' => $count,
+            'current_user_has_reaction' => $hasReaction,
+        ]);
     }
 }

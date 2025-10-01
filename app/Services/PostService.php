@@ -17,6 +17,7 @@ class PostService
     public function posts()
     {
         return Post::with('user', 'group', 'attachments')
+            ->withCount('reactions')
             ->orderBy('created_at', 'desc')
             ->paginate(10);
     }

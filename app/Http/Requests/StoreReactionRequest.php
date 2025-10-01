@@ -2,18 +2,12 @@
 
 namespace App\Http\Requests;
 
+use App\ReactionEnum;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreReactionRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
-    public function authorize(): bool
-    {
-        return false;
-    }
-
     /**
      * Get the validation rules that apply to the request.
      *
@@ -22,7 +16,7 @@ class StoreReactionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'type' => [Rule::enum(ReactionEnum::class), 'required'],
         ];
     }
 }

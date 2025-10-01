@@ -5,6 +5,7 @@ import Like from "@/Components/Icons/Like.vue";
 import Comment from "@/Components/Icons/Comment.vue";
 import PostMenu from "@/Components/App/PostMenu.vue";
 import PostUserHeader from "@/Components/App/PostUserHeader.vue";
+import axiosClient from "@/axiosClient.js";
 
 const props = defineProps({
     post: Object,
@@ -21,6 +22,21 @@ const openEditModel = () => {
 
 const showAttachmentPreview = (attachments, index) => {
     emit("showAttachmentPreview", attachments, index);
+};
+
+const likePost = (postId) => {
+    axiosClient
+        .post(route("reactions.react", postId), {
+            type: "like",
+        })
+        .then(({ data }) => {
+            props.post.current_user_has_reaction =
+                data.current_user_has_reaction;
+            props.post.num_of_reactions = data.num_of_reactions;
+        })
+        .catch((error) => {
+            console.log(error);
+        });
 };
 </script>
 
@@ -105,9 +121,23 @@ const showAttachmentPreview = (attachments, index) => {
                 </template>
             </div>
         </div>
-        <div class="flex gap-2">
-            <Like />
-            <Comment />
+        <div class="flex flex-col gap-2 mt-1">
+            <div
+                v-if="post.num_of_reactions > 0"
+                class="flex items-center text-sm text-gray-500 ml-1"
+            >
+                <span
+                    >{{ post.num_of_reactions }}
+                    {{ post.num_of_reactions === 1 ? "like" : "likes" }}</span
+                >
+            </div>
+            <div class="flex gap-2">
+                <Like
+                    @click="likePost(post.id)"
+                    :hasReaction="post.current_user_has_reaction"
+                />
+                <Comment />
+            </div>
         </div>
     </div>
 </template>
