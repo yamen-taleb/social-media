@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PostAttachmentController;
 use App\Http\Controllers\PostController;
@@ -8,10 +9,10 @@ use App\Http\Controllers\ReactionController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])
-    ->middleware(['auth', 'verified'])->name('home');;
+    ->middleware(['auth', 'verified'])->name('home');
 
 Route::get('/user/{user:username}', [ProfileController::class, 'index'])
-    ->name('profile');;
+    ->name('profile');
 Route::get('/post-attachments/{postAttachment}', [PostAttachmentController::class, 'download'])->name('post-attachments.download');
 
 Route::middleware('auth')->group(function () {
@@ -24,6 +25,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
 
     Route::post('/reactions/{postId}', [ReactionController::class, 'react'])->name('reactions.react');
+
+    Route::get('/comments', [CommentController::class, 'index'])->name('comments.index');
+    Route::post('/comments', [CommentController::class, 'store'])->name('comments.store');
 });
 
 require __DIR__.'/auth.php';

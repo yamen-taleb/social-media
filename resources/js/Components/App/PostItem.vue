@@ -15,7 +15,11 @@ const isImage = (attachment) => {
     return attachment.type.startsWith("image/");
 };
 
-const emit = defineEmits(["editClick", "showAttachmentPreview"]);
+const emit = defineEmits([
+    "editClick",
+    "showAttachmentPreview",
+    "showPostReview",
+]);
 const openEditModel = () => {
     emit("editClick", props.post);
 };
@@ -122,21 +126,35 @@ const likePost = (postId) => {
             </div>
         </div>
         <div class="flex flex-col gap-2 mt-1">
-            <div
-                v-if="post.num_of_reactions > 0"
-                class="flex items-center text-sm text-gray-500 ml-1"
-            >
-                <span
-                    >{{ post.num_of_reactions }}
-                    {{ post.num_of_reactions === 1 ? "like" : "likes" }}</span
+            <div class="flex items-center justify-between px-2">
+                <div
+                    v-if="post.num_of_reactions > 0"
+                    class="flex items-center text-sm text-gray-500 ml-1"
                 >
+                    <span>
+                        {{ post.num_of_reactions }}
+                        {{ post.num_of_reactions === 1 ? "like" : "likes" }}
+                    </span>
+                </div>
+                <div
+                    v-if="post.num_of_comments > 0"
+                    class="flex items-center text-sm text-gray-500 ml-1 cursor-pointer hover:text-gray-700 hover:underline"
+                    @click="emit('showPostReview', post)"
+                >
+                    <span>
+                        {{ post.num_of_comments }}
+                        {{
+                            post.num_of_comments === 1 ? "Comment" : "Comments"
+                        }}
+                    </span>
+                </div>
             </div>
             <div class="flex gap-2">
                 <Like
                     @click="likePost(post.id)"
                     :hasReaction="post.current_user_has_reaction"
                 />
-                <Comment />
+                <Comment @click="emit('showPostReview', post)" />
             </div>
         </div>
     </div>

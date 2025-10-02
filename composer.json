@@ -37,6 +37,9 @@
         }
     },
     "autoload-dev": {
+        "files": [
+            "app/Helpers/pagination.php"
+        ],
         "psr-4": {
             "Tests\\": "tests/"
         }

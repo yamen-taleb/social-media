@@ -4,16 +4,33 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreCommentRequest;
 use App\Http\Requests\UpdateCommentRequest;
+use App\Http\Resources\CommentResource;
 use App\Models\Comment;
+use App\Services\CommentService;
+use Illuminate\Http\Request;
 
 class CommentController extends Controller
 {
+    public function __construct(public CommentService $commentService)
+    {
+    }
+
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $postId = $request->validate([
+            'postId' => 'required|exists:posts,id|integer'
+        ])['postId'];
+
+        $comments = $this->commentService->comments($postId);
+
+        return response()->json([
+                'comments' => CommentResource::collection($comments),
+                'paginationLinks' => pagination_links($comments)
+            ]
+            , 200);
     }
 
     /**
@@ -29,7 +46,11 @@ class CommentController extends Controller
      */
     public function store(StoreCommentRequest $request)
     {
-        //
+        $data = $request->validated();
+
+        $comment = $this->commentService->create($data['body'], $data['postId']);
+
+        return response()->json(new CommentResource($comment), 201);
     }
 
     /**
