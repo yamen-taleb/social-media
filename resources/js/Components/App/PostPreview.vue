@@ -124,7 +124,7 @@ const loadComments = () => {
                             </div>
                             <hr />
                             <PostItem :post class="rounded-none shadow-none" />
-                            <Comments :comments />
+                            <Comments v-model:comments="comments" />
                             <XMarkIcon
                                 class="h-8 w-8 absolute right-4 top-4 cursor-pointer text-white hover:bg-black/50 transition-colors duration-200 z-10 bg-black/25 rounded-full p-1"
                                 @click="closeModal"

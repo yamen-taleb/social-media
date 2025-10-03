@@ -3,11 +3,12 @@ import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/vue";
 import Download from "@/Components/Icons/Download.vue";
 import Like from "@/Components/Icons/Like.vue";
 import Comment from "@/Components/Icons/Comment.vue";
-import PostMenu from "@/Components/App/PostMenu.vue";
 import PostUserHeader from "@/Components/App/PostUserHeader.vue";
 import axiosClient from "@/axiosClient.js";
 import { router, usePage } from "@inertiajs/vue3";
 import { useToast } from "vue-toastification";
+import ShowLessReadMore from "@/Components/App/ShowLessReadMore.vue";
+import EditDeleteMenu from "@/Components/App/EditDeleteMenu.vue";
 
 const props = defineProps({
     post: Object,
@@ -68,7 +69,7 @@ const deletePost = () => {
                 :created_at="post.created_at"
                 :group="post.group"
             />
-            <PostMenu
+            <EditDeleteMenu
                 v-if="post.user.id === usePage().props.auth.user.id"
                 @edit="openEditModel"
                 @delete="deletePost"
@@ -76,27 +77,7 @@ const deletePost = () => {
         </div>
         <!-- Rest of your template remains the same -->
         <div class="mb-3 ck-content-output">
-            <Disclosure v-slot="{ open }">
-                <div
-                    v-html="post.description?.substring(0, 200)"
-                    v-if="!open"
-                />
-                <DisclosurePanel>
-                    <div v-html="post.description" />
-                </DisclosurePanel>
-
-                <div
-                    class="flex justify-end"
-                    v-if="post.description?.length > 200"
-                >
-                    <DisclosureButton
-                        class="text-blue-500 hover:text-blue-600 hover:underline"
-                    >
-                        <span v-if="!open">Read more</span>
-                        <span v-else>Show less</span>
-                    </DisclosureButton>
-                </div>
-            </Disclosure>
+            <ShowLessReadMore :content="post.description" />
         </div>
         <div
             class="grid gap-2"
@@ -109,7 +90,6 @@ const deletePost = () => {
                 v-for="(attachment, index) in post.attachments?.slice(0, 4)"
                 :key="attachment.id"
                 class="relative group mb-3"
-                @click="showAttachmentPreview(post.attachments, index)"
             >
                 <a
                     :href="route('post-attachments.download', attachment)"
@@ -128,6 +108,7 @@ const deletePost = () => {
                     v-if="isImage(attachment) || attachment.type === 'png'"
                 >
                     <img
+                        @click="showAttachmentPreview(post.attachments, index)"
                         :src="attachment.path"
                         alt=""
                         class="w-full rounded-md aspect-square"
