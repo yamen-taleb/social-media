@@ -21,6 +21,7 @@ const props = defineProps({
     },
     modelValue: Boolean,
 });
+const authUser = usePage().props.auth.user;
 
 const attachments = ref([]);
 const attachmentErrors = ref([]);
@@ -42,9 +43,9 @@ const show = computed({
 });
 
 const closeModal = () => {
+    emit("hide");
     show.value = false;
     postForm.reset();
-    emit("hide");
     attachments.value = [];
     attachmentErrors.value = [];
 };
@@ -172,11 +173,18 @@ const isImage = (attachment) => {
                                         <div
                                             class="flex justify-between items-center"
                                         >
-                                            <PostUserHeader
-                                                :post
-                                                :show-time="false"
-                                                class="mb-3"
-                                            />
+                                            <Transition>
+                                                <PostUserHeader
+                                                    v-if="show"
+                                                    :user="
+                                                        post.is_new
+                                                            ? authUser
+                                                            : post.user
+                                                    "
+                                                    :show-time="false"
+                                                    class="mb-3"
+                                                />
+                                            </Transition>
                                             <button
                                                 type="button"
                                                 class="rounded-md px-4 py-2 text-sm font-semibold text-white bg-gradient-to-r from-indigo-500 to-purple-600 shadow-md hover:from-indigo-600 hover:to-purple-700 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-400 transition-all duration-300 relative"
@@ -233,3 +241,14 @@ const isImage = (attachment) => {
         </TransitionRoot>
     </teleport>
 </template>
+<style scoped>
+.v-enter-active,
+.v-leave-active {
+    transition: opacity 0.5s ease;
+}
+
+.v-enter-from,
+.v-leave-to {
+    opacity: 0;
+}
+</style>

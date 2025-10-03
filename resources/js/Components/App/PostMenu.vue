@@ -1,32 +1,12 @@
 <script setup>
-import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue';
-import { EllipsisVerticalIcon, PencilSquareIcon, TrashIcon } from '@heroicons/vue/24/outline';
-import {router} from "@inertiajs/vue3";
-import {useToast} from "vue-toastification";
+import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/vue";
+import {
+    EllipsisVerticalIcon,
+    PencilSquareIcon,
+    TrashIcon,
+} from "@heroicons/vue/24/outline";
 
-const props = defineProps({
-    post: {
-        type: Object,
-        required: true
-    }
-});
-const toast = useToast()
-
-const emit = defineEmits(['edit'])
-
-const deletePost = () => {
-    if (window.confirm('Are you sure you want to delete this post?')) {
-        router.delete(route('posts.destroy', props.post.id), {
-            preserveScroll: true,
-            onSuccess: () => {
-                toast.success('Post deleted successfully')
-            },
-            onError: () => {
-                toast.error('Post deleted failed')
-            }
-        });
-    }
-}
+const emit = defineEmits(["edit", "delete"]);
 </script>
 
 <template>
@@ -36,7 +16,7 @@ const deletePost = () => {
                 class="p-2 rounded-full hover:bg-gray-50"
                 aria-label="Post options"
             >
-                <EllipsisVerticalIcon class="w-5 h-5"/>
+                <EllipsisVerticalIcon class="w-5 h-5" />
             </MenuButton>
         </div>
 
@@ -56,27 +36,32 @@ const deletePost = () => {
                         <button
                             @click="emit('edit')"
                             :class="[
-                                active ? 'bg-violet-500 text-white' : 'text-gray-900',
+                                active
+                                    ? 'bg-violet-500 text-white'
+                                    : 'text-gray-900',
                                 'group flex w-full items-center rounded-md px-2 py-2 text-sm flex gap-1 items-center',
                             ]"
                         >
-                            <PencilSquareIcon class="w-5 h-5"/>
+                            <PencilSquareIcon class="w-5 h-5" />
                             Edit
                         </button>
                     </MenuItem>
 
                     <MenuItem v-slot="{ active }">
                         <button
-                            @click="deletePost"
+                            @click="emit('delete')"
                             :class="[
-                                active ? 'bg-red-500 text-white' : 'text-gray-900',
+                                active
+                                    ? 'bg-red-500 text-white'
+                                    : 'text-gray-900',
                                 'group flex w-full items-center rounded-md px-2 py-2 text-sm flex gap-1 items-center',
                             ]"
                         >
-                            <TrashIcon class="w-5 h-5"/>
+                            <TrashIcon class="w-5 h-5" />
                             Delete
                         </button>
-                    </MenuItem>                </div>
+                    </MenuItem>
+                </div>
             </MenuItems>
         </transition>
     </Menu>

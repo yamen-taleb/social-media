@@ -34,7 +34,7 @@ class HandleInertiaRequests extends Middleware
         return [
             ...parent::share($request),
             'auth' => [
-                'user' => new UserResource($request->user()),
+                'user' => $request->user() ? new UserResource($request->user()) : null,
             ],
             'attachmentExtensions' => explode(',', StorePostRequest::$attachmentExtensions),
         ];

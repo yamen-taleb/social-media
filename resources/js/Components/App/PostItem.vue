@@ -6,6 +6,8 @@ import Comment from "@/Components/Icons/Comment.vue";
 import PostMenu from "@/Components/App/PostMenu.vue";
 import PostUserHeader from "@/Components/App/PostUserHeader.vue";
 import axiosClient from "@/axiosClient.js";
+import { router, usePage } from "@inertiajs/vue3";
+import { useToast } from "vue-toastification";
 
 const props = defineProps({
     post: Object,
@@ -42,13 +44,35 @@ const likePost = (postId) => {
             console.log(error);
         });
 };
+
+const deletePost = () => {
+    if (window.confirm("Are you sure you want to delete this post?")) {
+        router.delete(route("posts.destroy", props.post.id), {
+            preserveScroll: true,
+            onSuccess: () => {
+                useToast().success("Post deleted successfully");
+            },
+            onError: () => {
+                useToast().error("Post deleted failed");
+            },
+        });
+    }
+};
 </script>
 
 <template>
     <div class="shadow-sm rounded-md bg-white mb-6 py-4 px-3 border">
         <div class="flex items-center justify-between py-4 px-2">
-            <PostUserHeader :post />
-            <PostMenu :post="post" @edit="openEditModel" />
+            <PostUserHeader
+                :user="post.user"
+                :created_at="post.created_at"
+                :group="post.group"
+            />
+            <PostMenu
+                v-if="post.user.id === usePage().props.auth.user.id"
+                @edit="openEditModel"
+                @delete="deletePost"
+            />
         </div>
         <!-- Rest of your template remains the same -->
         <div class="mb-3 ck-content-output">
@@ -127,11 +151,8 @@ const likePost = (postId) => {
         </div>
         <div class="flex flex-col gap-2 mt-1">
             <div class="flex items-center justify-between px-2">
-                <div
-                    v-if="post.num_of_reactions > 0"
-                    class="flex items-center text-sm text-gray-500 ml-1"
-                >
-                    <span>
+                <div class="flex items-center text-sm text-gray-500 ml-1">
+                    <span v-if="post.num_of_reactions > 0">
                         {{ post.num_of_reactions }}
                         {{ post.num_of_reactions === 1 ? "like" : "likes" }}
                     </span>
