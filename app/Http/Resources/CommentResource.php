@@ -25,6 +25,8 @@ class CommentResource extends JsonResource
                 'username' => $this->user->username,
                 'avatar' => $this->user->avatar_path ? url('storage/' . $this->user->avatar_path) : null,
             ],
+            'num_of_reactions' => $this->reactions_count,
+            'current_user_has_reaction' => $this->reactions()->where('user_id', auth()->id())->exists(),
         ];
     }
 

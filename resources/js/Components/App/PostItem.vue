@@ -9,6 +9,7 @@ import { router, usePage } from "@inertiajs/vue3";
 import { useToast } from "vue-toastification";
 import ShowLessReadMore from "@/Components/App/ShowLessReadMore.vue";
 import EditDeleteMenu from "@/Components/App/EditDeleteMenu.vue";
+import useLikeRequest from "@/Composables/useLikeRequest.js";
 
 const props = defineProps({
     post: Object,
@@ -32,18 +33,11 @@ const showAttachmentPreview = (attachments, index) => {
 };
 
 const likePost = (postId) => {
-    axiosClient
-        .post(route("reactions.react", postId), {
-            type: "like",
-        })
-        .then(({ data }) => {
-            props.post.current_user_has_reaction =
-                data.current_user_has_reaction;
-            props.post.num_of_reactions = data.num_of_reactions;
-        })
-        .catch((error) => {
-            console.log(error);
-        });
+    useLikeRequest(postId).then((res) => {
+        props.post.num_of_reactions = res.data.num_of_reactions;
+        props.post.current_user_has_reaction =
+            res.data.current_user_has_reaction;
+    });
 };
 
 const deletePost = () => {

@@ -11,6 +11,7 @@ class CommentService
     public function comments(int $postId)
     {
         return Comment::query()
+            ->withCount('reactions')
             ->where('post_id', $postId)
             ->latest()
             ->paginate(10);

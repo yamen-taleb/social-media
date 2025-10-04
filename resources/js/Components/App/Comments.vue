@@ -9,6 +9,7 @@ import EditDeleteMenu from "@/Components/App/EditDeleteMenu.vue";
 import { useToast } from "vue-toastification";
 import AutoResizeTextarea from "@/Components/App/AutoResizeTextarea.vue";
 import { ref } from "vue";
+import useLikeRequest from "@/Composables/useLikeRequest.js";
 
 const props = defineProps({
     comments: {
@@ -64,6 +65,13 @@ const updateComment = () => {
             },
         },
     );
+};
+
+const likeComment = (comment) => {
+    useLikeRequest(comment.id, "Comment").then(({ data }) => {
+        comment.num_of_reactions = data.num_of_reactions;
+        comment.current_user_has_reaction = data.current_user_has_reaction;
+    });
 };
 </script>
 
@@ -150,8 +158,19 @@ const updateComment = () => {
                                 {{ comment.time_ago }}
                             </span>
                             <button
-                                class="text-xs text-gray-500 hover:text-gray-700"
+                                class="text-xs"
+                                :class="
+                                    comment.current_user_has_reaction
+                                        ? 'text-blue-600 hover:text-blue-700'
+                                        : 'text-gray-500 hover:text-gray-600'
+                                "
+                                @click="likeComment(comment)"
                             >
+                                {{
+                                    comment.num_of_reactions > 0
+                                        ? comment.num_of_reactions
+                                        : ""
+                                }}
                                 Like
                             </button>
                             <button

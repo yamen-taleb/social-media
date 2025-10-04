@@ -7,27 +7,30 @@ use Illuminate\Support\Facades\Auth;
 
 class ReactionService
 {
-    public function reaction(int $postId): ?Reaction
+    public function reaction(int $id, string $model): ?Reaction
     {
         return Reaction::query()
             ->where('user_id', Auth::id())
-            ->where('post_id', $postId)
+            ->where('model_id', $id)
+            ->where('model_type', "App\\Models\\$model")
             ->first();
     }
 
-    public function create(string $type, int $postId)
+    public function create(string $type, int $id, string $model)
     {
         return Reaction::create([
             'user_id' => Auth::id(),
-            'post_id' => $postId,
+            'model_id' => $id,
+            'model_type' => "App\\Models\\$model",
             'type' => $type,
         ]);
     }
 
-    public function countPostReactions(int $postId): int
+    public function countPostReactions(int $id, string $model): int
     {
         return Reaction::query()
-                    ->where('post_id', $postId)
+                    ->where('model_id', $id)
+                    ->where('model_type', "App\\Models\\$model")
                     ->count();
     }
 }

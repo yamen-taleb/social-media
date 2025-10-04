@@ -70,20 +70,20 @@ class ReactionController extends Controller
         //
     }
 
-    public function react(StoreReactionRequest $request, int $postId)
+    public function react(StoreReactionRequest $request, int $id)
     {
-        $type = $request->get('type');
-        $reaction = $this->reactionService->reaction($postId);
+        $data = $request->validated();
+        $reaction = $this->reactionService->reaction($id, $data['model']);
         $hasReaction  = false;
 
         if ($reaction)
             $reaction->delete();
         else {
-            $this->reactionService->create($type, $postId);
+            $this->reactionService->create($data['type'], $id, $data['model']);
             $hasReaction = true;
         }
 
-        $count = $this->reactionService->countPostReactions($postId);
+        $count = $this->reactionService->countPostReactions($id, $data['model']);
         return response()->json([
             'num_of_reactions' => $count,
             'current_user_has_reaction' => $hasReaction,

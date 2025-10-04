@@ -17,6 +17,7 @@ class StoreReactionRequest extends FormRequest
     {
         return [
             'type' => [Rule::enum(ReactionEnum::class), 'required'],
+            'model' => ['required', 'string', Rule::in(['Post', 'Comment'])],
         ];
     }
 }

@@ -10,7 +10,13 @@ class Reaction extends Model
 
     protected $fillable = [
         'user_id',
-        'post_id',
+        'model_id',
+        'model_type',
         'type',
     ];
+
+    public function reactable()
+    {
+        return $this->morphTo();
+    }
 }

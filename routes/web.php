@@ -24,7 +24,7 @@ Route::middleware('auth')->group(function () {
     Route::put('/posts/{post:id}', [PostController::class, 'update'])->name('posts.update');
     Route::delete('/posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
 
-    Route::post('/reactions/{postId}', [ReactionController::class, 'react'])->name('reactions.react');
+    Route::post('/reactions/{id}', [ReactionController::class, 'react'])->name('reactions.react');
 
     Route::get('/comments', [CommentController::class, 'index'])->name('comments.index');
     Route::post('/comments', [CommentController::class, 'store'])->name('comments.store');
