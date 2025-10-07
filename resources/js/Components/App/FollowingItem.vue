@@ -1,19 +1,17 @@
 <script setup>
 defineProps({
-    image: String,
-    name: String,
+  image: String,
+  name: String,
 })
 </script>
 
 <template>
-    <div class="flex items-center gap-3 p-3 mb-3 hover:bg-gray-100 rounded cursor-pointer">
-        <img :src="image" alt="image" class="w-12 h-12 rounded-full">
-        <div>
-            <h3 class="font-semibold text-md">{{ name }}</h3>
-        </div>
+  <div class="mb-3 flex cursor-pointer items-center gap-3 rounded p-3 hover:bg-gray-100">
+    <img :src="image" alt="image" class="h-12 w-12 rounded-full" />
+    <div>
+      <h3 class="text-md font-semibold">{{ name }}</h3>
     </div>
+  </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>
