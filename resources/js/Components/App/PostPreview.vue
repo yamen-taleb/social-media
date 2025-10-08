@@ -1,7 +1,7 @@
 <script setup>
-import { computed, onMounted, ref, watch } from 'vue'
-import { TransitionRoot, TransitionChild, Dialog, DialogPanel } from '@headlessui/vue'
-import { XMarkIcon, PaperAirplaneIcon } from '@heroicons/vue/24/outline/index.js'
+import { computed, ref, watch } from 'vue'
+import { Dialog, DialogPanel, TransitionChild, TransitionRoot } from '@headlessui/vue'
+import { PaperAirplaneIcon, XMarkIcon } from '@heroicons/vue/24/outline/index.js'
 import PostItem from '@/Components/App/PostItem.vue'
 import Comments from '@/Components/App/Comments.vue'
 import AutoResizeTextarea from '@/Components/App/AutoResizeTextarea.vue'
@@ -41,7 +41,7 @@ const submitComment = () => {
   axiosClient
     .post(route('comments.store'), {
       body: comment.value,
-      postId: props.post.id,
+      post_id: props.post.id,
     })
     .then(({ data }) => {
       comment.value = ''
@@ -67,7 +67,7 @@ const loadComments = () => {
   axiosClient
     .get(route('comments.index'), {
       params: {
-        postId: props.post.id,
+        post_id: props.post.id,
       },
     })
     .then(({ data }) => {
@@ -81,8 +81,8 @@ const loadComments = () => {
 </script>
 
 <template>
-  <TransitionRoot appear :show="show" as="template">
-    <Dialog as="div" @close="closeModal" class="relative z-10">
+  <TransitionRoot :show="show" appear as="template">
+    <Dialog as="div" class="relative z-10" @close="closeModal">
       <TransitionChild
         as="template"
         enter="duration-300 ease-out"
@@ -114,33 +114,33 @@ const loadComments = () => {
               <PostItem :post class="rounded-none shadow-none" />
               <Comments v-model:comments="comments" />
               <XMarkIcon
+                aria-label="Close preview"
                 class="absolute right-4 top-4 z-10 h-8 w-8 cursor-pointer rounded-full bg-black/25 p-1 text-white transition-colors duration-200 hover:bg-black/50"
                 @click="closeModal"
-                aria-label="Close preview"
               />
               <div
                 class="relative sticky bottom-0 left-0 flex items-center gap-1 bg-white px-3 py-2"
               >
                 <img
-                  class="h-12 w-12 rounded-full border border-2 object-cover"
                   :src="avatar"
                   alt=""
+                  class="h-12 w-12 rounded-full border border-2 object-cover"
                 />
                 <AutoResizeTextarea
-                  :autofocus="true"
                   v-model="comment"
+                  :autofocus="true"
                   :isActive="isActiveTextarea"
                   placeholder="Write a comment..."
                 />
                 <button
-                  type="button"
-                  @click="submitComment"
                   :disabled="comment.trim() === ''"
                   class="absolute right-5 top-1/2 z-20 -translate-y-1/2"
+                  type="button"
+                  @click="submitComment"
                 >
                   <PaperAirplaneIcon
-                    class="h-5 w-5"
                     :class="comment.trim() === '' ? 'cursor-not-allowed' : 'cursor-pointer'"
+                    class="h-5 w-5"
                   />
                 </button>
               </div>

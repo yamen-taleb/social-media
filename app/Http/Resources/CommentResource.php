@@ -19,13 +19,16 @@ class CommentResource extends JsonResource
             'id' => $this->id,
             'body' => $this->body,
             'time_ago' => $this->getTimeAgo($this->created_at),
+            'post_id' => $this->post_id,
+            'parent_id' => $this->parent_id,
             'user' => [
                 'id' => $this->user->id,
                 'name' => $this->user->name,
                 'username' => $this->user->username,
-                'avatar' => $this->user->avatar_path ? url('storage/' . $this->user->avatar_path) : null,
+                'avatar' => $this->user->avatar_path ? url('storage/'.$this->user->avatar_path) : null,
             ],
             'num_of_reactions' => $this->reactions_count,
+            'num_of_replies' => $this->replies_count ?? null,
             'current_user_has_reaction' => $this->reactions()->where('user_id', auth()->id())->exists(),
         ];
     }

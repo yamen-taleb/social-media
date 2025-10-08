@@ -22,8 +22,8 @@ class StoreCommentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'postId' => [
-                'required',
+            'post_id' => [
+                'nullable',
                 'integer',
                 'exists:posts,id'
             ],
@@ -32,6 +32,11 @@ class StoreCommentRequest extends FormRequest
                 'string',
                 'min:1',
                 'max:10000',
+            ],
+            'parent_id' => [
+                'nullable',
+                'integer',
+                'exists:comments,id'
             ]
         ];
     }

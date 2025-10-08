@@ -2,27 +2,34 @@
 
 namespace App\Services;
 
-use App\Http\Resources\CommentResource;
 use App\Models\Comment;
 use Illuminate\Support\Facades\Auth;
 
 class CommentService
 {
-    public function comments(int $postId)
+    public function comments(array $filters)
     {
         return Comment::query()
             ->withCount('reactions')
-            ->where('post_id', $postId)
+            ->when(isset($filters['post_id']), static function ($query) use ($filters) {
+                $query->where('post_id', $filters['post_id'])
+                    ->whereNull('parent_id')
+                    ->withCount('replies');
+            })
+            ->when(isset($filters['parent_id']), static function ($query) use ($filters) {
+                $query->where('parent_id', $filters['parent_id']);
+            })
             ->latest()
             ->paginate(10);
     }
 
-    public function create(string $body, int $postId)
+    public function create(array $data)
     {
         return Comment::create([
             'user_id' => Auth::id(),
-            'post_id' => $postId,
-            'body' => nl2br($body),
+            'post_id' => $data['post_id'],
+            'body' => nl2br($data['body']),
+            'parent_id' => $data['parent_id'] ?? null,
         ]);
     }
 }

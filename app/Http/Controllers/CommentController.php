@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\GetCommentsRequest;
 use App\Http\Requests\StoreCommentRequest;
 use App\Http\Requests\UpdateCommentRequest;
 use App\Http\Resources\CommentResource;
 use App\Models\Comment;
 use App\Services\CommentService;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
 class CommentController extends Controller
@@ -19,13 +19,11 @@ class CommentController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(GetCommentsRequest $getCommentsRequest)
     {
-        $postId = $request->validate([
-            'postId' => 'required|exists:posts,id|integer'
-        ])['postId'];
+        $data = $getCommentsRequest->validated();
 
-        $comments = $this->commentService->comments($postId);
+        $comments = $this->commentService->comments($data);
 
         return response()->json([
                 'comments' => CommentResource::collection($comments),
@@ -35,23 +33,23 @@ class CommentController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(StoreCommentRequest $request)
     {
         $data = $request->validated();
 
-        $comment = $this->commentService->create($data['body'], $data['postId']);
+        $comment = $this->commentService->create($data);
 
         return response()->json(new CommentResource($comment), 201);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        //
     }
 
     /**
