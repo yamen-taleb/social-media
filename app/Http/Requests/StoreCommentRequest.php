@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreCommentRequest extends FormRequest
 {
@@ -36,8 +37,15 @@ class StoreCommentRequest extends FormRequest
             'parent_id' => [
                 'nullable',
                 'integer',
-                'exists:comments,id'
+                Rule::exists('comments', 'id')->whereNull('parent_id')
             ]
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'parent_id.exists' => 'You can only reply to top-level comments, not to replies.',
         ];
     }
 }

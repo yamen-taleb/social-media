@@ -61,7 +61,7 @@ const updateComment = (currentComment) => {
 </script>
 
 <template>
-  <div :class="isSubComment ? 'mt-2 space-y-3' : 'mt-3 space-y-4 px-4'">
+  <div class="mt-3 space-y-4 px-4">
     <div
       v-for="comment in comments"
       v-if="comments.length > 0"

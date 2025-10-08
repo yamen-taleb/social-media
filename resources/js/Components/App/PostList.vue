@@ -1,11 +1,11 @@
 <script setup>
 import PostCreate from '@/Components/App/PostCreate.vue'
 import PostItem from '@/Components/App/PostItem.vue'
-import { usePage } from '@inertiajs/vue3'
 import PostEditModel from '@/Components/App/PostEditModel.vue'
-import { inject, reactive, ref } from 'vue'
+import { reactive, ref } from 'vue'
 import AttachmentsPreview from '@/Components/App/AttachmentsPreview.vue'
 import PostPreview from '@/Components/App/PostPreview.vue'
+import { InfiniteScroll } from '@inertiajs/vue3'
 
 const props = defineProps({
   posts: {
@@ -56,14 +56,16 @@ const showPostReviewModel = (post) => {
 <template>
   <div>
     <PostCreate @createPost="openEditModel" />
-    <div v-for="post in posts" :key="post.id">
-      <PostItem
-        :post="post"
-        @editClick="openEditModel"
-        @showPostReview="showPostReviewModel"
-        @showAttachmentPreview="showAttachmentPreviewModel"
-      />
-    </div>
+    <InfiniteScroll data="posts">
+      <div v-for="post in posts" :key="post.id">
+        <PostItem
+          :post="post"
+          @editClick="openEditModel"
+          @showAttachmentPreview="showAttachmentPreviewModel"
+          @showPostReview="showPostReviewModel"
+        />
+      </div>
+    </InfiniteScroll>
   </div>
   <PostEditModel v-model="showEditModel" :post="currentPost" @hide="currentPost = {}" />
 
@@ -74,7 +76,7 @@ const showPostReviewModel = (post) => {
     @update:index="attachmentsPreview.index = $event"
   />
 
-  <PostPreview :post="currentPostReview" v-model="showPostReview" />
+  <PostPreview v-model="showPostReview" :post="currentPostReview" />
 </template>
 
 <style scoped></style>

@@ -3,23 +3,22 @@
 namespace App\Services;
 
 use App\Models\Post;
-use App\Models\PostAttachment;
 use Illuminate\Support\Facades\DB;
-use function PHPUnit\Framework\isEmpty;
 
 class PostService
 {
     public function __construct(
         public FileUploadService $fileUploadService,
         public PostAttachmentService $postAttachmentService
-    )
-    {}
+    ) {
+    }
+
     public function posts()
     {
         return Post::with('user', 'group', 'attachments')
             ->withCount('reactions', 'comments')
             ->orderBy('created_at', 'desc')
-            ->paginate(10);
+            ->paginate(5);
     }
 
     public function create(array $post)
@@ -37,8 +36,9 @@ class PostService
 
     public function update(Post $post, array $postData)
     {
-        if (isset($postData['deletedAttachmentsIds']))
+        if (isset($postData['deletedAttachmentsIds'])) {
             $this->postAttachmentService->deleteMultiple($postData['deletedAttachmentsIds'], $post->id);
+        }
         $this->postAttachmentService->uploadPostAttachments($postData['attachments'], $post->id);
         $post->update([
             'title' => $postData['title'],
