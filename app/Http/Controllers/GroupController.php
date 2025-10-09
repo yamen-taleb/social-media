@@ -5,9 +5,14 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreGroupRequest;
 use App\Http\Requests\UpdateGroupRequest;
 use App\Models\Group;
+use App\Services\GroupService;
 
 class GroupController extends Controller
 {
+    public function __construct(public GroupService $groupService)
+    {
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -17,17 +22,21 @@ class GroupController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(StoreGroupRequest $request)
+    {
+        $data = $request->validated();
+
+        $this->groupService->create($data);
+
+        return back();
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
     {
         //
     }

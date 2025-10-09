@@ -1,14 +1,27 @@
 <script setup>
 import GroupListItems from '@/Components/App/GroupListItems.vue'
+import { ref } from 'vue'
+import GroupCreateModel from '@/Components/App/GroupCreateModel.vue'
+
+const showGroupModel = ref(false)
 </script>
 
 <template>
   <div
     class="flex max-h-screen flex-col overflow-hidden rounded-md border bg-white px-3 py-4 shadow-sm"
   >
-    <h2 class="mb-2 text-2xl font-semibold">Groups</h2>
+    <div class="mb-2 flex items-center justify-between px-4">
+      <h2 class="text-2xl font-semibold">Groups</h2>
+      <button
+        class="rounded-md bg-gradient-to-r from-indigo-500 to-purple-600 px-1 py-2 text-xs text-white transition-all duration-300 hover:bg-indigo-600 hover:from-indigo-600 hover:to-purple-700 hover:shadow"
+        @click="showGroupModel = true"
+      >
+        New Group
+      </button>
+    </div>
     <GroupListItems />
   </div>
+  <GroupCreateModel v-model="showGroupModel" />
 </template>
 
 <style scoped></style>

@@ -20,7 +20,7 @@ class CommentService
                 $query->where('parent_id', $filters['parent_id']);
             })
             ->latest()
-            ->paginate(10);
+            ->paginate(5);
     }
 
     public function create(array $data)

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\GroupController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PostAttachmentController;
 use App\Http\Controllers\PostController;
@@ -13,7 +14,8 @@ Route::get('/', [HomeController::class, 'index'])
 
 Route::get('/user/{user:username}', [ProfileController::class, 'index'])
     ->name('profile');
-Route::get('/post-attachments/{postAttachment}', [PostAttachmentController::class, 'download'])->name('post-attachments.download');
+Route::get('/post-attachments/{postAttachment}',
+    [PostAttachmentController::class, 'download'])->name('post-attachments.download');
 
 Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -30,6 +32,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/comments', [CommentController::class, 'store'])->name('comments.store');
     Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
     Route::put('/comments/{comment}', [CommentController::class, 'update'])->name('comments.update');
+
+    Route::post('/groups', [GroupController::class, 'store'])->name('groups.store');
 });
 
 require __DIR__.'/auth.php';
