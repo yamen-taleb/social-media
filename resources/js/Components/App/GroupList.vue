@@ -3,6 +3,13 @@ import GroupListItems from '@/Components/App/GroupListItems.vue'
 import { ref } from 'vue'
 import GroupCreateModel from '@/Components/App/GroupCreateModel.vue'
 
+defineProps({
+  groups: {
+    type: Array,
+    required: true,
+  },
+})
+
 const showGroupModel = ref(false)
 </script>
 
@@ -19,7 +26,7 @@ const showGroupModel = ref(false)
         New Group
       </button>
     </div>
-    <GroupListItems />
+    <GroupListItems :groups />
   </div>
   <GroupCreateModel v-model="showGroupModel" />
 </template>

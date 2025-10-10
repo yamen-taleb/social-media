@@ -10,6 +10,15 @@ use Illuminate\Support\Facades\Auth;
 
 class GroupService
 {
+    public function groups()
+    {
+        return Auth::user()
+            ->groups()
+            ->select(['groups.id', 'groups.name', 'groups.slug', 'groups.description', 'groups.thumbnail_path'])
+            ->orderBy('pivot_created_at', 'desc')
+            ->get();
+    }
+
     public function create(array $params)
     {
         $id = Auth::id();

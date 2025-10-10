@@ -3,8 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Sluggable\HasSlug;
@@ -39,6 +39,20 @@ class User extends Authenticatable //implements MustVerifyEmail
         'remember_token',
     ];
 
+    public function getSlugOptions(): SlugOptions
+    {
+        return SlugOptions::create()
+            ->generateSlugsFrom('name')
+            ->saveSlugsTo('username')
+            ->doNotGenerateSlugsOnUpdate();
+    }
+
+    public function groups(): BelongsToMany
+    {
+        return $this->belongsToMany(Group::class, 'group_users', 'user_id', 'group_id')
+            ->withPivot('role', 'status', 'created_at');
+    }
+
     /**
      * Get the attributes that should be cast.
      *
@@ -50,13 +64,5 @@ class User extends Authenticatable //implements MustVerifyEmail
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
-    }
-
-    public function getSlugOptions(): SlugOptions
-    {
-       return SlugOptions::create()
-              ->generateSlugsFrom('name')
-              ->saveSlugsTo('username')
-              ->doNotGenerateSlugsOnUpdate();
     }
 }

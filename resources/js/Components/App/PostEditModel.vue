@@ -134,7 +134,7 @@ const isImage = (attachment) => {
   <teleport to="body">
     <TransitionRoot :show="show" appear as="template">
       <Dialog as="div" class="relative z-10" @close="closeModal">
-        <div class="fixed inset-0 overflow-y-auto">
+        <div class="fixed inset-0 overflow-y-auto bg-black/30 backdrop-blur-sm">
           <div class="flex min-h-full items-center justify-center p-4 text-center">
             <TransitionChild
               as="template"
