@@ -1,22 +1,25 @@
 <script setup>
 import { computed, ref } from 'vue'
 import { PhotoIcon } from '@heroicons/vue/24/outline'
-import { useToast } from 'vue-toastification'
-import { useImageUpload } from '@/Composables/useImageUpload.js'
 import { useForm } from '@inertiajs/vue3'
 import { useResetImage } from '@/Composables/useResetImage.js'
-import { useUpdateImage } from '@/Composables/useUpdateImage.js'
+import { useImageUpload } from '@/Composables/useImageUpload.js'
 
 const props = defineProps({
   avatar: {
     type: String,
     default: 'https://cdn.iconscout.com/icon/free/png-256/free-avatar-370-456322.png?f=webp',
   },
+  allowedToUpdated: {
+    type: Boolean,
+    required: true,
+  },
 })
 
-const toast = useToast()
 const showChangeImage = ref(false)
 const avatarImage = ref('')
+
+const emit = defineEmits(['update'])
 
 const imageForm = useForm({
   image: null,
@@ -31,7 +34,7 @@ const showImagePreview = computed(
 const showEditControls = computed(() => avatarImage.value)
 
 const handleImageChange = (event) => {
-  useImageUpload(event, imageForm, avatarImage, toast)
+  useImageUpload(event, imageForm, avatarImage)
   showChangeImage.value = true
 }
 
@@ -41,7 +44,8 @@ const resetImage = () => {
 }
 
 const updateAvatar = () => {
-  useUpdateImage(imageForm, toast, 'profile.avatar')
+  emit('update', imageForm)
+  // useUpdateImage(imageForm, 'profile.avatar')
   resetImage()
 }
 </script>
@@ -54,29 +58,33 @@ const updateAvatar = () => {
     <!-- Profile Picture -->
     <img
       :src="showImagePreview"
-      class="h-full w-full rounded-full border-2 border-white object-cover"
       alt="Profile picture"
+      class="h-full w-full rounded-full border-2 border-white object-cover"
     />
 
     <!-- Overlay -->
     <div
+      v-if="allowedToUpdated"
       class="absolute inset-0 rounded-full bg-black bg-opacity-0 opacity-0 transition-all duration-300 hover:bg-opacity-50 hover:opacity-100"
     ></div>
     <div
+      v-if="showChangeImage && allowedToUpdated"
       class="relative mt-3 rounded-md bg-white p-2 text-gray-600 shadow-md hover:text-gray-700"
-      v-if="showChangeImage"
     >
-      <div v-if="!showEditControls" class="flex items-center gap-2 hover:bg-gray-50">
+      <div
+        v-if="!showEditControls && allowedToUpdated"
+        class="flex items-center gap-2 hover:bg-gray-50"
+      >
         <PhotoIcon class="h-4 w-4" />
         <span class="text-xs"> Choose picture </span>
         <input
-          type="file"
           accept="image/*"
           class="file-input-overlay"
+          type="file"
           @change="handleImageChange"
         />
       </div>
-      <div v-else class="flex items-center gap-3 text-xs">
+      <div v-else-if="allowedToUpdated" class="flex items-center gap-3 text-xs">
         <button class="mx-auto text-red-500 hover:text-red-600" @click.stop="resetImage">
           Cancel
         </button>

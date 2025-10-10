@@ -1,21 +1,23 @@
-export function useImageUpload(event, imageForm, coverImage, toast) {
-    const file = event.target.files[0];
-    if (!file) return;
+import { useToast } from 'vue-toastification'
 
-    if (!file.type.startsWith('image/')) {
-        toast.error('Please select a valid image file');
-        return;
-    }
+export function useImageUpload(event, imageForm, coverImage) {
+  const file = event.target.files[0]
+  if (!file) return
 
-    imageForm.image = file;
-    const reader = new FileReader();
+  if (!file.type.startsWith('image/')) {
+    useToast().error('Please select a valid image file')
+    return
+  }
 
-    reader.onload = () => {
-        coverImage.value = reader.result;
-    };
-    reader.onerror = () => {
-        toast.error('Error reading image file');
-    };
+  imageForm.image = file
+  const reader = new FileReader()
 
-    reader.readAsDataURL(file);
+  reader.onload = () => {
+    coverImage.value = reader.result
+  }
+  reader.onerror = () => {
+    useToast().error('Error reading image file')
+  }
+
+  reader.readAsDataURL(file)
 }
