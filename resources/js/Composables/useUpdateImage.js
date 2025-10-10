@@ -1,12 +1,12 @@
 import { useToast } from 'vue-toastification'
 
-export function useUpdateImage(imageForm, routeName) {
+export function useUpdateImage(imageForm, routeName, param = null) {
   if (!imageForm.image) {
     useToast().error('No image selected')
     return
   }
 
-  imageForm.post(route(routeName), {
+  imageForm.post(route(routeName, param), {
     preserveScroll: true,
     onSuccess: () => {
       useToast().success('Cover updated successfully')

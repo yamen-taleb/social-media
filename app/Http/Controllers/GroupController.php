@@ -4,8 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreGroupRequest;
 use App\Http\Requests\UpdateGroupRequest;
+use App\Http\Requests\ValidateImageRequest;
+use App\Http\Resources\GroupPageResource;
 use App\Models\Group;
 use App\Services\GroupService;
+use Illuminate\Support\Facades\Gate;
+use Inertia\Inertia;
 
 class GroupController extends Controller
 {
@@ -46,7 +50,11 @@ class GroupController extends Controller
      */
     public function show(Group $group)
     {
-        //
+        $group->load('currentUser');
+
+        return Inertia::render('Groups/View', [
+            'group' => new GroupPageResource($group)
+        ]);
     }
 
     /**
@@ -71,5 +79,19 @@ class GroupController extends Controller
     public function destroy(Group $group)
     {
         //
+    }
+
+    public function updateCover(ValidateImageRequest $request, Group $group)
+    {
+        Gate::authorize('update', $group);
+
+        $this->groupService->updateImage($request->file('image'), 'cover_path', 'covers', $group);
+    }
+
+    public function updateAvatar(ValidateImageRequest $request, Group $group)
+    {
+        Gate::authorize('update', $group);
+
+        $this->groupService->updateImage($request->file('image'), 'thumbnail_path', 'avatars', $group);
     }
 }

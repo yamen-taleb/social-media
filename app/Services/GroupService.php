@@ -6,10 +6,16 @@ use App\Models\Group;
 use App\Models\GroupUser;
 use App\RoleEnum;
 use App\UserApprovalEnum;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 
 class GroupService
 {
+    public function __construct(public FileUploadService $fileUploadService)
+    {
+
+    }
+
     public function groups()
     {
         return Auth::user()
@@ -41,5 +47,16 @@ class GroupService
             'role' => $role,
             'status' => $status,
         ]);
+    }
+
+    public function updateImage(UploadedFile $image, string $field, string $directory, Group $group)
+    {
+        $this->fileUploadService->delete($group->$field);
+        $path = $this->fileUploadService->update($image, $group->$field, $directory);
+
+        $group->$field = $path;
+        $group->save();
+
+        return $path;
     }
 }

@@ -34,6 +34,9 @@ Route::middleware('auth')->group(function () {
     Route::put('/comments/{comment}', [CommentController::class, 'update'])->name('comments.update');
 
     Route::post('/groups', [GroupController::class, 'store'])->name('groups.store');
+    Route::get('/groups/{group:slug}', [GroupController::class, 'show'])->name('groups.show');
+    Route::post('/groups/cover/{group:slug}', [GroupController::class, 'updateCover'])->name('groups.cover');
+    Route::post('/groups/avatar/{group:slug}', [GroupController::class, 'updateAvatar'])->name('groups.avatar');
 });
 
 require __DIR__.'/auth.php';

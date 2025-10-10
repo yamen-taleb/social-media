@@ -1,4 +1,6 @@
 <script setup>
+import { Link } from '@inertiajs/vue3'
+
 defineProps({
   group: {
     type: Object,
@@ -8,7 +10,10 @@ defineProps({
 </script>
 
 <template>
-  <div class="mb-3 flex items-center justify-between rounded p-3 hover:bg-gray-100">
+  <Link
+    :href="route('groups.show', group.slug)"
+    class="mb-3 flex items-center justify-between rounded p-3 hover:bg-gray-100"
+  >
     <div class="flex cursor-pointer items-center gap-3">
       <img :src="group.thumbnail" alt="image" class="h-12 w-12 flex-1 rounded-full" />
       <div>
@@ -22,7 +27,7 @@ defineProps({
     >
       {{ group.status.name === 'Pending' ? group.status.name : group.role.name }}
     </span>
-  </div>
+  </Link>
 </template>
 
 <style scoped></style>
