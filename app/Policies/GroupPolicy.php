@@ -11,4 +11,9 @@ class GroupPolicy
     {
         return $group->user_id === $user->id;
     }
+
+    public function addNewMember(User $user, Group $group): bool
+    {
+        return $group->user_id === $user->id;
+    }
 }

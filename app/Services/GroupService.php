@@ -2,12 +2,18 @@
 
 namespace App\Services;
 
+use App\Http\Requests\addMemberRequest;
+use App\Http\Requests\SearchUserGroupRequest;
+use App\Mail\GroupInvitationMail;
 use App\Models\Group;
 use App\Models\GroupUser;
+use App\Models\User;
 use App\RoleEnum;
 use App\UserApprovalEnum;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class GroupService
 {
@@ -35,18 +41,18 @@ class GroupService
             'user_id' => $id,
         ]);
 
-        $this->createGroupUser($id, $group->id, $id, RoleEnum::ADMIN);
+        $this->createGroupUser([
+            'user_id' => $id,
+            'created_by' => $id,
+            'group_id' => $group->id,
+            'role' => RoleEnum::ADMIN->value,
+            'status' => UserApprovalEnum::APPROVED->value,
+        ]);
     }
 
-    public function createGroupUser($userId, $groupId, $createBy, $role, $status = UserApprovalEnum::APPROVED)
+    public function createGroupUser(array $records)
     {
-        GroupUser::create([
-            'user_id' => $userId,
-            'created_by' => $createBy,
-            'group_id' => $groupId,
-            'role' => $role,
-            'status' => $status,
-        ]);
+        return GroupUser::create($records);
     }
 
     public function updateImage(UploadedFile $image, string $field, string $directory, Group $group)
@@ -58,5 +64,52 @@ class GroupService
         $group->save();
 
         return $path;
+    }
+
+    public function searchUsers(Group $group, SearchUserGroupRequest $request)
+    {
+        $users = User::where(function ($query) use ($request) {
+            $query->where('name', 'like', "%{$request->search}%")
+                ->orWhere('username', 'like', "%{$request->search}%")
+                ->orWhere('email', 'like', "%{$request->search}%");
+        })
+            ->whereNotIn('id', $group->members()->where('status', UserApprovalEnum::APPROVED->value)->pluck('users.id'))
+            ->select('id', 'name', 'username', 'avatar_path')
+            ->limit(10)
+            ->get();
+
+        return $users->map(function ($user) {
+            return [
+                'id' => $user->id,
+                'name' => $user->name,
+                'username' => $user->username,
+                'avatar' => $user->avatar_path ? url('storage/'.$user->avatar_path) : null,
+            ];
+        });
+    }
+
+    public function addMember(Group $group, addMemberRequest $request)
+    {
+        $user = $request->user;
+
+        $groupUser = $request->groupUser;
+
+        if ($groupUser?->exists()) {
+            $groupUser->delete();
+        }
+
+        $groupUser = $this->createGroupUser([
+            'user_id' => $request->user_id,
+            'created_by' => Auth::id(),
+            'group_id' => $group->id,
+            'role' => RoleEnum::MEMBER->value,
+            'status' => UserApprovalEnum::PENDING->value,
+            'token' => Str::random(20),
+            'token_expires_at' => now()->addHours(24),
+        ]);
+
+        Mail::to($user->email)->queue(new GroupInvitationMail($group, $groupUser));
+
+        return $groupUser;
     }
 }

@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, provide, ref } from 'vue'
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from '@headlessui/vue'
 import { usePage } from '@inertiajs/vue3'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
@@ -8,10 +8,16 @@ import CoverPicture from '@/Pages/Profile/Partials/CoverPicture.vue'
 import ProfilePicture from '@/Pages/Profile/Partials/ProfilePicture.vue'
 import { useUpdateImage } from '@/Composables/useUpdateImage.js'
 import PrimaryButton from '@/Components/PrimaryButton.vue'
+import GroupAddMembers from '@/Components/App/GroupAddMembers.vue'
 
 const authUser = usePage().props.auth.user
+const showAddMembersModal = ref(false)
+const updateShowAddMembersModal = (value) => {
+  showAddMembersModal.value = value
+}
 
-const isAdmin = computed(() => authUser && props.group.role === 'admin')
+provide('show', showAddMembersModal)
+provide('updateModel', updateShowAddMembersModal)
 
 const props = defineProps({
   group: {
@@ -19,6 +25,8 @@ const props = defineProps({
     required: true,
   },
 })
+
+const isAdmin = computed(() => authUser && props.group.role === 'admin')
 
 const updateProfilePicture = (imageForm) => {
   useUpdateImage(imageForm, 'groups.avatar', props.group.slug)
@@ -46,7 +54,9 @@ const updateCoverPicture = (imageForm) => {
           />
           <div class="flex flex-1 items-center justify-between p-4">
             <h2 class="text-lg font-bold">{{ group.name }}</h2>
-            <PrimaryButton v-if="isAdmin">Add Members</PrimaryButton>
+            <PrimaryButton v-if="isAdmin" @click="showAddMembersModal = true"
+              >Add Members
+            </PrimaryButton>
             <PrimaryButton v-if="!group.role && group.auto_approval">Join to Group</PrimaryButton>
             <PrimaryButton v-if="!group.role && !group.auto_approval">
               Request to join
@@ -57,9 +67,6 @@ const updateCoverPicture = (imageForm) => {
       <div class="border-t">
         <TabGroup>
           <TabList class="flex bg-white">
-            <Tab v-if="isAdmin" v-slot="{ selected }" as="template">
-              <TabItem :selected="selected" text="About" />
-            </Tab>
             <Tab v-slot="{ selected }" as="template">
               <TabItem :selected="selected" text="Posts" />
             </Tab>
@@ -84,6 +91,7 @@ const updateCoverPicture = (imageForm) => {
       </div>
     </div>
   </AuthenticatedLayout>
+  <GroupAddMembers :group />
 </template>
 
 <style scoped></style>

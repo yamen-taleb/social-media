@@ -16,6 +16,9 @@ class GroupUser extends Model
         'created_by',
         'role',
         'status',
+        'token',
+        'token_expires_at',
+        'used_at',
     ];
 
     protected $casts = [

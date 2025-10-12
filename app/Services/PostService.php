@@ -15,7 +15,10 @@ class PostService
 
     public function posts()
     {
-        return Post::with('user', 'group', 'attachments')
+        return Post::with([
+            'user', 'group', 'attachments',
+            'reactions' => fn($query) => $query->where('user_id', auth()->id())
+        ])
             ->withCount('reactions', 'comments')
             ->orderBy('created_at', 'desc')
             ->paginate(5);

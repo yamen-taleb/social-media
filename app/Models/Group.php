@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Sluggable\HasSlug;
@@ -35,5 +36,10 @@ class Group extends Model
         return $this->hasOne(GroupUser::class)
             ->where('user_id', Auth::id())
             ->withDefault();
+    }
+
+    public function members(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'group_users');
     }
 }

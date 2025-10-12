@@ -37,6 +37,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/groups/{group:slug}', [GroupController::class, 'show'])->name('groups.show');
     Route::post('/groups/cover/{group:slug}', [GroupController::class, 'updateCover'])->name('groups.cover');
     Route::post('/groups/avatar/{group:slug}', [GroupController::class, 'updateAvatar'])->name('groups.avatar');
+    Route::get('/groups/users/search/{group:slug}',
+        [GroupController::class, 'searchUsers'])->name('groups.users.search');
+    Route::post('/groups/add-member/{group:slug}', [GroupController::class, 'addMember'])->name('groups.members.add');
 });
+
+Route::get('/groups/{group}/invitations/accept/{token}', [GroupController::class, 'acceptInvitation'])
+    ->name('group.invitation.accept');
 
 require __DIR__.'/auth.php';

@@ -24,7 +24,7 @@ class PostResource extends JsonResource
             'attachments' => PostAttachmentResource::collection($this->attachments),
             'num_of_reactions' => $this->reactions_count,
             'num_of_comments' => $this->comments_count,
-            'current_user_has_reaction' => $this->reactions()->where('user_id', auth()->id())->exists(),
+            'current_user_has_reaction' => $this->reactions->isNotEmpty(),
         ];
     }
 }
