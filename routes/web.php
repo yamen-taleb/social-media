@@ -46,6 +46,7 @@ Route::middleware('auth')->group(function () {
         [GroupController::class, 'handleRequest'])->name('groups.members.handle-request');
     Route::patch('/groups/members/update-role/{group:slug}/{user}',
         [GroupController::class, 'updateRole'])->name('groups.members.update-role');
+    Route::put('/groups/{group:slug}', [GroupController::class, 'update'])->name('groups.update');
 });
 
 Route::get('/groups/{group}/invitations/accept/{token}', [GroupController::class, 'acceptInvitation'])

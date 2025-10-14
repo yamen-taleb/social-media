@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\addMemberRequest;
 use App\Http\Requests\SearchUserGroupRequest;
 use App\Http\Requests\StoreGroupRequest;
+use App\Http\Requests\UpdateGroupRequest;
 use App\Http\Requests\UpdateRoleRequest;
 use App\Http\Requests\ValidateImageRequest;
 use App\Http\Resources\GroupPageResource;
@@ -135,6 +136,12 @@ class GroupController extends Controller
     public function updateRole(Group $group, User $user, UpdateRoleRequest $updateRoleRequest)
     {
         $this->groupService->updateRole($group, $user, $updateRoleRequest);
+        return back();
+    }
+
+    public function update(Group $group, UpdateGroupRequest $updateGroupRequest)
+    {
+        $group->update($updateGroupRequest->validated());
         return back();
     }
 }

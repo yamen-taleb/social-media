@@ -2,13 +2,9 @@
 import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
 import { computed } from 'vue'
 import { XMarkIcon } from '@heroicons/vue/24/outline/index.js'
-import TextInput from '@/Components/TextInput.vue'
 import { useForm } from '@inertiajs/vue3'
-import Checkbox from '@/Components/Checkbox.vue'
-import AutoResizeTextarea from '@/Components/App/AutoResizeTextarea.vue'
-import InputLabel from '@/Components/InputLabel.vue'
-import InputError from '@/Components/InputError.vue'
 import { useToast } from 'vue-toastification'
+import GroupForm from '@/Components/App/GroupForm.vue'
 
 const props = defineProps({
   modelValue: {
@@ -87,46 +83,7 @@ const submit = () => {
                 </DialogTitle>
 
                 <form class="space-y-5" @submit.prevent="submit">
-                  <div>
-                    <InputLabel class="mb-1.5" for="name" value="Group Name" />
-                    <TextInput
-                      id="name"
-                      v-model="form.name"
-                      autofocus
-                      class="w-full"
-                      placeholder="Enter group name"
-                      required
-                      type="text"
-                    />
-                    <InputError :message="form.errors.name" class="mt-1" />
-                  </div>
-
-                  <div>
-                    <InputLabel class="mb-1.5" for="description" value="Description" />
-                    <AutoResizeTextarea
-                      id="description"
-                      v-model="form.description"
-                      class="w-full"
-                      placeholder="What is this group about?"
-                    />
-                    <InputError :message="form.errors.description" class="mt-1" />
-                  </div>
-
-                  <div class="flex items-start space-x-3 rounded-lg bg-gray-50 p-4">
-                    <Checkbox
-                      id="auto_approval"
-                      v-model:checked="form.auto_approval"
-                      class="mt-0.5"
-                    />
-                    <div class="flex-1">
-                      <label class="cursor-pointer" for="auto_approval">
-                        <span class="block font-medium text-gray-900">Auto-approve members</span>
-                        <span class="text-sm text-gray-500">
-                          New members will be automatically approved to join
-                        </span>
-                      </label>
-                    </div>
-                  </div>
+                  <GroupForm :form />
 
                   <div class="flex items-center justify-end gap-3 pt-2">
                     <button
@@ -153,5 +110,3 @@ const submit = () => {
     </TransitionRoot>
   </teleport>
 </template>
-
-<style scoped></style>

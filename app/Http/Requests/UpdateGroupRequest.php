@@ -11,7 +11,7 @@ class UpdateGroupRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return $this->user()->can('update', $this->group);
     }
 
     /**
@@ -22,7 +22,9 @@ class UpdateGroupRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => ['required', 'string', 'max:255'],
+            'auto_approval' => ['required', 'boolean'],
+            'description' => ['nullable', 'string', 'max:4096']
         ];
     }
 }
