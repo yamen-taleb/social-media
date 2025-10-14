@@ -8,11 +8,15 @@ use App\Mail\GroupInvitationMail;
 use App\Models\Group;
 use App\Models\GroupUser;
 use App\Models\User;
+use App\Notifications\AcceptToJoin;
+use App\Notifications\RequestToJoin;
 use App\RoleEnum;
 use App\UserApprovalEnum;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
 
 class GroupService
@@ -45,8 +49,8 @@ class GroupService
             'user_id' => $id,
             'created_by' => $id,
             'group_id' => $group->id,
-            'role' => RoleEnum::ADMIN->value,
-            'status' => UserApprovalEnum::APPROVED->value,
+            'role' => RoleEnum::ADMIN,
+            'status' => UserApprovalEnum::APPROVED,
         ]);
     }
 
@@ -73,7 +77,7 @@ class GroupService
                 ->orWhere('username', 'like', "%{$request->search}%")
                 ->orWhere('email', 'like', "%{$request->search}%");
         })
-            ->whereNotIn('id', $group->members()->where('status', UserApprovalEnum::APPROVED->value)->pluck('users.id'))
+            ->whereNotIn('id', $group->members()->pluck('users.id'))
             ->select('id', 'name', 'username', 'avatar_path')
             ->limit(10)
             ->get();
@@ -102,13 +106,70 @@ class GroupService
             'user_id' => $request->user_id,
             'created_by' => Auth::id(),
             'group_id' => $group->id,
-            'role' => RoleEnum::MEMBER->value,
-            'status' => UserApprovalEnum::PENDING->value,
+            'role' => RoleEnum::MEMBER,
+            'status' => UserApprovalEnum::PENDING,
             'token' => Str::random(20),
             'token_expires_at' => now()->addHours(24),
         ]);
 
         Mail::to($user->email)->queue(new GroupInvitationMail($group, $groupUser));
+
+        return $groupUser;
+    }
+
+    public function join(Group $group, User $user)
+    {
+        $status = UserApprovalEnum::APPROVED;
+        if (!$group->auto_approval) {
+            $status = UserApprovalEnum::PENDING;
+            Notification::send($group->admins, new RequestToJoin($group, $user));
+        }
+
+        $this->createGroupUser([
+            'user_id' => $user->id,
+            'created_by' => $user->id,
+            'group_id' => $group->id,
+            'role' => RoleEnum::MEMBER,
+            'status' => $status,
+        ]);
+    }
+
+    /**
+     * Handle group join request (accept/reject)
+     */
+    public function handleRequest(Group $group, User $user, string $action)
+    {
+        Gate::authorize('update', $group);
+
+        $status = $action === 'accept' ? UserApprovalEnum::APPROVED : UserApprovalEnum::REJECTED;
+
+        if ($status === UserApprovalEnum::APPROVED) {
+            $user->notify(new AcceptToJoin($group, $user));
+        }
+
+        $group->users()->updateExistingPivot($user->id, [
+            'status' => $status,
+        ]);
+
+        return $status;
+    }
+
+    /**
+     * Accept group invitation using token
+     */
+    public function acceptInvitation(Group $group, string $token)
+    {
+        $groupUser = $group->users()
+            ->wherePivot('token', $token)
+            ->wherePivot('token_expires_at', '>', now())
+            ->firstOrFail();
+
+        $groupUser->pivot->update([
+            'status' => UserApprovalEnum::APPROVED,
+            'token' => null,
+            'token_expires_at' => null,
+            'used_at' => now(),
+        ]);
 
         return $groupUser;
     }

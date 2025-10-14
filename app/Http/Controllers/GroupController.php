@@ -5,13 +5,12 @@ namespace App\Http\Controllers;
 use App\Http\Requests\addMemberRequest;
 use App\Http\Requests\SearchUserGroupRequest;
 use App\Http\Requests\StoreGroupRequest;
-use App\Http\Requests\UpdateGroupRequest;
 use App\Http\Requests\ValidateImageRequest;
 use App\Http\Resources\GroupPageResource;
+use App\Http\Resources\UserGroupResource;
 use App\Models\Group;
-use App\Models\GroupUser;
+use App\Models\User;
 use App\Services\GroupService;
-use App\UserApprovalEnum;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 
@@ -55,9 +54,13 @@ class GroupController extends Controller
     public function show(Group $group)
     {
         $group->load('currentUser');
+        $isAdmin = $group->isAdmin();
 
         return Inertia::render('Groups/View', [
-            'group' => new GroupPageResource($group)
+            'group' => new GroupPageResource($group),
+            'requests' => $isAdmin ? Inertia::scroll(fn(
+            ) => UserGroupResource::collection($group->usersRequests()->paginate(20))) : null,
+            'members' => Inertia::scroll(fn() => UserGroupResource::collection($group->members()->paginate(20))),
         ]);
     }
 
@@ -103,37 +106,27 @@ class GroupController extends Controller
         $this->groupService->addMember($group, $request);
 
         return response()->json([
-            'message' => 'Member added successfully'
         ]);
     }
 
     public function acceptInvitation(Group $group, string $token)
     {
-        $groupUser = GroupUser::where('group_id', $group->id)
-            ->where('token', $token)
-            ->where('token_expires_at', '>', now())
-            ->firstOrFail();
+        $this->groupService->acceptInvitation($group, $token);
 
-        $groupUser->update([
-            'status' => UserApprovalEnum::APPROVED->value,
-            'token' => null,
-            'token_expires_at' => null,
-            'used_at' => now(),
-        ]);
-
-        try {
-            return redirect()->route('groups.show', $group);
-
-        } catch (\Throwable $e) {
-            return "You joined to the {$group->name}";
-        }
+        return redirect()->route('groups.show', $group);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateGroupRequest $request, Group $group)
+    public function join(Group $group, User $user)
     {
-        //
+        $this->groupService->join($group, $user);
+
+        return back();
+    }
+
+    public function handleRequest(Group $group, User $user)
+    {
+        $action = request()->input('action');
+        $this->groupService->handleRequest($group, $user, $action);
+        return back();
     }
 }

@@ -1,10 +1,8 @@
 <script setup>
-import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/vue'
 import Download from '@/Components/Icons/Download.vue'
 import Like from '@/Components/Icons/Like.vue'
 import Comment from '@/Components/Icons/Comment.vue'
 import PostUserHeader from '@/Components/App/PostUserHeader.vue'
-import axiosClient from '@/axiosClient.js'
 import { router, usePage } from '@inertiajs/vue3'
 import { useToast } from 'vue-toastification'
 import ShowLessReadMore from '@/Components/App/ShowLessReadMore.vue'
@@ -16,7 +14,7 @@ const props = defineProps({
 })
 
 const isImage = (attachment) => {
-  return attachment.type.startsWith('image/')
+  return attachment.type.startsWith('image/') || attachment.type === 'jpg'
 }
 
 const emit = defineEmits(['editClick', 'showAttachmentPreview', 'showPostReview'])
@@ -53,11 +51,11 @@ const deletePost = () => {
 <template>
   <div class="mb-6 rounded-md border bg-white px-3 py-4 shadow-sm">
     <div class="flex items-center justify-between px-2 py-4">
-      <PostUserHeader :user="post.user" :created_at="post.created_at" :group="post.group" />
+      <PostUserHeader :created_at="post.created_at" :group="post.group" :user="post.user" />
       <EditDeleteMenu
         v-if="post.user.id === usePage().props.auth.user.id"
-        @edit="openEditModel"
         @delete="deletePost"
+        @edit="openEditModel"
       />
     </div>
     <!-- Rest of your template remains the same -->
@@ -65,9 +63,9 @@ const deletePost = () => {
       <ShowLessReadMore :content="post.description" />
     </div>
     <div
-      class="grid gap-2"
-      :class="[post.attachments?.length === 1 ? 'grid-cols-1' : 'grid-cols-2']"
       v-if="post.attachments?.length"
+      :class="[post.attachments?.length === 1 ? 'grid-cols-1' : 'grid-cols-2']"
+      class="grid gap-2"
     >
       <div
         v-for="(attachment, index) in post.attachments?.slice(0, 4)"
@@ -75,8 +73,8 @@ const deletePost = () => {
         class="group relative mb-3"
       >
         <a
-          :href="route('post-attachments.download', attachment)"
           v-if="!(index === 3 && post.attachments.length > 4)"
+          :href="route('post-attachments.download', attachment)"
           class="absolute right-2 top-2 rounded bg-gray-700 p-1 text-white opacity-0 shadow transition-all hover:bg-gray-800 group-hover:opacity-100"
         >
           <Download />
@@ -89,11 +87,11 @@ const deletePost = () => {
         </div>
         <template v-if="isImage(attachment) || attachment.type === 'png'">
           <img
-            @click="showAttachmentPreview(post.attachments, index)"
+            :class="[post.attachments?.length === 1 ? 'max-h-72 object-contain' : 'object-cover']"
             :src="attachment.path"
             alt=""
             class="aspect-square w-full rounded-md"
-            :class="[post.attachments?.length === 1 ? 'max-h-72 object-contain' : 'object-cover']"
+            @click="showAttachmentPreview(post.attachments, index)"
           />
         </template>
         <template v-else>
@@ -125,7 +123,7 @@ const deletePost = () => {
         </div>
       </div>
       <div class="flex gap-2">
-        <Like @click="likePost(post.id)" :hasReaction="post.current_user_has_reaction" />
+        <Like :hasReaction="post.current_user_has_reaction" @click="likePost(post.id)" />
         <Comment @click="emit('showPostReview', post)" />
       </div>
     </div>

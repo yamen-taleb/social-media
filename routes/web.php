@@ -40,6 +40,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/groups/users/search/{group:slug}',
         [GroupController::class, 'searchUsers'])->name('groups.users.search');
     Route::post('/groups/add-member/{group:slug}', [GroupController::class, 'addMember'])->name('groups.members.add');
+
+    Route::post('/groups/join/{group:slug}/{user}', [GroupController::class, 'join'])->name('groups.members.join');
+    Route::post('/groups/handle-request/{group:slug}/{user}', [GroupController::class, 'handleRequest'])->name('groups.members.handle-request');
 });
 
 Route::get('/groups/{group}/invitations/accept/{token}', [GroupController::class, 'acceptInvitation'])

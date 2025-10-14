@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue'
-import { XMarkIcon, ArrowUturnLeftIcon } from '@heroicons/vue/24/outline/index.js'
+import { ArrowUturnLeftIcon, XMarkIcon } from '@heroicons/vue/24/outline/index.js'
 import { usePage } from '@inertiajs/vue3'
 
 const props = defineProps({
@@ -19,7 +19,11 @@ const attachments = ref(props.modelValue)
 const attachmentExtensions = usePage().props.attachmentExtensions || []
 
 const isImage = (attachment) => {
-  return attachment.file?.type.startsWith('image/') || attachment.type === 'png'
+  return (
+    attachment.file?.type.startsWith('image/') ||
+    attachment.type === 'png' ||
+    attachment.type === 'jpg'
+  )
 }
 
 const removeFile = (attachment, index) => {
@@ -50,9 +54,9 @@ const revertRemoveFile = (attachment) => {
     <small class="block">{{ attachmentExtensions.join(', ') }}</small>
   </div>
   <div
-    class="relative mt-2 grid gap-2 rounded bg-gray-100 p-1"
-    :class="[attachments?.length === 1 ? 'grid-cols-1' : 'grid-cols-2']"
     v-if="attachments?.length"
+    :class="[attachments?.length === 1 ? 'grid-cols-1' : 'grid-cols-2']"
+    class="relative mt-2 grid gap-2 rounded bg-gray-100 p-1"
   >
     <div v-for="(attachment, index) in attachments" :key="index" class="group relative space-y-2">
       <XMarkIcon
@@ -72,10 +76,10 @@ const revertRemoveFile = (attachment) => {
       </div>
       <template v-if="isImage(attachment)">
         <img
+          :class="[attachments?.length === 1 ? 'object-contain' : 'object-cover']"
           :src="attachment.url || attachment.path"
           alt=""
           class="aspect-square w-full rounded-md"
-          :class="[attachments?.length === 1 ? 'object-contain' : 'object-cover']"
         />
       </template>
       <template v-else>

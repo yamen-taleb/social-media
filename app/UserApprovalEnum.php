@@ -7,11 +7,14 @@ enum UserApprovalEnum: string
     case APPROVED = 'approved';
     case PENDING = 'pending';
 
+    const REJECTED = 'rejected';
+
     public function label(): string
     {
         return match ($this) {
             self::APPROVED => 'Approved',
             self::PENDING => 'Pending',
+            self::REJECTED => 'Rejected',
         };
     }
 

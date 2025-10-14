@@ -126,7 +126,7 @@ async function readFile(file) {
 }
 
 const isImage = (attachment) => {
-  return attachment.type.startsWith('image/')
+  return attachment.type.startsWith('image/') || attachment.type === 'jpg'
 }
 </script>
 

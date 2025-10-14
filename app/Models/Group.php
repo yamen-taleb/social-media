@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\RoleEnum;
+use App\UserApprovalEnum;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -38,8 +40,34 @@ class Group extends Model
             ->withDefault();
     }
 
-    public function members(): BelongsToMany
+    public function usersRequests(): BelongsToMany
+    {
+        return $this->users()
+            ->wherePivot('status', UserApprovalEnum::PENDING->value);
+    }
+
+
+    // users who request to join the group
+
+    public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'group_users');
+    }
+
+    public function members(): BelongsToMany
+    {
+        return $this->users()
+            ->wherePivot('status', UserApprovalEnum::APPROVED->value);
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->admins()->where('users.id', Auth::id())->exists();
+    }
+
+    public function admins(): BelongsToMany
+    {
+        return $this->users()
+            ->wherePivot('role', RoleEnum::ADMIN->value);
     }
 }
