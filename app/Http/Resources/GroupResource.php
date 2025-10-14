@@ -21,7 +21,7 @@ class GroupResource extends JsonResource
         $role = $this->pivot->role;
         $status = $this->pivot->status;
 
-        
+
         if (is_string($status)) {
             $status = UserApprovalEnum::from($status);
         }

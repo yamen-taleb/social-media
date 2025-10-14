@@ -19,6 +19,7 @@ class GroupPageResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'slug' => $this->slug,
+            'owner_id' => $this->user_id,
             'description' => $this->description,
             'thumbnail' => $this->thumbnail_path ? Storage::url($this->thumbnail_path) : 'https://picsum.photos/100',
             'cover' => $this->cover_path ? Storage::url($this->cover_path) : 'https://picsum.photos/100',

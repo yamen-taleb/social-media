@@ -70,4 +70,9 @@ class Group extends Model
         return $this->users()
             ->wherePivot('role', RoleEnum::ADMIN->value);
     }
+
+    public function isOwner(int $id): bool
+    {
+        return $this->user_id === $id;
+    }
 }

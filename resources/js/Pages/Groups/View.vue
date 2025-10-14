@@ -36,6 +36,7 @@ const props = defineProps({
   },
 })
 
+const form = useForm({})
 const isAdmin = computed(() => authUser && props.group.role === 'admin')
 
 const updateProfilePicture = (imageForm) => {
@@ -46,8 +47,6 @@ const updateCoverPicture = (imageForm) => {
 }
 
 const joinToGroup = (action = 'join') => {
-  const form = useForm({})
-
   form.post(
     route('groups.members.join', {
       group: props.group.slug,
@@ -65,8 +64,6 @@ const joinToGroup = (action = 'join') => {
 }
 
 const handleRequest = (userId, action) => {
-  const form = useForm({})
-
   form.post(
     route('groups.members.handle-request', {
       group: props.group.slug,
@@ -84,11 +81,31 @@ const handleRequest = (userId, action) => {
     }
   )
 }
+
+const updateRole = (role, user_id) => {
+  form.patch(
+    route('groups.members.update-role', {
+      group: props.group.slug,
+      user: user_id,
+      role: role,
+    }),
+    {
+      preserveScroll: true,
+      onSuccess: () => {
+        useToast().success('Role updated successfully')
+      },
+      onError: (e) => {
+        console.error(e)
+        useToast().error('Failed to update role')
+      },
+    }
+  )
+}
 </script>
 
 <template>
   <AuthenticatedLayout>
-    <div class="mx-auto h-full w-[768px] overflow-auto">
+    <div class="mx-auto h-full w-[768px]">
       <div class="bg-white">
         <CoverPicture
           :allowed-to-updated="isAdmin"
@@ -137,16 +154,22 @@ const handleRequest = (userId, action) => {
 
           <TabPanels class="mt-2">
             <TabPanel class="bg-white p-3 shadow"> Posts</TabPanel>
-            <TabPanel class="bg-white p-3 shadow">
+            <TabPanel>
               <div v-if="members.data.length > 0" class="space-y-3">
                 <InfiniteScroll data="members">
                   <div class="grid grid-cols-2 gap-2">
                     <UserItem
                       v-for="member in members.data"
+                      :id="member.id"
                       :key="member.id"
                       :avatar="member.avatar"
+                      :currentRole="member.role"
+                      :isAdmin
+                      :isOwner="member.id === group.owner_id"
                       :name="member.name"
+                      :showRoleSelect="true"
                       :username="member.username"
+                      @update:role="updateRole"
                     />
                   </div>
                 </InfiniteScroll>
@@ -156,12 +179,10 @@ const handleRequest = (userId, action) => {
             <TabPanel v-if="isAdmin" class="bg-white p-3 shadow">
               <div v-if="requests.data.length > 0" class="space-y-3">
                 <InfiniteScroll data="requests">
-                  <div
-                    v-for="request in requests.data"
-                    :key="request.id"
-                    class="grid grid-cols-2 gap-2"
-                  >
+                  <div class="grid grid-cols-2 gap-2">
                     <UserItem
+                      v-for="request in requests.data"
+                      :key="request.id"
                       :avatar="request.avatar"
                       :name="request.name"
                       :show-buttons="true"

@@ -18,6 +18,7 @@ class UserGroupResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'username' => $this->username,
+            'role' => $this->pivot->role,
             'avatar' => $this->avatar_path ? url('storage/'.$this->avatar_path) : null,
         ];
     }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\addMemberRequest;
 use App\Http\Requests\SearchUserGroupRequest;
 use App\Http\Requests\StoreGroupRequest;
+use App\Http\Requests\UpdateRoleRequest;
 use App\Http\Requests\ValidateImageRequest;
 use App\Http\Resources\GroupPageResource;
 use App\Http\Resources\UserGroupResource;
@@ -60,7 +61,8 @@ class GroupController extends Controller
             'group' => new GroupPageResource($group),
             'requests' => $isAdmin ? Inertia::scroll(fn(
             ) => UserGroupResource::collection($group->usersRequests()->paginate(20))) : null,
-            'members' => Inertia::scroll(fn() => UserGroupResource::collection($group->members()->paginate(20))),
+            'members' => Inertia::scroll(fn(
+            ) => UserGroupResource::collection($group->members()->withPivot('role')->paginate(20))),
         ]);
     }
 
@@ -127,6 +129,12 @@ class GroupController extends Controller
     {
         $action = request()->input('action');
         $this->groupService->handleRequest($group, $user, $action);
+        return back();
+    }
+
+    public function updateRole(Group $group, User $user, UpdateRoleRequest $updateRoleRequest)
+    {
+        $this->groupService->updateRole($group, $user, $updateRoleRequest);
         return back();
     }
 }

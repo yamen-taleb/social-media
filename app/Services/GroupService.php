@@ -4,11 +4,13 @@ namespace App\Services;
 
 use App\Http\Requests\addMemberRequest;
 use App\Http\Requests\SearchUserGroupRequest;
+use App\Http\Requests\UpdateRoleRequest;
 use App\Mail\GroupInvitationMail;
 use App\Models\Group;
 use App\Models\GroupUser;
 use App\Models\User;
 use App\Notifications\AcceptToJoin;
+use App\Notifications\ChangeRole;
 use App\Notifications\RequestToJoin;
 use App\RoleEnum;
 use App\UserApprovalEnum;
@@ -172,5 +174,27 @@ class GroupService
         ]);
 
         return $groupUser;
+    }
+
+    public function updateRole(Group $group, User $user, UpdateRoleRequest $updateRoleRequest)
+    {
+        $updateRoleRequest = $updateRoleRequest->validated();
+
+        $userInGroup = GroupUser::query()
+            ->where('user_id', $user->id)
+            ->where('group_id', $group->id)
+            ->where('status', UserApprovalEnum::APPROVED)
+            ->first();
+
+        if ($group->isOwner($user->id)) {
+            return response("You can't change role of the owner of the group", 403);
+        }
+
+        if ($userInGroup) {
+            $userInGroup->update([
+                'role' => $updateRoleRequest['role'],
+            ]);
+            Notification::send($user, new ChangeRole($group, $updateRoleRequest['role']));
+        }
     }
 }
