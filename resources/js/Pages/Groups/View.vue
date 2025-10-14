@@ -12,6 +12,7 @@ import GroupAddMembers from '@/Components/App/GroupAddMembers.vue'
 import { useToast } from 'vue-toastification'
 import UserItem from '@/Components/App/UserItem.vue'
 import GroupForm from '@/Components/App/GroupForm.vue'
+import PostList from '@/Components/App/PostList.vue'
 
 const authUser = usePage().props.auth.user
 const showAddMembersModal = ref(false)
@@ -25,6 +26,10 @@ provide('updateModel', updateShowAddMembersModal)
 const props = defineProps({
   group: {
     type: Object,
+    required: true,
+  },
+  posts: {
+    type: [Object, null],
     required: true,
   },
   requests: {
@@ -174,7 +179,9 @@ function updateGroup() {
           </TabList>
 
           <TabPanels class="mt-2">
-            <TabPanel class="bg-white p-3 shadow"> Posts</TabPanel>
+            <TabPanel>
+              <PostList :group_id="group.id" :posts="posts.data" />
+            </TabPanel>
             <TabPanel>
               <div v-if="members.data.length > 0" class="space-y-3">
                 <InfiniteScroll data="members">

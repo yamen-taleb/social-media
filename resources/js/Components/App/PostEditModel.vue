@@ -25,7 +25,7 @@ const postForm = useForm({
   description: props.post.description,
   attachments: [],
   deletedAttachmentsIds: [],
-  group_id: null,
+  group_id: props.post.group_id,
   _method: 'post',
 })
 
@@ -89,6 +89,7 @@ watch(
   () => props.post,
   (newValue) => {
     postForm.description = newValue.description
+    postForm.group_id = newValue.group_id
     if (JSON.stringify(newValue) !== '{}' && !newValue.is_new)
       attachments.value.push(...newValue?.attachments)
   }

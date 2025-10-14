@@ -20,8 +20,7 @@ class PostService
             'reactions' => fn($query) => $query->where('user_id', auth()->id())
         ])
             ->withCount('reactions', 'comments')
-            ->orderBy('created_at', 'desc')
-            ->paginate(5);
+            ->orderBy('created_at', 'desc');
     }
 
     public function create(array $post)

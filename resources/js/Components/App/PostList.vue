@@ -12,6 +12,10 @@ const props = defineProps({
     type: Array,
     required: true,
   },
+  group_id: {
+    type: Number,
+    default: null,
+  },
 })
 const currentPost = ref({})
 const showEditModel = ref(false)
@@ -34,7 +38,7 @@ const openEditModel = (post = null) => {
       title: '',
       description: '',
       attachments: null,
-      group_id: null,
+      group_id: props.group_id,
       is_new: true,
     }
   }

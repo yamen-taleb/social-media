@@ -11,8 +11,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Post extends Model
 {
     use SoftDeletes;
+
     protected $fillable = [
         'title',
+        'group_id',
         'description',
         'is_approved',
         'deleted_by',
@@ -44,6 +46,6 @@ class Post extends Model
 
     public function comments(): HasMany
     {
-       return $this->hasMany(Comment::class);
+        return $this->hasMany(Comment::class);
     }
 }

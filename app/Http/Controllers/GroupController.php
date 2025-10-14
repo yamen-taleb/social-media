@@ -9,16 +9,18 @@ use App\Http\Requests\UpdateGroupRequest;
 use App\Http\Requests\UpdateRoleRequest;
 use App\Http\Requests\ValidateImageRequest;
 use App\Http\Resources\GroupPageResource;
+use App\Http\Resources\PostResource;
 use App\Http\Resources\UserGroupResource;
 use App\Models\Group;
 use App\Models\User;
 use App\Services\GroupService;
+use App\Services\PostService;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 
 class GroupController extends Controller
 {
-    public function __construct(public GroupService $groupService)
+    public function __construct(public GroupService $groupService, public PostService $postService)
     {
     }
 
@@ -57,6 +59,11 @@ class GroupController extends Controller
     {
         $group->load('currentUser');
         $isAdmin = $group->isAdmin();
+        $posts = $this->postService
+            ->posts()
+            ->where('group_id', $group->id)
+            ->paginate(5);
+
 
         return Inertia::render('Groups/View', [
             'group' => new GroupPageResource($group),
@@ -64,6 +71,7 @@ class GroupController extends Controller
             ) => UserGroupResource::collection($group->usersRequests()->paginate(20))) : null,
             'members' => Inertia::scroll(fn(
             ) => UserGroupResource::collection($group->members()->withPivot('role')->paginate(20))),
+            'posts' => Inertia::scroll(fn() => PostResource::collection($posts))
         ]);
     }
 

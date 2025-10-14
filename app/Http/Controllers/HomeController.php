@@ -16,7 +16,7 @@ class HomeController extends Controller
 
     public function index()
     {
-        $posts = $this->postService->posts();
+        $posts = $this->postService->posts()->paginate(5);
 
         $groups = $this->groupService->groups();
 
