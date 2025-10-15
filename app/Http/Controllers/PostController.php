@@ -6,25 +6,17 @@ use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Models\Post;
 use App\Services\PostService;
-use Illuminate\Support\Facades\Gate;
 
 class PostController extends Controller
 {
     public function __construct(public PostService $postService)
     {
     }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
     {
         //
     }
@@ -39,6 +31,14 @@ class PostController extends Controller
         $this->postService->create($post);
 
         return redirect()->back();
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        //
     }
 
     /**
@@ -74,10 +74,7 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        Gate::authorize('delete', $post);
-
-        $post->delete();
-
+        $this->postService->delete($post);
         return redirect()->back();
     }
 }

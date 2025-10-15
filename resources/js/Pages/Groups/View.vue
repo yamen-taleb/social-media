@@ -49,7 +49,6 @@ const aboutForm = useForm({
   description: props.group.description,
 })
 const isAdmin = computed(() => authUser && props.group.role === 'admin')
-
 const updateProfilePicture = (imageForm) => {
   useUpdateImage(imageForm, 'groups.avatar', props.group.slug)
 }

@@ -9,8 +9,9 @@ class CommentPolicy
 {
     public function delete(User $user, Comment $comment): bool
     {
-        return $user->id === $comment->user_id;
+        return $comment->isOwner() || $user->id === $comment->post->user_id;
     }
+
     public function update(User $user, Comment $comment): bool
     {
         return $user->id === $comment->user_id;

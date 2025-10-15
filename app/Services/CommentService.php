@@ -3,7 +3,10 @@
 namespace App\Services;
 
 use App\Models\Comment;
+use App\Notifications\DeleteCommentByPostOwner;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Notification;
 
 class CommentService
 {
@@ -31,5 +34,16 @@ class CommentService
             'body' => nl2br($data['body']),
             'parent_id' => $data['parent_id'] ?? null,
         ]);
+    }
+
+    public function delete(Comment $comment)
+    {
+        Gate::authorize('delete', $comment);
+
+        if (!$comment->isOwner()) {
+            $user = $comment->user;
+            Notification::send($user, new DeleteCommentByPostOwner($user, Auth::user()->name));
+        }
+        $comment->delete();
     }
 }

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Support\Facades\Auth;
 
 class Comment extends Model
 {
@@ -34,5 +35,15 @@ class Comment extends Model
     public function parentComment(): BelongsTo
     {
         return $this->belongsTo(Comment::class);
+    }
+
+    public function post(): BelongsTo
+    {
+        return $this->belongsTo(Post::class);
+    }
+
+    public function isOwner(): bool
+    {
+        return $this->user_id === Auth::id();
     }
 }

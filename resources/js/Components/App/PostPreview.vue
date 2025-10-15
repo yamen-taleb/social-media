@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, watch } from 'vue'
+import { computed, provide, ref, watch } from 'vue'
 import { Dialog, DialogPanel, TransitionChild, TransitionRoot } from '@headlessui/vue'
 import { PaperAirplaneIcon, XMarkIcon } from '@heroicons/vue/24/outline/index.js'
 import PostItem from '@/Components/App/PostItem.vue'
@@ -20,6 +20,8 @@ const props = defineProps({
   },
 })
 
+const postOwnerId = computed(() => props.post.user.id)
+provide('postOwnerId', postOwnerId)
 const emit = defineEmits(['update:modelValue', 'update:index'])
 
 const avatar = usePage().props.auth.user.avatar

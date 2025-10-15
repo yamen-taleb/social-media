@@ -8,11 +8,15 @@ import { useToast } from 'vue-toastification'
 import ShowLessReadMore from '@/Components/App/ShowLessReadMore.vue'
 import EditDeleteMenu from '@/Components/App/EditDeleteMenu.vue'
 import useLikeRequest from '@/Composables/useLikeRequest.js'
+import { computed } from 'vue'
 
 const props = defineProps({
   post: Object,
 })
 
+const authUser = usePage().props.auth.user
+const isPostOwner = computed(() => props.post.user.id === authUser.id)
+const isAdmin = computed(() => props.post.group?.role === 'admin')
 const isImage = (attachment) => {
   return attachment.type.startsWith('image/') || attachment.type === 'jpg'
 }
@@ -53,7 +57,8 @@ const deletePost = () => {
     <div class="flex items-center justify-between px-2 py-4">
       <PostUserHeader :created_at="post.created_at" :group="post.group" :user="post.user" />
       <EditDeleteMenu
-        v-if="post.user.id === usePage().props.auth.user.id"
+        v-if="isPostOwner || isAdmin"
+        :isOwner="isPostOwner"
         @delete="deletePost"
         @edit="openEditModel"
       />

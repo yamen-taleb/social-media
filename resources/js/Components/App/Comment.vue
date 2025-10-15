@@ -5,7 +5,7 @@ import AutoResizeTextarea from '@/Components/App/AutoResizeTextarea.vue'
 import { PaperAirplaneIcon } from '@heroicons/vue/24/outline/index.js'
 import ShowLessReadMore from '@/Components/App/ShowLessReadMore.vue'
 import useLikeRequest from '@/Composables/useLikeRequest.js'
-import { ref } from 'vue'
+import { computed, inject, ref } from 'vue'
 import axiosClient from '@/axiosClient.js'
 import { useToast } from 'vue-toastification'
 import Comments from '@/Components/App/Comments.vue'
@@ -22,7 +22,10 @@ const currentComment = ref({})
 const reply = ref()
 const showReply = ref(false)
 const subComments = ref([])
-
+const postOwnerId = inject('postOwnerId')
+const authId = usePage().props.auth.user.id
+const isCommentOwner = computed(() => props.comment.user.id === authId)
+const isPostOwner = computed(() => postOwnerId.value === authId)
 const likeComment = () => {
   useLikeRequest(props.comment.id, 'Comment').then(({ data }) => {
     props.comment.num_of_reactions = data.num_of_reactions
@@ -197,7 +200,8 @@ const loadSubComments = () => {
       </div>
     </div>
     <EditDeleteMenu
-      v-if="usePage().props.auth.user.id === comment.user.id && currentComment?.id !== comment.id"
+      v-if="(isCommentOwner || isPostOwner) && currentComment?.id !== comment.id"
+      :isOwner="isCommentOwner"
       class="opacity-0 transition-all duration-200 group-hover:opacity-100"
       @delete="emit('delete', comment)"
       @edit="editComment"

@@ -2,13 +2,19 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 import { EllipsisVerticalIcon, PencilSquareIcon, TrashIcon } from '@heroicons/vue/24/outline'
 
+const props = defineProps({
+  isOwner: {
+    type: Boolean,
+    default: false,
+  },
+})
 const emit = defineEmits(['edit', 'delete'])
 </script>
 
 <template>
   <Menu as="div" class="relative inline-block text-left">
     <div>
-      <MenuButton class="rounded-full p-2 hover:bg-gray-50" aria-label="Post options">
+      <MenuButton aria-label="Post options" class="rounded-full p-2 hover:bg-gray-50">
         <EllipsisVerticalIcon class="h-5 w-5" />
       </MenuButton>
     </div>
@@ -25,13 +31,13 @@ const emit = defineEmits(['edit', 'delete'])
         class="absolute right-0 z-10 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none"
       >
         <div class="px-1 py-1">
-          <MenuItem v-slot="{ active }">
+          <MenuItem v-if="isOwner" v-slot="{ active }">
             <button
-              @click="emit('edit')"
               :class="[
                 active ? 'bg-violet-500 text-white' : 'text-gray-900',
                 'group flex w-full items-center gap-1 rounded-md px-2 py-2 text-sm',
               ]"
+              @click="emit('edit')"
             >
               <PencilSquareIcon class="h-5 w-5" />
               Edit
@@ -40,11 +46,11 @@ const emit = defineEmits(['edit', 'delete'])
 
           <MenuItem v-slot="{ active }">
             <button
-              @click="emit('delete')"
               :class="[
                 active ? 'bg-red-500 text-white' : 'text-gray-900',
                 'group flex w-full items-center gap-1 rounded-md px-2 py-2 text-sm',
               ]"
+              @click="emit('delete')"
             >
               <TrashIcon class="h-5 w-5" />
               Delete

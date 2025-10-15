@@ -3,7 +3,11 @@
 namespace App\Services;
 
 use App\Models\Post;
+use App\Notifications\DeletePostByAdmin;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Notification;
 
 class PostService
 {
@@ -46,5 +50,20 @@ class PostService
             'title' => $postData['title'],
             'description' => $postData['description'],
         ]);
+    }
+
+    public function delete(Post $post)
+    {
+        Gate::authorize('delete', $post);
+
+        $group = $post->group;
+        $isAdminDeletion = Auth::id() !== $post->user_id;
+
+        if ($isAdminDeletion) {
+            $user = $post->user;
+            Notification::send($user, new DeletePostByAdmin($user, $group));
+        }
+
+        $post->delete();
     }
 }
