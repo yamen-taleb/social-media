@@ -17,4 +17,9 @@ class GroupPolicy
     {
         return $group->user_id === $user->id || $group->currentUser->role === RoleEnum::ADMIN;
     }
+
+    public function removeMember(User $user, Group $group, int $userId): bool
+    {
+        return $group->isAdmin() && !$group->isOwner($userId);
+    }
 }

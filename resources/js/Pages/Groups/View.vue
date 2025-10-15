@@ -123,6 +123,26 @@ function updateGroup() {
     },
   })
 }
+
+const removeMember = (user_id) => {
+  if (window.confirm('Are you sure you want to remove this member?')) {
+    form.delete(
+      route('groups.members.remove', {
+        group: props.group.slug,
+        user: user_id,
+      }),
+      {
+        preserveScroll: true,
+        onSuccess: () => {
+          useToast().success('Member removed successfully')
+        },
+        onError: () => {
+          useToast().error('Failed to remove member')
+        },
+      }
+    )
+  }
+}
 </script>
 
 <template>
@@ -196,6 +216,7 @@ function updateGroup() {
                       :name="member.name"
                       :showRoleSelect="true"
                       :username="member.username"
+                      @remove="removeMember"
                       @update:role="updateRole"
                     />
                   </div>

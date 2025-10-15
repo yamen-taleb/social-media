@@ -152,4 +152,10 @@ class GroupController extends Controller
         $group->update($updateGroupRequest->validated());
         return back();
     }
+
+    public function removeMember(Group $group, User $user)
+    {
+        $this->groupService->removeMember($group, $user);
+        return back();
+    }
 }

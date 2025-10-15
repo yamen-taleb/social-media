@@ -29,7 +29,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['handleRequest', 'update:role'])
+const emit = defineEmits(['handleRequest', 'update:role', 'remove'])
 
 const roles = ref([
   { value: 'admin', label: 'Admin' },
@@ -92,6 +92,13 @@ const updateRole = (event) => {
           {{ role.label }}
         </option>
       </select>
+      <button
+        :disabled="isOwner"
+        class="ml-1 rounded-md bg-gray-800 px-3 py-1 text-sm text-white transition-all hover:bg-gray-600 disabled:hidden"
+        @click.prevent.stop="emit('remove', id)"
+      >
+        delete
+      </button>
     </div>
   </div>
 </template>

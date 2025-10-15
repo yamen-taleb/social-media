@@ -12,6 +12,7 @@ use App\Models\User;
 use App\Notifications\AcceptToJoin;
 use App\Notifications\ChangeRole;
 use App\Notifications\RequestToJoin;
+use App\Notifications\UserRemovedFromGroup;
 use App\RoleEnum;
 use App\UserApprovalEnum;
 use Illuminate\Http\UploadedFile;
@@ -195,6 +196,20 @@ class GroupService
                 'role' => $updateRoleRequest['role'],
             ]);
             Notification::send($user, new ChangeRole($group, $updateRoleRequest['role']));
+        }
+    }
+
+    public function removeMember(Group $group, User $user)
+    {
+        Gate::authorize('removeMember', [$group, $user->id]);
+
+        $groupUser = GroupUser::query()
+            ->where('user_id', $user->id)
+            ->where('group_id', $group->id)
+            ->delete();
+
+        if ($groupUser) {
+            $user->notify(new UserRemovedFromGroup($group));
         }
     }
 }
