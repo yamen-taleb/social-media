@@ -15,7 +15,7 @@ class DeleteCommentByPostOwner extends Notification implements ShouldQueue
     /**
      * Create a new notification instance.
      */
-    public function __construct(public User $user, public string $owner)
+    public function __construct(public User $user, public string $owner, public int $postId)
     {
         //
     }
@@ -35,13 +35,12 @@ class DeleteCommentByPostOwner extends Notification implements ShouldQueue
      */
     public function toMail(object $notifiable): MailMessage
     {
-        // TODO
         return (new MailMessage)
             ->subject('Your Comment Has Been Removed')
             ->line("Hello {$this->user->name},")
             ->line("We would like to inform you that your comment on {$this->owner}'s post has been removed by the post owner.")
             ->line('If you believe this was done in error, please contact our support team for further assistance.')
-            ->action('View Post', url('/'))
+            ->action('View Post', url(route('posts.show', $this->postId)))
             ->line('Thank you for your understanding and for being part of our community.');
     }
 

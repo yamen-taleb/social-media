@@ -7,6 +7,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  isAdmin: {
+    type: Boolean,
+    default: false,
+  },
 })
 const emit = defineEmits(['edit', 'delete'])
 </script>
@@ -31,6 +35,7 @@ const emit = defineEmits(['edit', 'delete'])
         class="absolute right-0 z-10 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none"
       >
         <div class="px-1 py-1">
+          <slot />
           <MenuItem v-if="isOwner" v-slot="{ active }">
             <button
               :class="[
@@ -44,7 +49,7 @@ const emit = defineEmits(['edit', 'delete'])
             </button>
           </MenuItem>
 
-          <MenuItem v-slot="{ active }">
+          <MenuItem v-if="isAdmin || isOwner" v-slot="{ active }">
             <button
               :class="[
                 active ? 'bg-red-500 text-white' : 'text-gray-900',

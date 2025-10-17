@@ -42,7 +42,7 @@ class CommentService
 
         if (!$comment->isOwner()) {
             $user = $comment->user;
-            Notification::send($user, new DeleteCommentByPostOwner($user, Auth::user()->name));
+            Notification::send($user, new DeleteCommentByPostOwner($user, Auth::user()->name, $comment->post_id));
         }
         $comment->delete();
     }

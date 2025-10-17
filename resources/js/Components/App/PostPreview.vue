@@ -32,6 +32,7 @@ const show = computed({
 const comment = ref('')
 const isActiveTextarea = ref(false)
 const comments = ref([])
+const isLoading = ref(false)
 
 function closeModal() {
   show.value = false
@@ -66,6 +67,7 @@ watch(
 )
 
 const loadComments = () => {
+  isLoading.value = true
   axiosClient
     .get(route('comments.index'), {
       params: {
@@ -78,6 +80,9 @@ const loadComments = () => {
     .catch((error) => {
       console.error('Failed to load comments:', error)
       useToast().error('Failed to load comments')
+    })
+    .finally(() => {
+      isLoading.value = false
     })
 }
 </script>
@@ -114,7 +119,10 @@ const loadComments = () => {
               <div class="my-3 text-center text-lg text-gray-600">{{ post.user.name }}'s post</div>
               <hr />
               <PostItem :post class="rounded-none shadow-none" />
-              <Comments v-model:comments="comments" />
+              <div v-if="isLoading" class="flex justify-center py-8">
+                <div class="h-8 w-8 animate-spin rounded-full border-b-2 border-gray-900"></div>
+              </div>
+              <Comments v-else v-model:comments="comments" />
               <XMarkIcon
                 aria-label="Close preview"
                 class="absolute right-4 top-4 z-10 h-8 w-8 cursor-pointer rounded-full bg-black/25 p-1 text-white transition-colors duration-200 hover:bg-black/50"

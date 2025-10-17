@@ -3,12 +3,14 @@ import Download from '@/Components/Icons/Download.vue'
 import Like from '@/Components/Icons/Like.vue'
 import Comment from '@/Components/Icons/Comment.vue'
 import PostUserHeader from '@/Components/App/PostUserHeader.vue'
-import { router, usePage } from '@inertiajs/vue3'
+import { Link, router, usePage } from '@inertiajs/vue3'
 import { useToast } from 'vue-toastification'
 import ShowLessReadMore from '@/Components/App/ShowLessReadMore.vue'
 import EditDeleteMenu from '@/Components/App/EditDeleteMenu.vue'
 import useLikeRequest from '@/Composables/useLikeRequest.js'
 import { computed } from 'vue'
+import { MenuItem } from '@headlessui/vue'
+import { ClipboardIcon, EyeIcon } from '@heroicons/vue/24/outline/index.js'
 
 const props = defineProps({
   post: Object,
@@ -50,6 +52,28 @@ const deletePost = () => {
     })
   }
 }
+
+const copyUrl = async () => {
+  try {
+    const url = route('posts.show', props.post.id)
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(url)
+      useToast().success('Link copied to clipboard!')
+    } else {
+      const textArea = document.createElement('textarea')
+      textArea.value = url
+      textArea.style.position = 'fixed'
+      document.body.appendChild(textArea)
+      textArea.focus()
+      textArea.select()
+      document.execCommand('copy')
+      document.body.removeChild(textArea)
+      useToast().success('Link copied to clipboard!')
+    }
+  } catch (error) {
+    useToast().error('Failed to copy link. Please try again.')
+  }
+}
 </script>
 
 <template>
@@ -57,11 +81,37 @@ const deletePost = () => {
     <div class="flex items-center justify-between px-2 py-4">
       <PostUserHeader :created_at="post.created_at" :group="post.group" :user="post.user" />
       <EditDeleteMenu
-        v-if="isPostOwner || isAdmin"
+        :isAdmin="isAdmin"
         :isOwner="isPostOwner"
         @delete="deletePost"
         @edit="openEditModel"
-      />
+      >
+        <MenuItem v-slot="{ active }">
+          <Link
+            :class="[
+              active ? 'bg-violet-500 text-white' : 'text-gray-900',
+              'group flex w-full items-center gap-1 rounded-md px-2 py-2 text-sm',
+            ]"
+            :href="route('posts.show', post.id)"
+          >
+            <EyeIcon class="h-5 w-5" />
+            Open Post
+          </Link>
+        </MenuItem>
+
+        <MenuItem v-slot="{ active }">
+          <button
+            :class="[
+              active ? 'bg-violet-500 text-white' : 'text-gray-900',
+              'group flex w-full items-center gap-1 rounded-md px-2 py-2 text-sm',
+            ]"
+            @click="copyUrl"
+          >
+            <ClipboardIcon class="h-5 w-5" />
+            Copy Url
+          </button>
+        </MenuItem>
+      </EditDeleteMenu>
     </div>
     <!-- Rest of your template remains the same -->
     <div class="ck-content-output mb-3">

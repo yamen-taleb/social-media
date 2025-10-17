@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
+use App\Http\Resources\PostResource;
 use App\Models\Post;
 use App\Services\PostService;
+use Inertia\Inertia;
 
 class PostController extends Controller
 {
@@ -46,7 +48,11 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        //
+        $post = $this->postService->post($post);
+
+        return Inertia::render('Post/View', [
+            'post' => new PostResource($post),
+        ]);
     }
 
     /**

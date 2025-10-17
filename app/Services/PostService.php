@@ -66,4 +66,13 @@ class PostService
 
         $post->delete();
     }
+
+    public function post(Post $post)
+    {
+        return $post->load([
+            'user', 'group', 'attachments',
+            'reactions' => fn($query) => $query->where('user_id', auth()->id())
+        ])
+            ->loadCount('reactions', 'comments');
+    }
 }
