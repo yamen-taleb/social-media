@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreReactionRequest;
 use App\Http\Requests\UpdateReactionRequest;
-use App\Models\Post;
 use App\Models\Reaction;
 use App\Services\ReactionService;
 
@@ -14,18 +13,11 @@ class ReactionController extends Controller
     {
 
     }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
     {
         //
     }
@@ -74,11 +66,11 @@ class ReactionController extends Controller
     {
         $data = $request->validated();
         $reaction = $this->reactionService->reaction($id, $data['model']);
-        $hasReaction  = false;
+        $hasReaction = false;
 
-        if ($reaction)
+        if ($reaction) {
             $reaction->delete();
-        else {
+        } else {
             $this->reactionService->create($data['type'], $id, $data['model']);
             $hasReaction = true;
         }
@@ -88,5 +80,13 @@ class ReactionController extends Controller
             'num_of_reactions' => $count,
             'current_user_has_reaction' => $hasReaction,
         ]);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        //
     }
 }

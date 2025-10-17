@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Comment;
+use App\Notifications\CreatePostComment;
 use App\Notifications\DeleteCommentByPostOwner;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
@@ -28,12 +29,20 @@ class CommentService
 
     public function create(array $data)
     {
-        return Comment::create([
-            'user_id' => Auth::id(),
+        $id = Auth::id();
+        $comment = Comment::create([
+            'user_id' => $id,
             'post_id' => $data['post_id'],
             'body' => nl2br($data['body']),
             'parent_id' => $data['parent_id'] ?? null,
         ]);
+
+        $postOwner = $comment->post->user;
+        if ($postOwner->id !== $id) {
+            Notification::send($postOwner, new CreatePostComment($comment->post_id, Auth::user()));
+        }
+
+        return $comment;
     }
 
     public function delete(Comment $comment)

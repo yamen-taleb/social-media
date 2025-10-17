@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Post;
+use App\Notifications\CreateGroupPost;
 use App\Notifications\DeletePostByAdmin;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -37,6 +38,20 @@ class PostService
                 'group_id' => $post['group_id'],
             ]);
             $this->postAttachmentService->uploadPostAttachments($post['attachments'], $postRecord->id);
+
+            if ($postRecord->group_id) {
+                $postRecord->load('group');
+                $group = $postRecord->group;
+                
+                $group->load(['users' => function($query) use ($postRecord) {
+                    $query->where('users.id', '!=', $postRecord->user_id);
+                }]);
+                
+                Notification::send(
+                    $group->users,
+                    new CreateGroupPost($postRecord->user, $group->name, $postRecord->id)
+                );
+            }
         });
     }
 

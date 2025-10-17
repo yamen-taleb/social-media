@@ -129,7 +129,7 @@ const loadComments = () => {
                 @click="closeModal"
               />
               <div
-                class="relative sticky bottom-0 left-0 flex items-center gap-1 bg-white px-3 py-2"
+                class="relative sticky bottom-0 left-0 z-20 flex items-center gap-1 bg-white px-3 py-2"
               >
                 <img
                   :src="avatar"

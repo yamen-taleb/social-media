@@ -136,7 +136,8 @@ const copyUrl = async () => {
         </a>
         <div
           v-if="index === 3 && post.attachments.length > 4"
-          class="absolute inset-0 z-10 flex cursor-pointer items-center justify-center bg-black/50 text-2xl text-white transition-all duration-200 hover:bg-black/60"
+          class="absolute inset-0 z-10 flex cursor-pointer items-center justify-center rounded bg-black/50 text-2xl text-white transition-all duration-200 hover:bg-black/60"
+          @click="showAttachmentPreview(post.attachments, index)"
         >
           +{{ post.attachments.length - 4 }}
         </div>
