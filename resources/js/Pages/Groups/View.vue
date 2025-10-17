@@ -11,8 +11,8 @@ import PrimaryButton from '@/Components/PrimaryButton.vue'
 import GroupAddMembers from '@/Components/App/GroupAddMembers.vue'
 import { useToast } from 'vue-toastification'
 import UserItem from '@/Components/App/UserItem.vue'
-import GroupForm from '@/Components/App/GroupForm.vue'
 import PostList from '@/Components/App/PostList.vue'
+import GroupAbout from '@/Pages/Groups/GroupAbout.vue'
 
 const authUser = usePage().props.auth.user
 const showAddMembersModal = ref(false)
@@ -43,11 +43,6 @@ const props = defineProps({
 })
 
 const form = useForm({})
-const aboutForm = useForm({
-  name: props.group.name,
-  auto_approval: props.group.auto_approval,
-  description: props.group.description,
-})
 const isAdmin = computed(() => authUser && props.group.role === 'admin')
 const updateProfilePicture = (imageForm) => {
   useUpdateImage(imageForm, 'groups.avatar', props.group.slug)
@@ -110,18 +105,6 @@ const updateRole = (role, user_id) => {
       },
     }
   )
-}
-
-function updateGroup() {
-  aboutForm.put(route('groups.update', props.group.slug), {
-    preserveScroll: true,
-    onSuccess: () => {
-      useToast().success('Group updated successfully')
-    },
-    onError: () => {
-      useToast().error('Failed to update group')
-    },
-  })
 }
 
 const removeMember = (user_id) => {
@@ -192,7 +175,7 @@ const removeMember = (user_id) => {
             <Tab v-slot="{ selected }" as="template">
               <TabItem :selected="selected" text="Photos" />
             </Tab>
-            <Tab v-if="isAdmin" v-slot="{ selected }" as="template">
+            <Tab v-slot="{ selected }" as="template">
               <TabItem :selected="selected" text="About" />
             </Tab>
           </TabList>
@@ -243,9 +226,8 @@ const removeMember = (user_id) => {
               <div v-else class="text-center text-gray-500">No pending requests</div>
             </TabPanel>
             <TabPanel class="bg-white p-3 shadow"> Photos</TabPanel>
-            <TabPanel class="space-y-4 bg-white p-3 shadow">
-              <GroupForm :form="aboutForm" />
-              <PrimaryButton @click="updateGroup">Submit</PrimaryButton>
+            <TabPanel class="space-y-4 bg-white p-6 shadow">
+              <GroupAbout :group :isAdmin />
             </TabPanel>
           </TabPanels>
         </TabGroup>

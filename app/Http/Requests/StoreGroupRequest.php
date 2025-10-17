@@ -22,7 +22,7 @@ class StoreGroupRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:256',
+            'name' => 'required|string|max:256|unique:groups,name',
             'description' => 'nullable|string|max:4096',
             'auto_approval' => 'boolean',
         ];
