@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\FollowerController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PostAttachmentController;
@@ -22,6 +23,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::post('/profile/cover', [ProfileController::class, 'updateCover'])->name('profile.cover');
     Route::post('/profile/avatar', [ProfileController::class, 'updateAvatar'])->name('profile.avatar');
+    Route::post('/followers', [FollowerController::class, 'store'])->name('followers.store');
+
     Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
     Route::put('/posts/{post:id}', [PostController::class, 'update'])->name('posts.update');
     Route::delete('/posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy');

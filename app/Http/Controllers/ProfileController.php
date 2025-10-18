@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ProfileUpdateRequest;
 use App\Http\Requests\ValidateImageRequest;
 use App\Http\Resources\UserResource;
+use App\Models\Follower;
 use App\Models\User;
 use App\Services\ProfileImageService;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -13,35 +14,29 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
-use Inertia\Response;
 
 class ProfileController extends Controller
 {
     public function __construct(public ProfileImageService $profileImageService)
-    {}
+    {
+    }
+
     public function index(User $user)
     {
+        $isCurrentUserFollower = false;
+        if (!Auth::guest()) {
+            $isCurrentUserFollower = (new Follower())->isFollowing($user->id);
+        }
+
+        $followerCount = Follower::where('user_id', $user->id)->count();
+
         return Inertia::render('Profile/View', [
             'mustVerifyEmail' => $user instanceof MustVerifyEmail,
             'status' => session('status'),
             'user' => new UserResource($user),
+            'isCurrentUserFollower' => $isCurrentUserFollower,
+            'followersCount' => $followerCount,
         ]);
-    }
-
-    /**
-     * Update the user's profile information.
-     */
-    public function update(ProfileUpdateRequest $request): RedirectResponse
-    {
-        $request->user()->fill($request->validated());
-
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
-        }
-
-        $request->user()->save();
-
-        return Redirect::route('profile', $request->user()->username);
     }
 
     /**
@@ -70,8 +65,24 @@ class ProfileController extends Controller
         $this->profileImageService->update($request->file('image'), 'cover_path', 'covers');
     }
 
+    /**
+     * Update the user's profile information.
+     */
+    public function update(ProfileUpdateRequest $request): RedirectResponse
+    {
+        $request->user()->fill($request->validated());
+
+        if ($request->user()->isDirty('email')) {
+            $request->user()->email_verified_at = null;
+        }
+
+        $request->user()->save();
+
+        return Redirect::route('profile', $request->user()->username);
+    }
+
     public function updateAvatar(ValidateImageRequest $request)
     {
-       $this->profileImageService->update($request->file('image'), 'avatar_path', 'avatars');
+        $this->profileImageService->update($request->file('image'), 'avatar_path', 'avatars');
     }
 }

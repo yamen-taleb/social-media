@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from '@headlessui/vue'
 import { usePage } from '@inertiajs/vue3'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
@@ -8,6 +8,9 @@ import TabItem from '@/Components/App/TabItem.vue'
 import CoverPicture from '@/Pages/Profile/Partials/CoverPicture.vue'
 import ProfilePicture from '@/Pages/Profile/Partials/ProfilePicture.vue'
 import { useUpdateImage } from '@/Composables/useUpdateImage.js'
+import PrimaryButton from '@/Components/PrimaryButton.vue'
+import { useToast } from 'vue-toastification'
+import axiosClient from '@/axiosClient.js'
 
 const authUser = usePage().props.auth.user
 
@@ -23,14 +26,40 @@ const props = defineProps({
   user: {
     type: Object,
   },
+  followersCount: Number,
+  isCurrentUserFollower: Boolean,
 })
 
+const localIsCurrentUserFollower = ref(props.isCurrentUserFollower)
+const localFollowersCount = ref(props.followersCount)
 const updateProfilePicture = (imageForm) => {
   useUpdateImage(imageForm, 'profile.avatar')
 }
 
 const updateCoverPicture = (imageForm) => {
   useUpdateImage(imageForm, 'profile.cover')
+}
+
+const followUser = () => {
+  axiosClient
+    .post(route('followers.store'), {
+      user_id: props.user.id,
+    })
+    .then(({ data }) => {
+      localIsCurrentUserFollower.value = data.isCurrentUserFollower
+      if (data.isCurrentUserFollower) {
+        localFollowersCount.value += 1
+      } else {
+        localFollowersCount.value -= 1
+      }
+      useToast().success(
+        data.isCurrentUserFollower ? 'Followed successfully' : 'Unfollowed successfully'
+      )
+    })
+    .catch((e) => {
+      console.log(e)
+      useToast().error('Operation failed')
+    })
 }
 </script>
 
@@ -49,7 +78,21 @@ const updateCoverPicture = (imageForm) => {
             :avatar="user.avatar"
             @update="updateProfilePicture"
           />
-          <h2 class="flex-1 p-4 text-lg font-bold">{{ user.name }}</h2>
+          <div class="flex flex-1 items-center justify-between pl-4 pr-8">
+            <div>
+              <h2 class="text-lg font-bold">{{ user.name }}</h2>
+              <small class="text-xs text-gray-600">
+                {{ localFollowersCount }}
+                {{ localFollowersCount === 1 ? 'follower' : 'followers' }}
+              </small>
+            </div>
+            <template v-if="authUser.id !== user.id">
+              <PrimaryButton v-if="!localIsCurrentUserFollower" @click="followUser"
+                >Follow
+              </PrimaryButton>
+              <PrimaryButton v-else @click="followUser">Unfollow</PrimaryButton>
+            </template>
+          </div>
         </div>
       </div>
       <div class="border-t">

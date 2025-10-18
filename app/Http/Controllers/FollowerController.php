@@ -5,9 +5,14 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreFollowerRequest;
 use App\Http\Requests\UpdateFollowerRequest;
 use App\Models\Follower;
+use App\Services\FollowerService;
 
 class FollowerController extends Controller
 {
+    public function __construct(public FollowerService $followerService)
+    {
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -29,7 +34,11 @@ class FollowerController extends Controller
      */
     public function store(StoreFollowerRequest $request)
     {
-        //
+        $user_id = $request->input('user_id');
+
+        $isCurrentUserFollower = $this->followerService->store($user_id);
+
+        return response()->json(['isCurrentUserFollower' => $isCurrentUserFollower]);
     }
 
     /**
