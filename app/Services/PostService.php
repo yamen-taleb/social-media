@@ -20,11 +20,8 @@ class PostService
 
     public function posts()
     {
-        return Post::with([
-            'user', 'group', 'attachments',
-            'reactions' => fn($query) => $query->where('user_id', auth()->id())
-        ])
-            ->withCount('reactions', 'comments')
+        return Post::query()
+            ->withCommonRelations()
             ->orderBy('created_at', 'desc');
     }
 
@@ -42,11 +39,13 @@ class PostService
             if ($postRecord->group_id) {
                 $postRecord->load('group');
                 $group = $postRecord->group;
-                
-                $group->load(['users' => function($query) use ($postRecord) {
-                    $query->where('users.id', '!=', $postRecord->user_id);
-                }]);
-                
+
+                $group->load([
+                    'users' => function ($query) use ($postRecord) {
+                        $query->where('users.id', '!=', $postRecord->user_id);
+                    }
+                ]);
+
                 Notification::send(
                     $group->users,
                     new CreateGroupPost($postRecord->user, $group->name, $postRecord->id)

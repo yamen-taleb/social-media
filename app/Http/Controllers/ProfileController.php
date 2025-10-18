@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
 use App\Http\Requests\ValidateImageRequest;
+use App\Http\Resources\PostResource;
+use App\Http\Resources\UserGroupResource;
 use App\Http\Resources\UserResource;
 use App\Models\Follower;
 use App\Models\User;
@@ -23,19 +25,23 @@ class ProfileController extends Controller
 
     public function index(User $user)
     {
+        $user->loadCount(['followers']);
+        $user->load(['followers', 'following', 'posts']);
+
         $isCurrentUserFollower = false;
         if (!Auth::guest()) {
             $isCurrentUserFollower = (new Follower())->isFollowing($user->id);
         }
-
-        $followerCount = Follower::where('user_id', $user->id)->count();
 
         return Inertia::render('Profile/View', [
             'mustVerifyEmail' => $user instanceof MustVerifyEmail,
             'status' => session('status'),
             'user' => new UserResource($user),
             'isCurrentUserFollower' => $isCurrentUserFollower,
-            'followersCount' => $followerCount,
+            'followersCount' => $user->followers_count,
+            'followers' => Inertia::scroll(fn() => UserGroupResource::collection($user->followers()->paginate(10))),
+            'following' => Inertia::scroll(fn() => UserGroupResource::collection($user->following()->paginate(10))),
+            'posts' => Inertia::scroll(fn() => PostResource::collection($user->posts()->paginate(5))),
         ]);
     }
 

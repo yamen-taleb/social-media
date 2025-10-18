@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Sluggable\HasSlug;
@@ -51,6 +52,24 @@ class User extends Authenticatable //implements MustVerifyEmail
     {
         return $this->belongsToMany(Group::class, 'group_users', 'user_id', 'group_id')
             ->withPivot('role', 'status', 'created_at');
+    }
+
+    public function following(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'followers', 'follower_id', 'user_id')->latest();
+    }
+
+    public function followers(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'followers', 'user_id', 'follower_id')->latest();
+    }
+
+    public function posts(): HasMany
+    {
+        return $this->hasMany(Post::class)
+            ->whereNull('group_id')
+            ->withCommonRelations()
+            ->latest();
     }
 
     /**

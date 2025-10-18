@@ -16,6 +16,10 @@ const props = defineProps({
     type: Number,
     default: null,
   },
+  showCreatePost: {
+    type: Boolean,
+    default: true,
+  },
 })
 const currentPost = ref({})
 const showEditModel = ref(false)
@@ -59,7 +63,7 @@ const showPostReviewModel = (post) => {
 
 <template>
   <div>
-    <PostCreate @createPost="openEditModel" />
+    <PostCreate v-if="showCreatePost" @createPost="openEditModel" />
     <InfiniteScroll data="posts">
       <div v-for="post in posts" :key="post.id">
         <PostItem

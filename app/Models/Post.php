@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -47,5 +49,15 @@ class Post extends Model
     public function comments(): HasMany
     {
         return $this->hasMany(Comment::class);
+    }
+
+    #[Scope]
+    protected function withCommonRelations(Builder $query): void
+    {
+        $query->with([
+            'user', 'group', 'attachments',
+            'reactions' => fn($query) => $query->where('user_id', auth()->id())
+        ])
+            ->withCount('reactions', 'comments');
     }
 }
