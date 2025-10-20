@@ -11,6 +11,7 @@ import useLikeRequest from '@/Composables/useLikeRequest.js'
 import { computed } from 'vue'
 import { MenuItem } from '@headlessui/vue'
 import { ClipboardIcon, EyeIcon } from '@heroicons/vue/24/outline/index.js'
+import useCopy from '@/Composables/useCopy.js'
 
 const props = defineProps({
   post: Object,
@@ -53,26 +54,9 @@ const deletePost = () => {
   }
 }
 
-const copyUrl = async () => {
-  try {
-    const url = route('posts.show', props.post.id)
-    if (navigator.clipboard && window.isSecureContext) {
-      await navigator.clipboard.writeText(url)
-      useToast().success('Link copied to clipboard!')
-    } else {
-      const textArea = document.createElement('textarea')
-      textArea.value = url
-      textArea.style.position = 'fixed'
-      document.body.appendChild(textArea)
-      textArea.focus()
-      textArea.select()
-      document.execCommand('copy')
-      document.body.removeChild(textArea)
-      useToast().success('Link copied to clipboard!')
-    }
-  } catch (error) {
-    useToast().error('Failed to copy link. Please try again.')
-  }
+const copyUrl = () => {
+  const url = route('posts.show', props.post.id)
+  useCopy(url)
 }
 </script>
 

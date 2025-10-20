@@ -2,13 +2,15 @@
 import { Link, usePage } from '@inertiajs/vue3'
 import EditDeleteMenu from '@/Components/App/EditDeleteMenu.vue'
 import AutoResizeTextarea from '@/Components/App/AutoResizeTextarea.vue'
-import { PaperAirplaneIcon } from '@heroicons/vue/24/outline/index.js'
+import { ClipboardIcon, PaperAirplaneIcon } from '@heroicons/vue/24/outline/index.js'
 import ShowLessReadMore from '@/Components/App/ShowLessReadMore.vue'
 import useLikeRequest from '@/Composables/useLikeRequest.js'
 import { computed, inject, ref } from 'vue'
 import axiosClient from '@/axiosClient.js'
 import { useToast } from 'vue-toastification'
 import Comments from '@/Components/App/Comments.vue'
+import { MenuItem } from '@headlessui/vue'
+import useCopy from '@/Composables/useCopy.js'
 
 const props = defineProps({
   comment: {
@@ -205,7 +207,20 @@ const loadSubComments = () => {
       class="opacity-0 transition-all duration-200 group-hover:opacity-100"
       @delete="emit('delete', comment)"
       @edit="editComment"
-    />
+    >
+      <MenuItem v-slot="{ active }">
+        <button
+          :class="[
+            active ? 'bg-violet-500 text-white' : 'text-gray-900',
+            'group flex w-full items-center gap-1 rounded-md px-2 py-2 text-sm',
+          ]"
+          @click="useCopy(comment.body)"
+        >
+          <ClipboardIcon class="h-5 w-5" />
+          Copy
+        </button>
+      </MenuItem>
+    </EditDeleteMenu>
   </div>
 </template>
 

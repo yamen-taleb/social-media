@@ -37,7 +37,7 @@ const show = computed({
 })
 
 const closeModal = () => {
-  emit('hide')
+  setTimeout(() => emit('hide'), 300)
   show.value = false
   postForm.reset()
   attachments.value = []

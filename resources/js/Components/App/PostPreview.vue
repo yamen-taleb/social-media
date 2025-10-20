@@ -61,7 +61,7 @@ watch(
   () => props.modelValue,
   (isOpen) => {
     if (isOpen) loadComments()
-    else comments.value = []
+    else setTimeout(() => (comments.value = []), 300)
   },
   { immediate: true }
 )
