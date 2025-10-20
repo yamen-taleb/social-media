@@ -10,7 +10,7 @@ import EditDeleteMenu from '@/Components/App/EditDeleteMenu.vue'
 import useLikeRequest from '@/Composables/useLikeRequest.js'
 import { computed } from 'vue'
 import { MenuItem } from '@headlessui/vue'
-import { ClipboardIcon, EyeIcon } from '@heroicons/vue/24/outline/index.js'
+import { ClipboardIcon, EyeIcon } from '@heroicons/vue/24/outline'
 import useCopy from '@/Composables/useCopy.js'
 
 const props = defineProps({
@@ -132,6 +132,12 @@ const copyUrl = () => {
             alt=""
             class="aspect-square w-full rounded-md"
             @click="showAttachmentPreview(post.attachments, index)"
+            :loading="index === 0 ? 'eager' : 'lazy'"
+            sizes="(max-width: 640px) 100vw, 50vw"
+            width="800"
+            height="800"
+            decoding="async"
+            :fetchpriority="index === 0 ? 'high' : 'auto'"
           />
         </template>
         <template v-else>

@@ -1,12 +1,13 @@
 <script setup>
-import { computed, ref, watch } from 'vue'
+import { computed, defineAsyncComponent, ref, watch } from 'vue'
 import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
 import PostUserHeader from '@/Components/App/PostUserHeader.vue'
 import { useForm, usePage } from '@inertiajs/vue3'
 import { useToast } from 'vue-toastification'
 import { PaperClipIcon } from '@heroicons/vue/24/outline'
-import RichEditor from '@/Components/App/RichEditor.vue'
 import PostUploadedImage from '@/Components/App/PostUploadedImage.vue'
+// Lazy-load the heavy editor so it doesn't load on initial page render
+const RichEditor = defineAsyncComponent(() => import('@/Components/App/RichEditor.vue'))
 
 const props = defineProps({
   post: {

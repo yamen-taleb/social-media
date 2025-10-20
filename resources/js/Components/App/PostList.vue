@@ -1,11 +1,12 @@
 <script setup>
 import PostCreate from '@/Components/App/PostCreate.vue'
 import PostItem from '@/Components/App/PostItem.vue'
-import PostEditModel from '@/Components/App/PostEditModel.vue'
-import { reactive, ref } from 'vue'
+import { defineAsyncComponent, reactive, ref } from 'vue'
 import AttachmentsPreview from '@/Components/App/AttachmentsPreview.vue'
 import PostPreview from '@/Components/App/PostPreview.vue'
 import { InfiniteScroll } from '@inertiajs/vue3'
+// Lazy-load the edit modal so its dependencies (CKEditor) don't load on initial page
+const PostEditModel = defineAsyncComponent(() => import('@/Components/App/PostEditModel.vue'))
 
 const props = defineProps({
   posts: {
@@ -75,7 +76,12 @@ const showPostReviewModel = (post) => {
       </div>
     </InfiniteScroll>
   </div>
-  <PostEditModel v-model="showEditModel" :post="currentPost" @hide="currentPost = {}" />
+  <PostEditModel
+    v-if="showEditModel"
+    v-model="showEditModel"
+    :post="currentPost"
+    @hide="currentPost = {}"
+  />
 
   <AttachmentsPreview
     v-model="showAttachmentPreview"

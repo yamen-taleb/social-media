@@ -31,7 +31,12 @@ defineProps({
     >
       <img
         :src="user.avatar"
-        alt=""
+        alt="avatar image"
+        loading="lazy"
+        decoding="async"
+        width="56"
+        height="56"
+        sizes="(max-width: 640px) 100vw, 50vw"
         class="h-14 w-14 rounded-full border border-2 object-cover transition-all hover:border-blue-700"
       />
     </Link>
@@ -56,7 +61,7 @@ defineProps({
           </Link>
         </template>
       </h3>
-      <small v-show="showTime" class="text-gray-400">
+      <small v-show="showTime" class="text-gray-500 dark:text-gray-300">
         {{ created_at }}
       </small>
     </div>

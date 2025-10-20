@@ -1,20 +1,20 @@
 <script setup>
 import {
+  BlockQuote,
+  Bold,
   ClassicEditor,
   Essentials,
-  Paragraph,
-  Bold,
+  Heading,
   Italic,
-  Undo,
   Link,
   List,
-  BlockQuote,
-  Heading,
+  Paragraph,
+  Undo,
 } from 'ckeditor5'
 import { Ckeditor } from '@ckeditor/ckeditor5-vue'
-import { ref, watch, onBeforeUnmount } from 'vue'
+import { onBeforeUnmount, ref, watch } from 'vue'
 import 'ckeditor5/ckeditor5.css'
-import 'ckeditor5-premium-features/ckeditor5-premium-features.css'
+
 const props = defineProps({
   modelValue: {
     type: String,

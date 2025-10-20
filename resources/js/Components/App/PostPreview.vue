@@ -1,7 +1,7 @@
 <script setup>
 import { computed, provide, ref, watch } from 'vue'
 import { Dialog, DialogPanel, TransitionChild, TransitionRoot } from '@headlessui/vue'
-import { PaperAirplaneIcon, XMarkIcon } from '@heroicons/vue/24/outline/index.js'
+import { PaperAirplaneIcon, XMarkIcon } from '@heroicons/vue/24/outline'
 import PostItem from '@/Components/App/PostItem.vue'
 import Comments from '@/Components/App/Comments.vue'
 import AutoResizeTextarea from '@/Components/App/AutoResizeTextarea.vue'
@@ -135,6 +135,10 @@ const loadComments = () => {
                   :src="avatar"
                   alt=""
                   class="h-12 w-12 rounded-full border border-2 object-cover"
+                  loading="lazy"
+                  decoding="async"
+                  width="48"
+                  height="48"
                 />
                 <AutoResizeTextarea
                   v-model="comment"
