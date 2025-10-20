@@ -18,11 +18,39 @@ class PostService
     ) {
     }
 
-    public function posts()
+    public function getGroupPosts($groupId)
+    {
+        return $this->baseQuery()
+            ->where('group_id', $groupId);
+    }
+
+    protected function baseQuery()
     {
         return Post::query()
             ->withCommonRelations()
-            ->orderBy('created_at', 'desc');
+            ->orderBy('posts.created_at', 'desc');
+    }
+
+    public function getHomePosts($user, $followingIds, $groupIds)
+    {
+        return $this->baseQuery()
+            ->where(function($query) use ($user, $followingIds, $groupIds) {
+                // User's own posts
+                $query->where('posts.user_id', $user->id);
+
+                // Posts from followed users (only non-group posts)
+                if ($followingIds->isNotEmpty()) {
+                    $query->orWhere(function($q) use ($followingIds) {
+                        $q->whereIn('posts.user_id', $followingIds)
+                            ->whereNull('posts.group_id');
+                    });
+                }
+
+                // Posts from user's groups
+                if ($groupIds->filter()->isNotEmpty()) {
+                    $query->orWhereIn('posts.group_id', $groupIds);
+                }
+            });
     }
 
     public function create(array $post)

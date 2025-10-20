@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Post;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdatePostRequest extends FormRequest
@@ -13,6 +12,17 @@ class UpdatePostRequest extends FormRequest
     public function authorize(): bool
     {
         return $this->user()->can('update', $this->post);
+    }
+
+    public function prepareForValidation()
+    {
+        $description = $this->input('description');
+        $cleaned = preg_replace('/<p>(?:\s|&nbsp;|<br\s*\/?>)*<\/p>/i', '', $description);
+
+        return $this->merge([
+            'user_id' => $this->post->user_id,
+            'description' => $cleaned,
+        ]);
     }
 
     /**

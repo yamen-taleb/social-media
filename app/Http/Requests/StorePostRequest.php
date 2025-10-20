@@ -17,8 +17,12 @@ class StorePostRequest extends FormRequest
 
     public function prepareForValidation()
     {
-        $this->merge([
-            'user_id' => auth()->user()->id
+        $description = $this->input('description');
+        $cleaned = preg_replace('/<p>(?:\s|&nbsp;|<br\s*\/?>)*<\/p>/i', '', $description);
+
+        return $this->merge([
+            'user_id' => auth()->user()->id,
+            'description' => $cleaned,
         ]);
     }
 

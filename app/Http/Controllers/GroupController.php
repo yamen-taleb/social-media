@@ -60,8 +60,7 @@ class GroupController extends Controller
         $group->load('currentUser');
         $isAdmin = $group->isAdmin();
         $posts = $this->postService
-            ->posts()
-            ->where('group_id', $group->id)
+            ->getGroupPosts($group->id)
             ->paginate(5);
 
 
