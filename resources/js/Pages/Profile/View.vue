@@ -13,6 +13,7 @@ import { useToast } from 'vue-toastification'
 import axiosClient from '@/axiosClient.js'
 import UserItem from '@/Components/App/UserItem.vue'
 import PostList from '@/Components/App/PostList.vue'
+import ImagesProfile from '@/Pages/Profile/ImagesProfile.vue'
 
 const authUser = usePage().props.auth.user
 
@@ -33,6 +34,7 @@ const props = defineProps({
   followers: Object,
   following: Object,
   posts: Object,
+  images: Object,
 })
 
 const localIsCurrentUserFollower = ref(props.isCurrentUserFollower)
@@ -143,7 +145,7 @@ const followUser = () => {
                   </div>
                 </InfiniteScroll>
               </div>
-              <div v-else class="text-center text-gray-500">No Followers</div>
+              <div v-else class="bg-white p-3 text-center text-gray-500 shadow">No Followers</div>
             </TabPanel>
             <TabPanel class="bg-white p-3 shadow">
               <div v-if="following.data.length > 0" class="space-y-3">
@@ -159,9 +161,11 @@ const followUser = () => {
                   </div>
                 </InfiniteScroll>
               </div>
-              <div v-else class="text-center text-gray-500">No Followers</div>
+              <div v-else class="bg-white p-3 text-center text-gray-500 shadow">No Following</div>
             </TabPanel>
-            <TabPanel class="bg-white p-3 shadow"> Photos</TabPanel>
+            <TabPanel class="bg-white p-3 shadow">
+              <ImagesProfile :images />
+            </TabPanel>
             <TabPanel v-if="isMyProfile">
               <Edit :must-verify-email="mustVerifyEmail" :status="status" />
             </TabPanel>

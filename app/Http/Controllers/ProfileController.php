@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
 use App\Http\Requests\ValidateImageRequest;
+use App\Http\Resources\PostAttachmentResource;
 use App\Http\Resources\PostResource;
 use App\Http\Resources\UserGroupResource;
 use App\Http\Resources\UserResource;
@@ -26,7 +27,7 @@ class ProfileController extends Controller
     public function index(User $user)
     {
         $user->loadCount(['followers']);
-        $user->load(['followers', 'following', 'posts']);
+        $user->load(['followers', 'following', 'posts', 'personalImages']);
 
         $isCurrentUserFollower = false;
         if (!Auth::guest()) {
@@ -42,6 +43,7 @@ class ProfileController extends Controller
             'followers' => Inertia::scroll(fn() => UserGroupResource::collection($user->followers()->paginate(10))),
             'following' => Inertia::scroll(fn() => UserGroupResource::collection($user->following()->paginate(10))),
             'posts' => Inertia::scroll(fn() => PostResource::collection($user->posts()->paginate(5))),
+            'images' => Inertia::scroll(fn() => PostAttachmentResource::collection($user->personalImages()->paginate(5))),
         ]);
     }
 

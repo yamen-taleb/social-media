@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Sluggable\HasSlug;
@@ -72,6 +73,18 @@ class User extends Authenticatable //implements MustVerifyEmail
             ->whereNull('group_id')
             ->withCommonRelations()
             ->latest();
+    }
+
+    public function personalImages(): HasManyThrough
+    {
+       return $this->hasManyThrough(
+           PostAttachment::class,
+           Post::class,
+           'user_id',
+           'post_id'
+       )->whereIn('post_attachments.type', ['png', 'jpg', 'jpeg'])
+           ->whereNull('posts.group_id')
+           ->latest('post_attachments.created_at');
     }
 
     /**

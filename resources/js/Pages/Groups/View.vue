@@ -13,6 +13,7 @@ import { useToast } from 'vue-toastification'
 import UserItem from '@/Components/App/UserItem.vue'
 import PostList from '@/Components/App/PostList.vue'
 import GroupAbout from '@/Pages/Groups/GroupAbout.vue'
+import ImagesProfile from '@/Pages/Profile/ImagesProfile.vue'
 
 const authUser = usePage().props.auth.user
 const showAddMembersModal = ref(false)
@@ -37,6 +38,10 @@ const props = defineProps({
     required: true,
   },
   members: {
+    type: Object,
+    required: true,
+  },
+  images: {
     type: Object,
     required: true,
   },
@@ -225,7 +230,9 @@ const removeMember = (user_id) => {
               </div>
               <div v-else class="text-center text-gray-500">No pending requests</div>
             </TabPanel>
-            <TabPanel class="bg-white p-3 shadow"> Photos</TabPanel>
+            <TabPanel class="bg-white p-3 shadow">
+              <ImagesProfile :images />
+            </TabPanel>
             <TabPanel class="space-y-4 bg-white p-6 shadow">
               <GroupAbout :group :isAdmin />
             </TabPanel>

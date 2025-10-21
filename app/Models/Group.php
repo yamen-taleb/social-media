@@ -6,6 +6,7 @@ use App\RoleEnum;
 use App\UserApprovalEnum;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Sluggable\HasSlug;
@@ -74,5 +75,12 @@ class Group extends Model
     public function isOwner(int $id): bool
     {
         return $this->user_id === $id;
+    }
+
+    public function images(): HasManyThrough
+    {
+        return $this->hasManyThrough(PostAttachment::class, Post::class)
+            ->whereIn('post_attachments.type', ['png', 'jpg', 'jpeg'])
+            ->latest('post_attachments.created_at');
     }
 }

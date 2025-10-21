@@ -9,6 +9,7 @@ use App\Http\Requests\UpdateGroupRequest;
 use App\Http\Requests\UpdateRoleRequest;
 use App\Http\Requests\ValidateImageRequest;
 use App\Http\Resources\GroupPageResource;
+use App\Http\Resources\PostAttachmentResource;
 use App\Http\Resources\PostResource;
 use App\Http\Resources\UserGroupResource;
 use App\Models\Group;
@@ -57,7 +58,7 @@ class GroupController extends Controller
      */
     public function show(Group $group)
     {
-        $group->load('currentUser');
+        $group->load('currentUser', 'images');
         $isAdmin = $group->isAdmin();
         $posts = $this->postService
             ->getGroupPosts($group->id)
@@ -70,7 +71,8 @@ class GroupController extends Controller
             ) => UserGroupResource::collection($group->usersRequests()->paginate(20))) : null,
             'members' => Inertia::scroll(fn(
             ) => UserGroupResource::collection($group->members()->withPivot('role')->paginate(20))),
-            'posts' => Inertia::scroll(fn() => PostResource::collection($posts))
+            'posts' => Inertia::scroll(fn() => PostResource::collection($posts)),
+            'images' => Inertia::scroll(fn() => PostAttachmentResource::collection($group->images()->paginate(5))),
         ]);
     }
 
