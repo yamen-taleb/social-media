@@ -6,12 +6,16 @@ use App\Models\User;
 
 class UserService
 {
-    public function search($search)
+    public function search(string $search, int $limit = null)
     {
-        return User::query()
+        $query = User::query()
             ->whereLike('name', "%$search%")
-            ->orWhereLike('username', "%$search%")
-            ->take(3)
-            ->get();
+            ->orWhereLike('username', "%$search%");
+
+        if ($limit) {
+            return $query->take($limit)->get();
+        }
+
+        return $query;
     }
 }

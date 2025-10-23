@@ -8,6 +8,7 @@ use App\Http\Controllers\PostAttachmentController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReactionController;
+use App\Http\Controllers\SearchController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])
@@ -55,6 +56,7 @@ Route::middleware('auth')->group(function () {
         [GroupController::class, 'removeMember'])->name('groups.members.remove');
 
     Route::get('/search', [HomeController::class, 'search'])->name('search');
+    Route::get('/searchPage/{search}', SearchController::class)->name('searchPage');
 });
 
 Route::get('/groups/{group}/invitations/accept/{token}', [GroupController::class, 'acceptInvitation'])

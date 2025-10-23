@@ -117,4 +117,12 @@ class PostService
         ])
             ->loadCount('reactions', 'comments');
     }
+
+    public function search(string $search)
+    {
+        return $this->baseQuery()
+            ->where('title', 'like', "%{$search}%")
+            ->orWhere('description', 'like', "%{$search}%")
+            ->paginate(3);
+    }
 }

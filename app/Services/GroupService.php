@@ -213,12 +213,16 @@ class GroupService
         }
     }
 
-    public function search($search)
+    public function search(string $search, int $limit = null)
     {
-        return Group::query()
+        $query = Group::query()
             ->whereLike('name', "%$search%")
-            ->orWhereLike('description', "%$search%")
-            ->take(3)
-            ->get();
+            ->orWhereLike('description', "%$search%");
+
+        if ($limit) {
+            return $query->take($limit)->get();
+        }
+
+        return $query;
     }
 }

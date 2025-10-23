@@ -38,8 +38,8 @@ class HomeController extends Controller
     {
         $search = $request->input('search');
 
-        $groups = $this->groupService->search($search);
-        $users = $this->userService->search($search);
+        $groups = $this->groupService->search($search, 3);
+        $users = $this->userService->search($search, 3);
 
         return response()->json([
             'groups' => GroupSearchResource::collection($groups),

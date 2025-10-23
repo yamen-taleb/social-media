@@ -5,8 +5,9 @@ import TextInput from '@/Components/TextInput.vue'
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 import axiosClient from '@/axiosClient.js'
 import { debounce } from 'lodash'
+import { router, usePage } from '@inertiajs/vue3'
 
-const search = ref('')
+const search = ref(usePage().props.search ?? '')
 const searchInput = ref(null)
 const searchContainer = ref(null)
 const searchUsers = ref([])
@@ -52,6 +53,10 @@ const searchGlobe = () => {
 }
 
 const debounceSearch = debounce(searchGlobe, 500)
+
+const searchEnter = () => {
+  router.get(route('searchPage', { search: search.value }))
+}
 </script>
 
 <template>
@@ -63,6 +68,7 @@ const debounceSearch = debounce(searchGlobe, 500)
         placeholder="Search"
         class="w-full"
         @input="debounceSearch"
+        @keydown.enter="searchEnter"
       />
       <MagnifyingGlassIcon
         class="pointer-events-none absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-500"
