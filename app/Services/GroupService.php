@@ -212,4 +212,13 @@ class GroupService
             $user->notify(new UserRemovedFromGroup($group));
         }
     }
+
+    public function search($search)
+    {
+        return Group::query()
+            ->whereLike('name', "%$search%")
+            ->orWhereLike('description', "%$search%")
+            ->take(3)
+            ->get();
+    }
 }

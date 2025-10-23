@@ -3,9 +3,9 @@ import { ref } from 'vue'
 import ApplicationLogo from '@/Components/ApplicationLogo.vue'
 import Dropdown from '@/Components/Dropdown.vue'
 import DropdownLink from '@/Components/DropdownLink.vue'
-import NavLink from '@/Components/NavLink.vue'
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue'
 import { Link, usePage } from '@inertiajs/vue3'
+import GlobalSearch from '@/Components/App/GlobalSearch.vue'
 
 const showingNavigationDropdown = ref(false)
 
@@ -20,10 +20,11 @@ const authUser = usePage().props.auth.user
         <div class="flex h-16 justify-between">
           <div class="flex">
             <!-- Logo -->
-            <div class="flex shrink-0 items-center">
+            <div class="relative flex shrink-0 items-center gap-8">
               <Link :href="route('home')">
                 <ApplicationLogo class="block h-9 w-auto fill-current text-gray-800" />
               </Link>
+              <GlobalSearch />
             </div>
           </div>
 

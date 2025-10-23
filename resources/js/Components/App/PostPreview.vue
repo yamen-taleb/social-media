@@ -8,6 +8,7 @@ import AutoResizeTextarea from '@/Components/App/AutoResizeTextarea.vue'
 import { usePage } from '@inertiajs/vue3'
 import axiosClient from '@/axiosClient.js'
 import { useToast } from 'vue-toastification'
+import Loading from '@/Components/App/Loading.vue'
 
 const props = defineProps({
   modelValue: {
@@ -119,9 +120,7 @@ const loadComments = () => {
               <div class="my-3 text-center text-lg text-gray-600">{{ post.user.name }}'s post</div>
               <hr />
               <PostItem :post class="rounded-none shadow-none" />
-              <div v-if="isLoading" class="flex justify-center py-8">
-                <div class="h-8 w-8 animate-spin rounded-full border-b-2 border-gray-900"></div>
-              </div>
+              <Loading v-if="isLoading" />
               <Comments v-else v-model:comments="comments" />
               <XMarkIcon
                 aria-label="Close preview"

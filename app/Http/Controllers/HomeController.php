@@ -3,15 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\GroupResource;
+use App\Http\Resources\GroupSearchResource;
 use App\Http\Resources\PostResource;
+use App\Http\Resources\UserSearchResource;
 use App\Services\GroupService;
 use App\Services\PostService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class HomeController extends Controller
 {
-    public function __construct(public PostService $postService, public GroupService $groupService)
+    public function __construct(public PostService $postService, public GroupService $groupService, public UserService $userService)
     {
     }
 
@@ -28,6 +31,19 @@ class HomeController extends Controller
         return Inertia::render('Home', [
             'posts' => Inertia::scroll(fn() => PostResource::collection($posts)),
             'groups' => GroupResource::collection($groups)
+        ]);
+    }
+
+    public function search(Request $request)
+    {
+        $search = $request->input('search');
+
+        $groups = $this->groupService->search($search);
+        $users = $this->userService->search($search);
+
+        return response()->json([
+            'groups' => GroupSearchResource::collection($groups),
+            'users' => UserSearchResource::collection($users),
         ]);
     }
 }
