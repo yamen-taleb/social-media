@@ -31,7 +31,7 @@ onBeforeUnmount(() => {
 
 const focusSearchInput = async () => {
   searchInput.value?.$el?.querySelector('input')?.focus()
-  searchGlobe()
+  if (searchGroups.value?.length || searchUsers.value?.length) showSearchDropdown.value = true
 }
 const searchGlobe = () => {
   if (search.value.length < 3) return

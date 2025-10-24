@@ -33,6 +33,7 @@ const show = computed({
 const comment = ref('')
 const isActiveTextarea = ref(false)
 const comments = ref([])
+const commentsPaginationLinks = ref({})
 const isLoading = ref(false)
 
 function closeModal() {
@@ -69,14 +70,17 @@ watch(
 
 const loadComments = () => {
   isLoading.value = true
+  const currentRoute = commentsPaginationLinks.value?.next_page_url || route('comments.index')
+
   axiosClient
-    .get(route('comments.index'), {
+    .get(currentRoute, {
       params: {
         post_id: props.post.id,
       },
     })
     .then(({ data }) => {
-      comments.value = data.comments || []
+      comments.value = [...comments.value, ...data.comments] || []
+      commentsPaginationLinks.value = data.paginationLinks || {}
     })
     .catch((error) => {
       console.error('Failed to load comments:', error)
@@ -120,8 +124,17 @@ const loadComments = () => {
               <div class="my-3 text-center text-lg text-gray-600">{{ post.user.name }}'s post</div>
               <hr />
               <PostItem :post class="rounded-none shadow-none" />
-              <Loading v-if="isLoading" />
+              <Loading v-if="isLoading && comments.length === 0" />
               <Comments v-else v-model:comments="comments" />
+              <div class="mt-1 flex justify-center" v-if="commentsPaginationLinks?.next_page_url">
+                <button
+                  @click="loadComments"
+                  :disabled="isLoading"
+                  class="rounded-md px-2 text-sm text-blue-600 hover:text-blue-800 disabled:opacity-50"
+                >
+                  {{ isLoading ? 'Loading...' : 'Show more comments' }}
+                </button>
+              </div>
               <XMarkIcon
                 aria-label="Close preview"
                 class="absolute right-4 top-4 z-10 h-8 w-8 cursor-pointer rounded-full bg-black/25 p-1 text-white transition-colors duration-200 hover:bg-black/50"
