@@ -27,7 +27,6 @@ class HomeController extends Controller
 
         $posts = $this->postService->getHomePosts($user, $followingIds, $groupIds)->paginate(5);
 
-
         return Inertia::render('Home', [
             'posts' => Inertia::scroll(fn() => PostResource::collection($posts)),
             'groups' => GroupResource::collection($groups)

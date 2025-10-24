@@ -13,8 +13,16 @@ class CommentService
 {
     public function comments(array $filters)
     {
+        $currentUserId = auth()->id();
+
         return Comment::query()
             ->withCount('reactions')
+            ->with([
+                'user',
+                'reactions' => function($query) use ($currentUserId) {
+                    $query->where('user_id', $currentUserId);
+                },
+            ])
             ->when(isset($filters['post_id']), static function ($query) use ($filters) {
                 $query->where('post_id', $filters['post_id'])
                     ->whereNull('parent_id')

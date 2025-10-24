@@ -25,7 +25,7 @@ const isImage = (attachment) => {
 }
 
 const postBody = computed(() =>
-  props.post.description.replace(/(#\w+)(?![^<]*<\/a>)/g, (match, group) => {
+  props.post.description?.replace(/(#\w+)(?![^<]*<\/a>)/g, (match, group) => {
     const encodedGroup = encodeURIComponent(group)
     return `<a href="/searchPage/${encodedGroup}" class="hashtag">${group}</a>`
   })

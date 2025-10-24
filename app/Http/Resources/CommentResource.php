@@ -29,9 +29,18 @@ class CommentResource extends JsonResource
             ],
             'num_of_reactions' => $this->reactions_count,
             'num_of_replies' => $this->replies_count ?? null,
-            'current_user_has_reaction' => $this->reactions()->where('user_id', auth()->id())->exists(),
+            'current_user_has_reaction' => $this->reactions->isNotEmpty(),
         ];
     }
+
+    /**
+     * The "with" relationships that should be eager loaded.
+     *
+     * @var array
+     */
+    public $with = [
+        'reactions',
+    ];
 
     /**
      * Get the human-readable time difference

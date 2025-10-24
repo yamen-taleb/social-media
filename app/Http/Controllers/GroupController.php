@@ -58,7 +58,6 @@ class GroupController extends Controller
      */
     public function show(Group $group)
     {
-        $group->load('currentUser', 'images');
         $isAdmin = $group->isAdmin();
         $posts = $this->postService
             ->getGroupPosts($group->id)
@@ -68,9 +67,9 @@ class GroupController extends Controller
         return Inertia::render('Groups/View', [
             'group' => new GroupPageResource($group),
             'requests' => $isAdmin ? Inertia::scroll(fn(
-            ) => UserGroupResource::collection($group->usersRequests()->paginate(20))) : null,
+            ) => UserGroupResource::collection($group->usersRequests()->paginate(10))) : null,
             'members' => Inertia::scroll(fn(
-            ) => UserGroupResource::collection($group->members()->withPivot('role')->paginate(20))),
+            ) => UserGroupResource::collection($group->members()->withPivot('role')->paginate(10))),
             'posts' => Inertia::scroll(fn() => PostResource::collection($posts)),
             'images' => Inertia::scroll(fn() => PostAttachmentResource::collection($group->images()->paginate(5))),
         ]);

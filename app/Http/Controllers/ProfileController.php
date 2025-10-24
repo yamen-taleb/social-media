@@ -11,7 +11,6 @@ use App\Http\Resources\UserResource;
 use App\Models\Follower;
 use App\Models\User;
 use App\Services\ProfileImageService;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -27,7 +26,6 @@ class ProfileController extends Controller
     public function index(User $user)
     {
         $user->loadCount(['followers']);
-        $user->load(['followers', 'following', 'posts', 'personalImages']);
 
         $isCurrentUserFollower = false;
         if (!Auth::guest()) {
@@ -35,15 +33,24 @@ class ProfileController extends Controller
         }
 
         return Inertia::render('Profile/View', [
-            'mustVerifyEmail' => $user instanceof MustVerifyEmail,
-            'status' => session('status'),
             'user' => new UserResource($user),
             'isCurrentUserFollower' => $isCurrentUserFollower,
             'followersCount' => $user->followers_count,
-            'followers' => Inertia::scroll(fn() => UserGroupResource::collection($user->followers()->paginate(10))),
-            'following' => Inertia::scroll(fn() => UserGroupResource::collection($user->following()->paginate(10))),
-            'posts' => Inertia::scroll(fn() => PostResource::collection($user->posts()->paginate(5))),
-            'images' => Inertia::scroll(fn() => PostAttachmentResource::collection($user->personalImages()->paginate(5))),
+            'followers' => Inertia::scroll(fn() =>
+                UserGroupResource::collection($user->followers()->paginate(10))
+            ),
+            'following' => Inertia::scroll(fn() =>
+                UserGroupResource::collection($user->following()->paginate(10))
+            ),
+            'posts' => Inertia::scroll(fn() =>
+                PostResource::collection($user->posts()->paginate(5))
+            ),
+            'images' => Inertia::scroll(fn() =>
+                PostAttachmentResource::collection(
+                    $user->personalImages()
+                        ->paginate(5)
+                )
+            ),
         ]);
     }
 
