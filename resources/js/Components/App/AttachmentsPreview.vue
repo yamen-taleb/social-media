@@ -1,7 +1,8 @@
 <script setup>
-import { computed, onUnmounted, ref, watch, watchEffect } from 'vue'
-import { TransitionRoot, TransitionChild, Dialog, DialogPanel } from '@headlessui/vue'
+import { computed, onUnmounted, ref, watchEffect } from 'vue'
+import { Dialog, DialogPanel, TransitionChild, TransitionRoot } from '@headlessui/vue'
 import { ChevronLeftIcon, ChevronRightIcon, XMarkIcon } from '@heroicons/vue/24/outline/index.js'
+import { isImage, isVideo } from '@/Composables/helper.js'
 
 const props = defineProps({
   modelValue: {
@@ -113,10 +114,8 @@ const handleKeydown = (e) => {
               tabindex="0"
             >
               <ChevronLeftIcon
-                class="absolute left-4 top-1/2 z-10 h-14 w-14 -translate-y-1/2 cursor-pointer text-gray-500 transition-colors duration-200 hover:text-gray-700"
-                :class="
-                  localAttachments.length === 1 ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
-                "
+                class="absolute left-4 top-1/2 z-10 h-14 w-14 -translate-y-1/2 text-gray-500 transition-colors duration-200 hover:text-gray-700"
+                :class="localIndex === 0 ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'"
                 @click="prev"
                 tabindex="0"
                 aria-label="Previous image"
@@ -139,8 +138,17 @@ const handleKeydown = (e) => {
                 aria-label="Close preview"
               />
               <img
+                v-if="isImage(localAttachments[localIndex])"
                 :src="localAttachments[localIndex].path"
+                loading="lazy"
                 alt="attachment"
+                class="h-full w-full object-contain"
+              />
+              <video
+                v-else-if="isVideo(localAttachments[localIndex])"
+                :src="localAttachments[localIndex].path"
+                controls
+                autoplay
                 class="h-full w-full object-contain"
               />
             </DialogPanel>

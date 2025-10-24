@@ -6,6 +6,7 @@ import { useForm, usePage } from '@inertiajs/vue3'
 import { useToast } from 'vue-toastification'
 import { PaperClipIcon } from '@heroicons/vue/24/outline'
 import PostUploadedImage from '@/Components/App/PostUploadedImage.vue'
+import { isImage, isVideo } from '@/Composables/helper.js'
 // Lazy-load the heavy editor so it doesn't load on initial page render
 const RichEditor = defineAsyncComponent(() => import('@/Components/App/RichEditor.vue'))
 
@@ -92,8 +93,9 @@ watch(
     postForm.description = newValue.description
     postForm.group_id = newValue.group_id
     if (JSON.stringify(newValue) !== '{}' && !newValue.is_new)
-      attachments.value.push(...newValue?.attachments)
-  }
+      attachments.value = [...newValue?.attachments]
+  },
+  { immediate: true }
 )
 
 const handleFileChange = async (e) => {
@@ -114,7 +116,7 @@ const handleFileChange = async (e) => {
 
 async function readFile(file) {
   return new Promise((res, rej) => {
-    if (isImage(file)) {
+    if (isImage(file) || isVideo(file)) {
       const reader = new FileReader()
       reader.onload = () => {
         res(reader.result)
@@ -125,10 +127,6 @@ async function readFile(file) {
       res(null)
     }
   })
-}
-
-const isImage = (attachment) => {
-  return attachment.type.startsWith('image/') || attachment.type === 'jpg'
 }
 </script>
 

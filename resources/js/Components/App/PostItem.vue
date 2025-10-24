@@ -12,6 +12,7 @@ import { computed } from 'vue'
 import { MenuItem } from '@headlessui/vue'
 import { ClipboardIcon, EyeIcon } from '@heroicons/vue/24/outline'
 import useCopy from '@/Composables/useCopy.js'
+import { isImage, isVideo } from '@/Composables/helper.js'
 
 const props = defineProps({
   post: Object,
@@ -20,9 +21,6 @@ const props = defineProps({
 const authUser = usePage().props.auth.user
 const isPostOwner = computed(() => props.post.user.id === authUser.id)
 const isAdmin = computed(() => props.post.group?.role === 'admin')
-const isImage = (attachment) => {
-  return attachment.type.startsWith('image/') || attachment.type === 'jpg'
-}
 
 const postBody = computed(() =>
   props.post.description?.replace(/(#\w+)(?![^<]*<\/a>)/g, (match, group) => {
@@ -145,6 +143,14 @@ const copyUrl = () => {
             height="800"
             decoding="async"
             :fetchpriority="index === 0 ? 'high' : 'auto'"
+          />
+        </template>
+        <template v-else-if="isVideo(attachment)">
+          <video
+            :class="[post.attachments?.length === 1 ? 'max-h-72 object-contain' : 'object-cover']"
+            :src="attachment.path"
+            class="aspect-square w-full rounded-md"
+            @click="showAttachmentPreview(post.attachments, index)"
           />
         </template>
         <template v-else>

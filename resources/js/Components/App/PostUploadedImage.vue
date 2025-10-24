@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { ArrowUturnLeftIcon, XMarkIcon } from '@heroicons/vue/24/outline/index.js'
 import { usePage } from '@inertiajs/vue3'
+import { isImage, isVideo } from '@/Composables/helper.js'
 
 const props = defineProps({
   modelValue: {
@@ -17,14 +18,6 @@ const deletedAttachmentIds = ref([])
 const emit = defineEmits(['update:modelValue', 'deleteAttachment'])
 const attachments = ref(props.modelValue)
 const attachmentExtensions = usePage().props.attachmentExtensions || []
-
-const isImage = (attachment) => {
-  return (
-    attachment.file?.type.startsWith('image/') ||
-    attachment.type === 'png' ||
-    attachment.type === 'jpg'
-  )
-}
 
 const removeFile = (attachment, index) => {
   if (attachment.id) {
@@ -79,6 +72,14 @@ const revertRemoveFile = (attachment) => {
           :class="[attachments?.length === 1 ? 'object-contain' : 'object-cover']"
           :src="attachment.url || attachment.path"
           alt=""
+          class="aspect-square w-full rounded-md"
+        />
+      </template>
+      <template v-else-if="isVideo(attachment)">
+        <video
+          :class="[attachments?.length === 1 ? 'object-contain' : 'object-cover']"
+          :src="attachment.url || attachment.path"
+          controls
           class="aspect-square w-full rounded-md"
         />
       </template>
