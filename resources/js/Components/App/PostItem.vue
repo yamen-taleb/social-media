@@ -24,6 +24,13 @@ const isImage = (attachment) => {
   return attachment.type.startsWith('image/') || attachment.type === 'jpg'
 }
 
+const postBody = computed(() =>
+  props.post.description.replace(/(#\w+)(?![^<]*<\/a>)/g, (match, group) => {
+    const encodedGroup = encodeURIComponent(group)
+    return `<a href="/searchPage/${encodedGroup}" class="hashtag">${group}</a>`
+  })
+)
+
 const emit = defineEmits(['editClick', 'showAttachmentPreview', 'showPostReview'])
 const openEditModel = () => {
   emit('editClick', props.post)
@@ -99,7 +106,7 @@ const copyUrl = () => {
     </div>
     <!-- Rest of your template remains the same -->
     <div class="ck-content-output mb-3">
-      <ShowLessReadMore :content="post.description" />
+      <ShowLessReadMore :content="postBody" />
     </div>
     <div
       v-if="post.attachments?.length"

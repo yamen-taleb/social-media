@@ -55,7 +55,7 @@ const searchGlobe = () => {
 const debounceSearch = debounce(searchGlobe, 500)
 
 const searchEnter = () => {
-  router.get(route('searchPage', { search: search.value }))
+  router.get(route('searchPage', { search: encodeURIComponent(search.value) }))
 }
 </script>
 

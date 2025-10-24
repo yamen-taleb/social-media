@@ -63,7 +63,10 @@ watch(
   () => props.modelValue,
   (isOpen) => {
     if (isOpen) loadComments()
-    else setTimeout(() => (comments.value = []), 300)
+    else {
+      setTimeout(() => (comments.value = []), 300)
+      commentsPaginationLinks.value = {}
+    }
   },
   { immediate: true }
 )

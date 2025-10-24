@@ -128,3 +128,8 @@
     text-decoration: #4b9afa;
     color: blue;
 }
+
+.ck-content-output a.hashtag {
+    background-color: #eaf4ff;
+    color: #4156e2;
+}
