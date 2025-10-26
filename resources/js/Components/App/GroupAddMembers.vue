@@ -3,6 +3,7 @@ import Model from '@/Components/Model.vue'
 import { ref } from 'vue'
 import { debounce } from 'lodash'
 import { useToast } from 'vue-toastification'
+import TextInput from '../../../../vendor/laravel/breeze/stubs/inertia-vue-ts/resources/js/Components/TextInput.vue'
 
 const props = defineProps({
   group: {
@@ -60,9 +61,9 @@ const close = () => {
 <template>
   <Model title="Add Members" @close="close">
     <div class="mt-4">
-      <label class="block text-sm font-medium text-gray-700">Search Users</label>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Search Users</label>
       <div class="relative mt-1">
-        <input
+        <TextInput
           v-model="searchQuery"
           class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
           placeholder="Search by name, username, or email"
@@ -78,7 +79,7 @@ const close = () => {
         <div
           v-for="user in searchResults"
           :key="user.id"
-          class="flex items-center justify-between rounded p-2 hover:bg-gray-50"
+          class="flex items-center justify-between rounded p-2 hover:bg-gray-50 dark:hover:bg-gray-700/30"
         >
           <div class="flex items-center">
             <img
@@ -87,8 +88,8 @@ const close = () => {
               class="h-10 w-10 rounded-full object-cover"
             />
             <div class="ml-3">
-              <p class="text-sm font-medium text-gray-900">{{ user.name }}</p>
-              <p class="text-sm text-gray-500">@{{ user.username }}</p>
+              <p class="text-sm font-medium text-gray-900 dark:text-gray-100">{{ user.name }}</p>
+              <p class="text-sm text-gray-500 dark:text-gray-400">@{{ user.username }}</p>
             </div>
           </div>
           <button
@@ -99,7 +100,10 @@ const close = () => {
           </button>
         </div>
       </div>
-      <p v-else-if="searchQuery && !isSearching" class="mt-2 text-sm text-gray-500">
+      <p
+        v-else-if="searchQuery && !isSearching"
+        class="mt-2 text-sm text-gray-500 dark:text-gray-300"
+      >
         No users found
       </p>
     </div>

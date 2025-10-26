@@ -48,14 +48,17 @@ function updateGroup() {
         v-html="group.description.replace(/\n/g, '<br/>')"
       />
     </div>
-    <div v-else class="rounded-md bg-blue-50 p-4">
+    <div v-else class="rounded-md bg-blue-50 p-4 dark:bg-blue-900/30">
       <div class="flex">
         <div class="flex-shrink-0">
-          <InformationCircleIcon aria-hidden="true" class="h-5 w-5 text-blue-400" />
+          <InformationCircleIcon
+            aria-hidden="true"
+            class="h-5 w-5 text-blue-400 dark:text-blue-300"
+          />
         </div>
         <div class="ml-3">
-          <h3 class="text-sm font-medium text-blue-800">No description yet</h3>
-          <div class="mt-2 text-sm text-blue-700">
+          <h3 class="text-sm font-medium text-blue-800 dark:text-blue-300">No description yet</h3>
+          <div class="mt-2 text-sm text-blue-700 dark:text-blue-400">
             <p>This group doesn't have a description yet.</p>
           </div>
         </div>

@@ -41,7 +41,7 @@ const revertRemoveFile = (attachment) => {
 <template>
   <div
     v-if="attachmentErrors.length"
-    class="mt-3 border-l-4 border-amber-500 bg-amber-100 px-3 py-2 text-gray-800"
+    class="mt-3 border-l-4 border-amber-500 bg-amber-100 px-3 py-2 text-gray-800 dark:border-amber-400 dark:bg-amber-50 dark:text-gray-200"
   >
     Valid extensions:
     <small class="block">{{ attachmentExtensions.join(', ') }}</small>
@@ -49,20 +49,20 @@ const revertRemoveFile = (attachment) => {
   <div
     v-if="attachments?.length"
     :class="[attachments?.length === 1 ? 'grid-cols-1' : 'grid-cols-2']"
-    class="relative mt-2 grid gap-2 rounded bg-gray-100 p-1"
+    class="relative mt-2 grid gap-2 rounded bg-gray-100 p-1 dark:border dark:border-gray-700 dark:bg-gray-800"
   >
     <div v-for="(attachment, index) in attachments" :key="index" class="group relative space-y-2">
       <XMarkIcon
         v-if="!attachment.deleted"
-        class="absolute right-2 top-4 z-10 h-6 w-6 cursor-pointer rounded-full bg-white p-1 opacity-75 transition-all duration-200 hover:opacity-100"
+        class="absolute right-2 top-4 z-10 h-6 w-6 cursor-pointer rounded-full bg-white p-1 opacity-75 transition-all duration-200 hover:opacity-100 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600 dark:hover:text-gray-100"
         @click="removeFile(attachment, index)"
       />
       <div
         v-if="attachment.deleted"
-        class="absolute inset-0 z-10 flex cursor-pointer flex-col items-center justify-end bg-black/50 text-sm text-white transition-all duration-200 hover:bg-black/60"
+        class="absolute inset-0 z-10 flex cursor-pointer flex-col items-center justify-end bg-black/50 text-xs text-white transition-all duration-200 hover:bg-black/60 dark:text-gray-200"
       >
         <ArrowUturnLeftIcon
-          class="absolute right-2 top-4 z-10 h-6 w-6 cursor-pointer rounded-full bg-white p-1 text-gray-600 opacity-75 transition-all duration-200 hover:opacity-100"
+          class="absolute right-2 top-4 z-10 h-6 w-6 cursor-pointer rounded-full bg-white p-1 text-gray-600 opacity-75 transition-all duration-200 hover:opacity-100 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600 dark:hover:text-gray-100"
           @click="revertRemoveFile(attachment)"
         />
         To be deleted
@@ -85,7 +85,7 @@ const revertRemoveFile = (attachment) => {
       </template>
       <template v-else>
         <div
-          class="flex aspect-square w-full items-center justify-center rounded-md border bg-gray-100"
+          class="flex aspect-square w-full items-center justify-center rounded-md border bg-gray-100 dark:bg-gray-700"
         >
           <span class="text-gray-500">{{ attachment.name || 'File' }}</span>
         </div>

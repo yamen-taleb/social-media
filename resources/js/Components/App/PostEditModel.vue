@@ -146,9 +146,12 @@ async function readFile(file) {
               leave-to="opacity-0 scale-95"
             >
               <DialogPanel
-                class="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all"
+                class="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all dark:bg-gray-800"
               >
-                <DialogTitle as="h3" class="text-lg font-medium leading-6 text-gray-800">
+                <DialogTitle
+                  as="h3"
+                  class="text-lg font-medium leading-6 text-gray-800 dark:text-gray-200"
+                >
                   {{ post.is_new ? 'Create Post' : 'Update Post' }}
                 </DialogTitle>
                 <div class="mt-4">
@@ -156,6 +159,7 @@ async function readFile(file) {
                     <div class="flex items-center justify-between">
                       <Transition>
                         <PostUserHeader
+                          tabindex="0"
                           v-if="show"
                           :show-time="false"
                           :user="post.is_new ? authUser : post.user"
@@ -167,7 +171,7 @@ async function readFile(file) {
                         title="Select files"
                         type="button"
                       >
-                        <PaperClipIcon class="size-6 text-white" />
+                        <PaperClipIcon class="size-6 text-white dark:text-gray-100" />
                         <input
                           class="absolute inset-0 h-full w-full cursor-pointer opacity-0"
                           multiple
@@ -187,14 +191,13 @@ async function readFile(file) {
 
                 <div class="mt-4 flex items-center justify-end gap-2">
                   <button
-                    class="inline-flex justify-center rounded-md border border-transparent bg-gray-100 px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:ring-offset-2"
-                    type="submit"
+                    class="inline-flex justify-center rounded-md border border-transparent bg-gray-100 px-4 py-2 text-xs font-medium text-gray-900 hover:bg-gray-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:ring-offset-2 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600/20 dark:hover:text-gray-100"
                     @click="closeModal"
                   >
                     Cancel
                   </button>
                   <button
-                    class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                    class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-xs font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 dark:bg-blue-400/10 dark:text-blue-400 dark:hover:bg-blue-500/20"
                     @click="submit"
                   >
                     Save
@@ -209,6 +212,10 @@ async function readFile(file) {
   </teleport>
 </template>
 <style scoped>
+:deep([tabindex]:focus) {
+  outline: none;
+}
+
 .v-enter-active,
 .v-leave-active {
   transition: opacity 0.5s ease;

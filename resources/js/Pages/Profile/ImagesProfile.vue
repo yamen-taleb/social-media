@@ -41,7 +41,7 @@ const showAttachmentPreviewModel = (index) => {
       </div>
     </InfiniteScroll>
   </div>
-  <div v-else class="text-center text-gray-500">No Photos</div>
+  <div v-else class="text-center text-gray-500 dark:text-gray-400">No Photos</div>
   <AttachmentsPreview
     v-model="showAttachmentPreview"
     :attachments="attachmentsPreview.attachments"

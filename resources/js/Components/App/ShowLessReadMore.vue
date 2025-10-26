@@ -10,15 +10,17 @@ const props = defineProps({
 </script>
 
 <template>
-  <div>
+  <div class="dark:text-gray-200">
     <Disclosure v-slot="{ open }">
-      <div v-html="content?.substring(0, 200)" v-if="!open" />
+      <div v-html="content?.substring(0, 200)" v-if="!open" class="prose dark:prose-invert" />
       <DisclosurePanel>
-        <div v-html="content" />
+        <div v-html="content" class="prose dark:prose-invert" />
       </DisclosurePanel>
 
       <div class="flex justify-end" v-if="content?.length > 200">
-        <DisclosureButton class="text-blue-500 hover:text-blue-600 hover:underline">
+        <DisclosureButton
+          class="text-blue-500 hover:text-blue-600 hover:underline dark:text-blue-400 dark:hover:text-blue-500"
+        >
           <span v-if="!open">Read more</span>
           <span v-else>Show less</span>
         </DisclosureButton>

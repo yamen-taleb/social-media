@@ -17,7 +17,7 @@ defineProps({
   <div v-for="record in records">
     <Link
       :href="route(routeName, record.username || record.slug)"
-      class="flex gap-2 rounded-lg px-3 py-2 hover:bg-gray-50"
+      class="flex gap-2 rounded-lg px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-700/50"
     >
       <img
         :alt="record.name"
@@ -29,10 +29,10 @@ defineProps({
         class="h-12 w-12 shrink-0 rounded-full object-cover"
       />
       <div>
-        <h3 class="truncate text-sm font-medium text-gray-900">
+        <h3 class="truncate text-sm font-medium text-gray-900 dark:text-gray-200">
           {{ record.name }}
         </h3>
-        <p class="truncate text-sm text-gray-500">@{{ record.username || record.slug }}</p>
+        <p class="truncate text-sm text-gray-500 dark:text-gray-400">@{{ record.username || record.slug }}</p>
       </div>
     </Link>
   </div>

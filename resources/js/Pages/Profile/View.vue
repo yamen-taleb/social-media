@@ -73,7 +73,7 @@ const followUser = () => {
 <template>
   <AuthenticatedLayout>
     <div class="mx-auto h-full w-[768px] overflow-auto">
-      <div class="bg-white">
+      <div class="bg-white dark:bg-gray-800">
         <CoverPicture
           :allowed-to-updated="isMyProfile"
           :cover-path="user.cover"
@@ -87,24 +87,24 @@ const followUser = () => {
           />
           <div class="flex flex-1 items-center justify-between pl-4 pr-8">
             <div>
-              <h2 class="text-lg font-bold">{{ user.name }}</h2>
-              <small class="text-xs text-gray-600">
+              <h2 class="text-lg font-bold text-gray-900 dark:text-white">{{ user.name }}</h2>
+              <small class="text-xs text-gray-600 dark:text-gray-300">
                 {{ localFollowersCount }}
                 {{ localFollowersCount === 1 ? 'follower' : 'followers' }}
               </small>
             </div>
             <template v-if="authUser.id !== user.id">
-              <PrimaryButton v-if="!localIsCurrentUserFollower" @click="followUser"
-                >Follow
+              <PrimaryButton v-if="!localIsCurrentUserFollower" @click="followUser">
+                Follow
               </PrimaryButton>
               <PrimaryButton v-else @click="followUser">Unfollow</PrimaryButton>
             </template>
           </div>
         </div>
       </div>
-      <div class="border-t">
+      <div class="border-t dark:border-gray-700">
         <TabGroup>
-          <TabList class="flex bg-white">
+          <TabList class="flex bg-white dark:bg-gray-800">
             <Tab v-slot="{ selected }" as="template">
               <TabItem :selected="selected" text="Posts" />
             </Tab>
@@ -129,9 +129,14 @@ const followUser = () => {
                 :posts="posts.data"
                 :showCreatePost="authUser.id === user.id"
               />
-              <div v-else class="bg-white p-3 text-center text-gray-500 shadow">No Posts Yet</div>
+              <div
+                v-else
+                class="bg-white p-3 text-center text-gray-500 shadow dark:bg-gray-800 dark:text-gray-400"
+              >
+                No Posts Yet
+              </div>
             </TabPanel>
-            <TabPanel class="bg-white p-3 shadow">
+            <TabPanel class="bg-white p-3 shadow dark:bg-gray-800">
               <div v-if="followers.data.length > 0" class="space-y-3">
                 <InfiniteScroll data="followers">
                   <div class="grid grid-cols-2 gap-2">
@@ -145,9 +150,9 @@ const followUser = () => {
                   </div>
                 </InfiniteScroll>
               </div>
-              <div v-else class="bg-white p-3 text-center text-gray-500 shadow">No Followers</div>
+              <div v-else class="text-center text-gray-500 dark:text-gray-400">No Followers</div>
             </TabPanel>
-            <TabPanel class="bg-white p-3 shadow">
+            <TabPanel class="bg-white p-3 shadow dark:bg-gray-800">
               <div v-if="following.data.length > 0" class="space-y-3">
                 <InfiniteScroll data="following">
                   <div class="grid grid-cols-2 gap-2">
@@ -161,9 +166,9 @@ const followUser = () => {
                   </div>
                 </InfiniteScroll>
               </div>
-              <div v-else class="bg-white p-3 text-center text-gray-500 shadow">No Following</div>
+              <div v-else class="text-center text-gray-500 dark:text-gray-400">No Following</div>
             </TabPanel>
-            <TabPanel class="bg-white p-3 shadow">
+            <TabPanel class="bg-white p-3 shadow dark:bg-gray-800">
               <ImagesProfile :images />
             </TabPanel>
             <TabPanel v-if="isMyProfile">
@@ -175,5 +180,4 @@ const followUser = () => {
     </div>
   </AuthenticatedLayout>
 </template>
-
 <style scoped></style>

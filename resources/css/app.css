@@ -8,20 +8,28 @@
     }
 
     .scrollbar-thin::-webkit-scrollbar {
-        width: 7px;
-    }
-
-    .scrollbar-thin::-webkit-scrollbar-thumb {
-        background-color: #d1d5db; /* gray-300 */
-        border-radius: 4px;
-    }
-
-    .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-        background-color: #9ca3af; /* gray-400 */
+        width: 6px;
+        height: 6px;
     }
 
     .scrollbar-thin::-webkit-scrollbar-track {
-        background-color: #f3f4f6; /* gray-100 */
+        background: transparent;
+        border-radius: 3px;
+    }
+
+    .scrollbar-thin::-webkit-scrollbar-thumb {
+        background-color: #9ca3af; /* gray-400 */
+        border-radius: 3px;
+        transition: background-color 0.2s ease-in-out;
+    }
+
+    .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+        background-color: #6b7280; /* gray-500 */
+    }
+
+    /* Dark mode styles */
+    .dark .scrollbar-thin::-webkit-scrollbar-thumb {
+        background-color: #4b5563; /* gray-600 */
     }
 
     .hide-scrollbar {
@@ -32,49 +40,24 @@
     .hide-scrollbar::-webkit-scrollbar {
         display: none; /* Chrome, Safari, Opera */
     }
-}
 
+    .dark .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+        background-color: #6b7280; /* gray-500 */
+    }
 
-.ck-editor  > blockquote,
-.ck-content > dl,
-.ck-content > dd,
-.ck-content > h1,
-.ck-content > h2,
-.ck-content > h3,
-.ck-content > h4,
-.ck-content > h5,
-.ck-content > h6,
-.ck-content > hr,
-.ck-content > figure,
-.ck-content > p,
-.ck-content > pre {
-    margin: revert;
-}
+    /* Firefox scrollbar */
+    .scrollbar-thin {
+        scrollbar-width: thin;
+        scrollbar-color: #9ca3af transparent; /* gray-400 */
+    }
 
-.ck-content > ol,
-.ck-content > ul {
-    list-style: revert;
-    margin: revert;
-    padding: revert;
-}
+    .dark .scrollbar-thin {
+        scrollbar-color: #4b5563 transparent; /* gray-600 */
+    }
 
-.ck-content > table {
-    border-collapse: revert;
-}
-
-.ck-content > h1,
-.ck-content > h2,
-.ck-content > h3,
-.ck-content > h4,
-.ck-content > h5,
-.ck-content > h6 {
-    font-size: revert;
-    font-weight: revert;
-}
-
-.ck-content a {
-    text-decoration: underline;
-    color: #4b9afa;
+    .dark .ck-content-output a.hashtag {
+        @apply text-gray-200 bg-gray-700;
+    }
 }
 
 .ck-content-output > blockquote,
@@ -133,3 +116,4 @@
     background-color: #eaf4ff;
     color: #4156e2;
 }
+

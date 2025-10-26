@@ -110,18 +110,18 @@ const handleKeydown = (e) => {
           >
             <DialogPanel
               ref="dialogPanel"
-              class="relative h-[calc(100vh-4rem)] w-full transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all"
+              class="relative h-[calc(100vh-4rem)] w-full transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all dark:bg-gray-800"
               tabindex="0"
             >
               <ChevronLeftIcon
-                class="absolute left-4 top-1/2 z-10 h-14 w-14 -translate-y-1/2 text-gray-500 transition-colors duration-200 hover:text-gray-700"
+                class="absolute left-4 top-1/2 z-10 h-14 w-14 -translate-y-1/2 text-gray-500 transition-colors duration-200 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
                 :class="localIndex === 0 ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'"
                 @click="prev"
                 tabindex="0"
                 aria-label="Previous image"
               />
               <ChevronRightIcon
-                class="absolute right-4 top-1/2 z-10 h-14 w-14 -translate-y-1/2 text-gray-500 transition-colors duration-200 hover:text-gray-700"
+                class="absolute right-4 top-1/2 z-10 h-14 w-14 -translate-y-1/2 text-gray-500 transition-colors duration-200 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
                 :class="
                   localIndex === localAttachments.length - 1
                     ? 'cursor-not-allowed opacity-50'
@@ -132,25 +132,37 @@ const handleKeydown = (e) => {
                 aria-label="Next image"
               />
               <XMarkIcon
-                class="absolute right-4 top-4 z-10 h-8 w-8 cursor-pointer text-gray-500 transition-colors duration-200 hover:text-gray-700"
+                class="absolute right-4 top-4 z-10 h-8 w-8 cursor-pointer text-gray-500 transition-colors duration-200 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
                 @click="closeModal"
                 tabindex="0"
                 aria-label="Close preview"
               />
-              <img
-                v-if="isImage(localAttachments[localIndex])"
-                :src="localAttachments[localIndex].path"
-                loading="lazy"
-                alt="attachment"
-                class="h-full w-full object-contain"
-              />
-              <video
-                v-else-if="isVideo(localAttachments[localIndex])"
-                :src="localAttachments[localIndex].path"
-                controls
-                autoplay
-                class="h-full w-full object-contain"
-              />
+              <Transition
+                enter-active-class="transition-all duration-300"
+                enter-from-class="opacity-50 -ml-32"
+              >
+                <img
+                  v-if="isImage(localAttachments[localIndex])"
+                  :src="localAttachments[localIndex].path"
+                  :key="localIndex"
+                  loading="lazy"
+                  alt="attachment"
+                  class="h-full w-full object-contain"
+                />
+              </Transition>
+              <Transition
+                enter-active-class="transition-all duration-300"
+                enter-from-class="opacity-50 -ml-32"
+              >
+                <video
+                  v-if="isVideo(localAttachments[localIndex])"
+                  :src="localAttachments[localIndex].path"
+                  :key="localIndex"
+                  controls
+                  autoplay
+                  class="h-full w-full object-contain"
+                />
+              </Transition>
             </DialogPanel>
           </TransitionChild>
         </div>

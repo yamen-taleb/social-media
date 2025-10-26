@@ -43,17 +43,17 @@ const updateRole = (event) => {
 
 <template>
   <div
-    class="group relative flex items-center gap-3 rounded-md bg-white p-3 shadow transition-all hover:border-b-2 hover:border-indigo-500"
+    class="group relative flex items-center gap-3 rounded-md bg-white p-3 shadow transition-all hover:border-b-2 hover:border-indigo-500 dark:bg-gray-950/30 dark:hover:border-indigo-700"
   >
     <Link :href="route('profile', { user: username })" class="flex flex-1 items-center gap-3">
       <img
         :alt="name"
         :src="avatar || 'http://social-media.test/storage/images/default-avatar.png'"
-        class="h-12 w-12 shrink-0 rounded-full object-cover"
+        class="h-12 w-12 shrink-0 rounded-full border-2 border-white object-cover dark:border-gray-700"
       />
       <div class="min-w-0">
-        <h3 class="truncate text-sm font-medium text-gray-900">{{ name }}</h3>
-        <p class="truncate text-sm text-gray-500">@{{ username }}</p>
+        <h3 class="truncate text-sm font-medium text-gray-900 dark:text-gray-100">{{ name }}</h3>
+        <p class="truncate text-sm text-gray-500 dark:text-gray-400">@{{ username }}</p>
       </div>
     </Link>
 
@@ -75,26 +75,28 @@ const updateRole = (event) => {
     <div v-else-if="showRoleSelect && isAdmin" class="shrink-0">
       <select
         :class="{
-          'bg-indigo-50 text-indigo-700': currentRole === 'admin',
-          'bg-gray-50 text-gray-700': currentRole === 'member',
+          'bg-indigo-50 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300':
+            currentRole === 'admin',
+          'bg-gray-50 text-gray-700 dark:bg-gray-700/50 dark:text-gray-300':
+            currentRole === 'member',
         }"
         :disabled="isOwner"
         :value="currentRole"
-        class="rounded-md border-gray-300 py-1 pl-2 pr-8 text-sm focus:border-indigo-500 focus:ring-indigo-500"
+        class="rounded-md border-gray-300 py-1 pl-2 pr-8 text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-600 dark:focus:border-indigo-500 dark:focus:ring-indigo-500"
         @change="updateRole"
       >
         <option
           v-for="role in roles"
           :key="role.value"
           :value="role.value"
-          class="bg-white text-gray-900"
+          class="bg-white text-gray-900 dark:bg-gray-800 dark:text-gray-200"
         >
           {{ role.label }}
         </option>
       </select>
       <button
         :disabled="isOwner"
-        class="ml-1 rounded-md bg-gray-800 px-3 py-1 text-sm text-white transition-all hover:bg-gray-600 disabled:hidden"
+        class="ml-1 rounded-md bg-gray-800 px-3 py-1 text-sm text-white transition-all hover:bg-gray-600 disabled:hidden dark:bg-indigo-700 dark:hover:bg-indigo-600 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800"
         @click.prevent.stop="emit('remove', id)"
       >
         delete

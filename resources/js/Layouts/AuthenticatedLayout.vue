@@ -6,6 +6,7 @@ import DropdownLink from '@/Components/DropdownLink.vue'
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue'
 import { Link, usePage } from '@inertiajs/vue3'
 import GlobalSearch from '@/Components/App/GlobalSearch.vue'
+import ThemeToggle from '@/Components/ThemeToggle.vue'
 
 const showingNavigationDropdown = ref(false)
 
@@ -13,8 +14,8 @@ const authUser = usePage().props.auth.user
 </script>
 
 <template>
-  <div class="flex h-full flex-col overflow-hidden bg-gray-50">
-    <nav class="border-b border-gray-100 bg-white">
+  <div class="flex h-full flex-col overflow-hidden bg-gray-50 dark:bg-gray-900">
+    <nav class="border-b border-gray-100 bg-white dark:border-gray-700 dark:bg-gray-800">
       <!-- Primary Navigation Menu -->
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="flex h-16 justify-between">
@@ -22,13 +23,16 @@ const authUser = usePage().props.auth.user
             <!-- Logo -->
             <div class="relative flex shrink-0 items-center gap-8">
               <Link :href="route('home')">
-                <ApplicationLogo class="block h-9 w-auto fill-current text-gray-800" />
+                <ApplicationLogo
+                  class="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200"
+                />
               </Link>
               <GlobalSearch />
             </div>
           </div>
 
-          <div class="hidden sm:ms-6 sm:flex sm:items-center">
+          <div class="hidden gap-4 sm:ms-6 sm:flex sm:items-center">
+            <ThemeToggle />
             <!-- Settings Dropdown -->
             <div class="relative ms-3">
               <Dropdown v-if="authUser" align="right" width="48">
@@ -36,7 +40,7 @@ const authUser = usePage().props.auth.user
                   <span class="inline-flex rounded-md">
                     <button
                       type="button"
-                      class="text-gray-500bg-white inline-flex items-center rounded-md border border-transparent px-3 py-2 text-sm font-medium leading-4 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none"
+                      class="inline-flex items-center rounded-md border border-transparent px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none dark:text-gray-200 dark:hover:text-gray-100"
                     >
                       {{ authUser.name }}
 
@@ -146,14 +150,19 @@ const authUser = usePage().props.auth.user
     </nav>
 
     <!-- Page Heading -->
-    <header class="bg-white shadow" v-if="$slots.header">
+    <header
+      class="bg-white shadow transition-colors dark:bg-gray-800 dark:shadow-gray-700"
+      v-if="$slots.header"
+    >
       <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
         <slot name="header" />
       </div>
     </header>
 
     <!-- Page Content -->
-    <main class="flex-1 overflow-hidden">
+    <main
+      class="duration-50 flex-1 overflow-y-auto transition-colors duration-100 dark:bg-gray-900"
+    >
       <slot />
     </main>
   </div>

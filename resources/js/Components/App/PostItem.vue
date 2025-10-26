@@ -25,7 +25,7 @@ const isAdmin = computed(() => props.post.group?.role === 'admin')
 const postBody = computed(() =>
   props.post.description?.replace(/(#\w+)(?![^<]*<\/a>)/g, (match, group) => {
     const encodedGroup = encodeURIComponent(group)
-    return `<a href="/searchPage/${encodedGroup}" class="hashtag">${group}</a>`
+    return `<a href="/searchPage/${encodedGroup}" class="hashtag dark:hashtag">${group}</a>`
   })
 )
 
@@ -66,7 +66,9 @@ const copyUrl = () => {
 </script>
 
 <template>
-  <div class="mb-6 rounded-md border bg-white px-3 py-4 shadow-sm">
+  <div
+    class="mb-6 rounded-md border border-gray-200 bg-white px-3 py-4 shadow-sm dark:border-gray-700 dark:bg-gray-800"
+  >
     <div class="flex items-center justify-between px-2 py-4">
       <PostUserHeader :created_at="post.created_at" :group="post.group" :user="post.user" />
       <EditDeleteMenu
@@ -78,7 +80,7 @@ const copyUrl = () => {
         <MenuItem v-slot="{ active }">
           <Link
             :class="[
-              active ? 'bg-violet-500 text-white' : 'text-gray-900',
+              active ? 'bg-violet-500 text-white' : 'text-gray-900 dark:text-gray-100',
               'group flex w-full items-center gap-1 rounded-md px-2 py-2 text-sm',
             ]"
             :href="route('posts.show', post.id)"
@@ -91,7 +93,7 @@ const copyUrl = () => {
         <MenuItem v-slot="{ active }">
           <button
             :class="[
-              active ? 'bg-violet-500 text-white' : 'text-gray-900',
+              active ? 'bg-violet-500 text-white' : 'text-gray-900 dark:text-gray-100',
               'group flex w-full items-center gap-1 rounded-md px-2 py-2 text-sm',
             ]"
             @click="copyUrl"
@@ -102,7 +104,6 @@ const copyUrl = () => {
         </MenuItem>
       </EditDeleteMenu>
     </div>
-    <!-- Rest of your template remains the same -->
     <div class="ck-content-output mb-3">
       <ShowLessReadMore :content="postBody" />
     </div>
@@ -119,7 +120,7 @@ const copyUrl = () => {
         <a
           v-if="!(index === 3 && post.attachments.length > 4)"
           :href="route('post-attachments.download', attachment)"
-          class="absolute right-2 top-2 rounded bg-gray-700 p-1 text-white opacity-0 shadow transition-all hover:bg-gray-800 group-hover:opacity-100"
+          class="absolute right-2 top-2 z-10 rounded bg-gray-700 p-1 text-white opacity-0 shadow transition-all hover:bg-gray-800 group-hover:opacity-100 dark:bg-gray-600 dark:hover:bg-gray-500"
         >
           <Download />
         </a>
@@ -155,16 +156,16 @@ const copyUrl = () => {
         </template>
         <template v-else>
           <div
-            class="flex aspect-square w-full items-center justify-center rounded-md border bg-gray-100"
+            class="flex aspect-square w-full items-center justify-center rounded-md border border-gray-200 bg-gray-100 dark:border-gray-600 dark:bg-gray-700"
           >
-            <span class="text-gray-500">{{ attachment.name || 'File' }}</span>
+            <span class="text-gray-500 dark:text-gray-300">{{ attachment.name || 'File' }}</span>
           </div>
         </template>
       </div>
     </div>
     <div class="mt-1 flex flex-col gap-2">
       <div class="flex items-center justify-between px-2">
-        <div class="ml-1 flex items-center text-sm text-gray-500">
+        <div class="ml-1 flex items-center text-sm text-gray-500 dark:text-gray-400">
           <span v-if="post.num_of_reactions > 0">
             {{ post.num_of_reactions }}
             {{ post.num_of_reactions === 1 ? 'like' : 'likes' }}
@@ -172,7 +173,7 @@ const copyUrl = () => {
         </div>
         <div
           v-if="post.num_of_comments > 0"
-          class="ml-1 flex cursor-pointer items-center text-sm text-gray-500 hover:text-gray-700 hover:underline"
+          class="ml-1 flex cursor-pointer items-center text-sm text-gray-500 hover:text-gray-700 hover:underline dark:text-gray-400 dark:hover:text-gray-300"
           @click="emit('showPostReview', post)"
         >
           <span>

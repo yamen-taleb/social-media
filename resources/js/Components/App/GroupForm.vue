@@ -37,12 +37,12 @@ defineProps({
     />
     <InputError :message="form.errors.description" class="mt-1" />
   </div>
-  <div class="flex items-start space-x-3 rounded-lg bg-gray-50 p-4">
+  <div class="flex items-start space-x-3 rounded-lg bg-gray-50 p-4 dark:bg-gray-700/50">
     <Checkbox id="auto_approval" v-model:checked="form.auto_approval" class="mt-0.5" />
     <div class="flex-1">
       <label class="cursor-pointer" for="auto_approval">
-        <span class="block font-medium text-gray-900">Auto-approve members</span>
-        <span class="text-sm text-gray-500">
+        <span class="block font-medium text-gray-900 dark:text-gray-200">Auto-approve members</span>
+        <span class="text-sm text-gray-500 dark:text-gray-400">
           New members will be automatically approved to join
         </span>
       </label>

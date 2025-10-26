@@ -1,0 +1,37 @@
+/* Light mode (optional overrides) */
+
+/* ✅ Dark mode styles */
+.dark .ck.ck-toolbar {
+    background-color: #2d3748 !important;
+    border-bottom-color: #4a5568 !important;
+}
+
+.dark .ck.ck-content {
+    background-color: #1a202c !important;
+    color: #e2e8f0 !important;
+}
+
+.dark .ck.ck-button {
+    color: #e2e8f0 !important;
+}
+
+.dark .ck.ck-button:hover,
+.dark .ck.ck-button.ck-on {
+    background-color: #4a5568 !important;
+}
+
+.dark .ck.ck-dropdown__panel {
+    background-color: #2d3748 !important;
+    color: #e2e8f0 !important;
+}
+
+.dark blockquote {
+    border-left-color: #63b3ed !important;
+    color: #a0aec0 !important;
+}
+
+.dark h2,
+.dark h3,
+.dark h4 {
+    color: #e2e8f0 !important;
+}

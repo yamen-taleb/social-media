@@ -11,18 +11,31 @@ export default {
   ],
 
   safelist: [
+    // Background colors with opacity
     {
-      pattern: /bg-(red|green|blue|yellow)-(50|100|400|500|700)/,
+      pattern: /bg-(red|blue|green|yellow)-(50|100|400|500|700)\/(10|20)/,
     },
+    // Text colors
     {
-      pattern: /text-(red|green|blue|yellow)-(400|700|800)/,
+      pattern: /text-(red|blue|green|yellow)-(400|700|800)/,
     },
+    // Inset ring colors with opacity
     {
-      pattern: /inset-ring-(red|green|blue)-(400|600)\/(10|20)/,
+      pattern: /inset-ring-(red|blue|green)-(400|600)\/(10|20)/,
     },
+    // Dark mode specific classes
+    'bg-red-50',
     'dark:bg-red-400/10',
     'dark:text-red-400',
+    'dark:bg-blue-400/10',
+    'dark:text-blue-400',
+    'dark:bg-gray-200',
+    // Additional dark mode classes from RoleEnum.php
+    'dark:inset-ring-red-400/20',
+    'dark:inset-ring-blue-400/20',
   ],
+
+  darkMode: 'class',
 
   theme: {
     extend: {

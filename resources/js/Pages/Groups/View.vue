@@ -136,7 +136,7 @@ const removeMember = (user_id) => {
 <template>
   <AuthenticatedLayout>
     <div class="mx-auto h-full w-[768px]">
-      <div class="bg-white">
+      <div class="bg-white dark:bg-gray-800">
         <CoverPicture
           :allowed-to-updated="isAdmin"
           :cover-path="group.cover"
@@ -149,7 +149,7 @@ const removeMember = (user_id) => {
             @update="updateProfilePicture"
           />
           <div class="flex flex-1 items-center justify-between p-4">
-            <h2 class="text-lg font-bold">{{ group.name }}</h2>
+            <h2 class="text-lg font-bold text-gray-900 dark:text-white">{{ group.name }}</h2>
             <PrimaryButton v-if="isAdmin" @click="showAddMembersModal = true"
               >Add Members
             </PrimaryButton>
@@ -165,9 +165,9 @@ const removeMember = (user_id) => {
           </div>
         </div>
       </div>
-      <div class="border-t">
+      <div class="border-t dark:border-gray-700">
         <TabGroup>
-          <TabList class="flex bg-white">
+          <TabList class="flex bg-white dark:bg-gray-800">
             <Tab v-slot="{ selected }" as="template">
               <TabItem :selected="selected" text="Posts" />
             </Tab>
@@ -187,9 +187,15 @@ const removeMember = (user_id) => {
 
           <TabPanels class="mt-2">
             <TabPanel>
-              <PostList :group_id="group.id" :posts="posts.data" />
+              <PostList v-if="posts.data.length > 0" :group_id="group.id" :posts="posts.data" />
+              <div
+                v-else
+                class="bg-white p-3 text-center text-gray-500 shadow dark:bg-gray-800 dark:text-gray-400"
+              >
+                No Posts Yet
+              </div>
             </TabPanel>
-            <TabPanel>
+            <TabPanel class="bg-white p-3 shadow dark:bg-gray-800">
               <div v-if="members.data.length > 0" class="space-y-3">
                 <InfiniteScroll data="members">
                   <div class="grid grid-cols-2 gap-2">
@@ -210,9 +216,9 @@ const removeMember = (user_id) => {
                   </div>
                 </InfiniteScroll>
               </div>
-              <div v-else class="text-center text-gray-500">No Members</div>
+              <div v-else class="text-center text-gray-500 dark:text-gray-400">No Members</div>
             </TabPanel>
-            <TabPanel v-if="isAdmin" class="bg-white p-3 shadow">
+            <TabPanel v-if="isAdmin" class="bg-white p-3 shadow dark:bg-gray-800">
               <div v-if="requests.data.length > 0" class="space-y-3">
                 <InfiniteScroll data="requests">
                   <div class="grid grid-cols-2 gap-2">
@@ -228,12 +234,14 @@ const removeMember = (user_id) => {
                   </div>
                 </InfiniteScroll>
               </div>
-              <div v-else class="text-center text-gray-500">No pending requests</div>
+              <div v-else class="text-center text-gray-500 dark:text-gray-400">
+                No pending requests
+              </div>
             </TabPanel>
-            <TabPanel class="bg-white p-3 shadow">
+            <TabPanel class="bg-white p-3 shadow dark:bg-gray-800">
               <ImagesProfile :images />
             </TabPanel>
-            <TabPanel class="space-y-4 bg-white p-6 shadow">
+            <TabPanel class="space-y-4 bg-white p-6 shadow dark:bg-gray-800">
               <GroupAbout :group :isAdmin />
             </TabPanel>
           </TabPanels>

@@ -43,10 +43,24 @@ class StorePostRequest extends FormRequest
         ];
     }
 
-    public function messages()
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
     {
+        $extensions = str_replace(',', ', ', self::$attachmentExtensions);
+        
         return [
-            'attachments.*.mimes' => 'Invalid file.',
+            'attachments.max' => 'You can upload a maximum of :max files.',
+            'attachments.*.required' => 'The attachment file is required.',
+            'attachments.*.file' => 'The attachment must be a valid file.',
+            'attachments.*.mimes' => 'Invalid file type. Allowed types: ' . $extensions . '.',
+            'attachments.*.max' => 'The file size must not exceed 10MB.',
+            'description.max' => 'The post description must not exceed 1000 characters.',
+            'title.max' => 'The post title must not exceed 255 characters.',
+            'group_id.exists' => 'The selected group does not exist.',
         ];
     }
 }

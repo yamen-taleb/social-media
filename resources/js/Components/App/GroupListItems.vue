@@ -1,6 +1,5 @@
 <script setup>
 import GroupItem from '@/Components/App/GroupItem.vue'
-import TextInput from '@/Components/TextInput.vue'
 import { ref } from 'vue'
 
 defineProps({
@@ -15,13 +14,10 @@ const searchKeyword = ref('')
 
 <template>
   <div class="scrollbar-thin flex-1 overflow-y-auto py-6">
-    <div v-if="false" class="text-center font-semibold text-gray-400">
+    <div v-if="false" class="text-center font-semibold text-gray-400 dark:text-gray-500">
       You are not joining any groups.
     </div>
-    <div v-else>
-      <TextInput :model-value="searchKeyword" class="mb-2" placeholder="Type to search" />
-      <GroupItem v-for="group in groups" :key="group.id" :group />
-    </div>
+    <GroupItem v-else v-for="group in groups" :key="group.id" :group />
   </div>
 </template>
 

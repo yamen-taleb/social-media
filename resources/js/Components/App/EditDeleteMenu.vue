@@ -18,8 +18,11 @@ const emit = defineEmits(['edit', 'delete'])
 <template>
   <Menu as="div" class="relative inline-block text-left">
     <div>
-      <MenuButton aria-label="Post options" class="rounded-full p-2 hover:bg-gray-50">
-        <EllipsisVerticalIcon class="h-5 w-5" />
+      <MenuButton
+        aria-label="Post options"
+        class="rounded-full p-2 hover:bg-gray-50 dark:hover:bg-gray-700"
+      >
+        <EllipsisVerticalIcon class="h-5 w-5 text-gray-600 dark:text-gray-300" />
       </MenuButton>
     </div>
 
@@ -32,14 +35,14 @@ const emit = defineEmits(['edit', 'delete'])
       leave-to-class="transform scale-95 opacity-0"
     >
       <MenuItems
-        class="absolute right-0 z-10 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none"
+        class="absolute right-0 z-30 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none dark:divide-gray-700 dark:bg-gray-800 dark:ring-gray-700"
       >
         <div class="px-1 py-1">
           <slot />
           <MenuItem v-if="isOwner" v-slot="{ active }">
             <button
               :class="[
-                active ? 'bg-violet-500 text-white' : 'text-gray-900',
+                active ? 'bg-violet-500 text-white' : 'text-gray-900 dark:text-gray-100',
                 'group flex w-full items-center gap-1 rounded-md px-2 py-2 text-sm',
               ]"
               @click="emit('edit')"
@@ -52,7 +55,7 @@ const emit = defineEmits(['edit', 'delete'])
           <MenuItem v-if="isAdmin || isOwner" v-slot="{ active }">
             <button
               :class="[
-                active ? 'bg-red-500 text-white' : 'text-gray-900',
+                active ? 'bg-red-500 text-white' : 'text-gray-900 dark:text-gray-100',
                 'group flex w-full items-center gap-1 rounded-md px-2 py-2 text-sm',
               ]"
               @click="emit('delete')"

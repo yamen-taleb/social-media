@@ -14,6 +14,7 @@ import {
 import { Ckeditor } from '@ckeditor/ckeditor5-vue'
 import { onBeforeUnmount, ref, watch } from 'vue'
 import 'ckeditor5/ckeditor5.css'
+import '../../../css/ckeditor.css'
 
 const props = defineProps({
   modelValue: {
@@ -125,7 +126,7 @@ const config = {
 </script>
 
 <template>
-  <div class="ck-content rich-editor-wrapper">
+  <div class="ck-content rich-editor-wrapper dark:rich-editor-dark">
     <ckeditor
       :editor="ClassicEditor"
       :config="config"

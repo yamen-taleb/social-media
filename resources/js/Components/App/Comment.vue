@@ -79,7 +79,7 @@ const loadSubComments = () => {
 
 <template>
   <div class="relative flex items-start justify-between">
-    <div class="flex flex-1 items-start gap-3">
+    <div class="flex flex-1 items-start gap-3 dark:text-gray-200">
       <Link
         :href="
           route('profile', {
@@ -91,7 +91,7 @@ const loadSubComments = () => {
         <img
           :alt="comment.user.name + ' profile picture'"
           :src="comment.user.avatar"
-          class="h-10 w-10 rounded-full border-2 border-white object-cover shadow-sm"
+          class="h-10 w-10 rounded-full border-2 border-white object-cover shadow-sm dark:border-gray-700"
         />
       </Link>
 
@@ -116,23 +116,29 @@ const loadSubComments = () => {
             cancel
           </span>
         </div>
-        <div v-else class="inline-block rounded-2xl rounded-tl-none bg-gray-100 px-4 py-2">
+        <div
+          v-else
+          class="inline-block rounded-2xl rounded-tl-none bg-gray-100 px-4 py-2 dark:bg-gray-700"
+        >
           <Link
             :href="
               route('profile', {
                 username: comment.user.username,
               })
             "
-            class="text-sm font-semibold text-gray-900 hover:underline"
+            class="text-sm font-semibold text-gray-900 hover:underline dark:text-gray-200"
           >
             {{ comment.user.name }}
           </Link>
 
-          <ShowLessReadMore :content="comment.body" class="mt-0.5 text-sm text-gray-800" />
+          <ShowLessReadMore
+            :content="comment.body"
+            class="mt-0.5 text-sm text-gray-800 dark:text-gray-200"
+          />
         </div>
 
         <div class="ml-2 mt-1 flex items-center space-x-3">
-          <span class="text-xs text-gray-500">
+          <span class="text-xs text-gray-500 dark:text-gray-400">
             {{ comment.time_ago }}
           </span>
           <button
@@ -211,7 +217,7 @@ const loadSubComments = () => {
       <MenuItem v-slot="{ active }">
         <button
           :class="[
-            active ? 'bg-violet-500 text-white' : 'text-gray-900',
+            active ? 'bg-violet-500 text-white' : 'text-gray-900 dark:text-gray-100',
             'group flex w-full items-center gap-1 rounded-md px-2 py-2 text-sm',
           ]"
           @click="useCopy(comment.body)"

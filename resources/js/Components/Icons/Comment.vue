@@ -2,7 +2,7 @@
 
 <template>
   <div
-    class="flex flex-1 cursor-pointer items-center justify-center rounded border-r bg-gray-100 p-2 hover:bg-gray-200"
+    class="flex flex-1 cursor-pointer items-center justify-center rounded border-r bg-gray-100 p-2 hover:bg-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:hover:bg-gray-600"
   >
     <svg
       xmlns="http://www.w3.org/2000/svg"

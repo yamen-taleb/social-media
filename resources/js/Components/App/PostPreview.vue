@@ -122,9 +122,11 @@ const loadComments = () => {
             leave-to="opacity-0 scale-95"
           >
             <DialogPanel
-              class="hide-scrollbar relative max-h-[calc(100vh-4rem)] w-1/2 transform overflow-hidden overflow-y-auto rounded-2xl bg-white text-left align-middle shadow-xl transition-all"
+              class="hide-scrollbar relative max-h-[calc(100vh-4rem)] w-1/2 transform overflow-hidden overflow-y-auto rounded-2xl bg-white text-left align-middle shadow-xl transition-all dark:bg-gray-800"
             >
-              <div class="my-3 text-center text-lg text-gray-600">{{ post.user.name }}'s post</div>
+              <div class="my-3 text-center text-lg text-gray-600 dark:text-gray-200">
+                {{ post.user.name }}'s post
+              </div>
               <hr />
               <PostItem :post class="rounded-none shadow-none" />
               <Loading v-if="isLoading && comments.length === 0" />
@@ -140,16 +142,16 @@ const loadComments = () => {
               </div>
               <XMarkIcon
                 aria-label="Close preview"
-                class="absolute right-4 top-4 z-10 h-8 w-8 cursor-pointer rounded-full bg-black/25 p-1 text-white transition-colors duration-200 hover:bg-black/50"
+                class="absolute right-4 top-4 z-10 h-8 w-8 cursor-pointer rounded-full bg-black/25 p-1 text-white transition-colors duration-200 hover:bg-black/50 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600/20 dark:hover:text-gray-100"
                 @click="closeModal"
               />
               <div
-                class="relative sticky bottom-0 left-0 z-20 flex items-center gap-1 bg-white px-3 py-2"
+                class="relative sticky bottom-0 left-0 z-20 flex items-center gap-1 bg-white px-3 py-2 dark:bg-gray-800"
               >
                 <img
                   :src="avatar"
                   alt=""
-                  class="h-12 w-12 rounded-full border border-2 object-cover"
+                  class="h-12 w-12 rounded-full border border-2 object-cover dark:border-gray-600 dark:hover:border-indigo-800"
                   loading="lazy"
                   decoding="async"
                   width="48"
@@ -169,7 +171,7 @@ const loadComments = () => {
                 >
                   <PaperAirplaneIcon
                     :class="comment.trim() === '' ? 'cursor-not-allowed' : 'cursor-pointer'"
-                    class="h-5 w-5"
+                    class="h-5 w-5 dark:text-gray-100"
                   />
                 </button>
               </div>

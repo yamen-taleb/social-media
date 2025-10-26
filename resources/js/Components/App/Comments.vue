@@ -61,7 +61,7 @@ const updateComment = (currentComment) => {
 </script>
 
 <template>
-  <div class="mt-3 space-y-4 px-4">
+  <div class="mt-3 space-y-4 px-4 dark:text-gray-200">
     <div
       v-for="comment in comments"
       v-if="comments.length > 0"
@@ -77,11 +77,11 @@ const updateComment = (currentComment) => {
 
     <!-- Empty State -->
     <div v-else v-if="showElse" class="flex flex-col items-center justify-center py-8 text-center">
-      <div class="mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
-        <ChatBubbleOvalLeftEllipsisIcon class="h-6 w-6 text-gray-400" />
+      <div class="mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-700">
+        <ChatBubbleOvalLeftEllipsisIcon class="h-6 w-6 text-gray-400 dark:text-gray-300" />
       </div>
-      <p class="font-medium text-gray-600">No comments yet</p>
-      <p class="mt-1 text-sm text-gray-500">Be the first to comment</p>
+      <p class="font-medium text-gray-600 dark:text-gray-300">No comments yet</p>
+      <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Be the first to comment</p>
     </div>
   </div>
 </template>

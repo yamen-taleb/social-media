@@ -71,7 +71,7 @@ const searchEnter = () => {
         @keydown.enter="searchEnter"
       />
       <MagnifyingGlassIcon
-        class="pointer-events-none absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-500"
+        class="pointer-events-none absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-500 dark:text-gray-200/70"
       />
     </div>
     <Transition>
