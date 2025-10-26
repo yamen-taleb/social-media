@@ -19,10 +19,6 @@ export default {
     {
       pattern: /text-(red|blue|green|yellow)-(400|700|800)/,
     },
-    // Inset ring colors with opacity
-    {
-      pattern: /inset-ring-(red|blue|green)-(400|600)\/(10|20)/,
-    },
     // Dark mode specific classes
     'bg-red-50',
     'dark:bg-red-400/10',

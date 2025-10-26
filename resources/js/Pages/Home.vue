@@ -16,7 +16,7 @@ const props = defineProps({
 </script>
 
 <template>
-  <Head title="Social Media" />
+  <Head title="Home" />
   <AuthenticatedLayout>
     <div class="grid gap-3 px-1 py-3 lg:grid-cols-12">
       <div class="hidden lg:col-span-3 lg:block">
