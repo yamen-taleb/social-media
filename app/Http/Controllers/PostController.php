@@ -83,4 +83,10 @@ class PostController extends Controller
         $this->postService->delete($post);
         return redirect()->back();
     }
+
+    public function pin(Post $post)
+    {
+        $this->postService->pin($post);
+        return back();
+    }
 }

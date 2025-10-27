@@ -72,7 +72,8 @@ class User extends Authenticatable //implements MustVerifyEmail
         return $this->hasMany(Post::class)
             ->whereNull('group_id')
             ->withCommonRelations()
-            ->latest();
+            ->orderBy('is_pinned', 'desc')
+            ->orderByRaw('CASE WHEN is_pinned = 1 THEN updated_at ELSE created_at END DESC');
     }
 
     public function personalImages(): HasManyThrough

@@ -1,5 +1,5 @@
 <script setup>
-import { computed, provide, ref, watch } from 'vue'
+import { computed, nextTick, provide, ref, watch } from 'vue'
 import { Dialog, DialogPanel, TransitionChild, TransitionRoot } from '@headlessui/vue'
 import { PaperAirplaneIcon, XMarkIcon } from '@heroicons/vue/24/outline'
 import PostItem from '@/Components/App/PostItem.vue'
@@ -93,6 +93,17 @@ const loadComments = () => {
       isLoading.value = false
     })
 }
+const commentSection = ref(null)
+
+watch(
+  () => props.modelValue,
+  async (isOpen) => {
+    if (isOpen) {
+      await nextTick()
+      commentSection.value?.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
+)
 </script>
 
 <template>
@@ -107,7 +118,7 @@ const loadComments = () => {
         leave-from="opacity-100"
         leave-to="opacity-0"
       >
-        <div class="fixed inset-0 bg-black/25" />
+        <div class="fixed inset-0 bg-black/25 backdrop-blur-sm" />
       </TransitionChild>
 
       <div class="fixed inset-0 overflow-y-auto">
@@ -129,8 +140,10 @@ const loadComments = () => {
               </div>
               <hr />
               <PostItem :post class="rounded-none shadow-none" />
-              <Loading v-if="isLoading && comments.length === 0" />
-              <Comments v-else v-model:comments="comments" />
+              <div ref="commentSection">
+                <Loading v-if="isLoading && comments.length === 0" />
+                <Comments v-else v-model:comments="comments" />
+              </div>
               <div class="mt-1 flex justify-center" v-if="commentsPaginationLinks?.next_page_url">
                 <button
                   @click="loadComments"

@@ -16,4 +16,14 @@ class PostPolicy
     {
         return $user->id === $post->user_id || $post->group->isAdmin();
     }
+
+    public function pinOnProfile(User $user, Post $post): bool
+    {
+        return $user->id === $post->user_id;
+    }
+
+    public function pinOnGroup(User $user, Post $post): bool
+    {
+        return $post->group->isAdmin();
+    }
 }

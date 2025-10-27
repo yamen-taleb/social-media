@@ -42,9 +42,9 @@ function updateGroup() {
   </template>
   <div v-else class="space-y-4">
     <div v-if="group.description" class="prose max-w-none">
-      <h3 class="text-lg font-medium text-gray-900">About this group</h3>
+      <h3 class="text-lg font-medium text-gray-900 dark:text-white">About this group</h3>
       <div
-        class="mt-2 whitespace-pre-line text-gray-700"
+        class="dark:prose-invert mt-2 whitespace-pre-line text-gray-700 dark:text-gray-200"
         v-html="group.description.replace(/\n/g, '<br/>')"
       />
     </div>

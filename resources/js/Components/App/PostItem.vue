@@ -3,7 +3,7 @@ import Download from '@/Components/Icons/Download.vue'
 import Like from '@/Components/Icons/Like.vue'
 import Comment from '@/Components/Icons/Comment.vue'
 import PostUserHeader from '@/Components/App/PostUserHeader.vue'
-import { Link, router, usePage } from '@inertiajs/vue3'
+import { Link, router, useForm, usePage } from '@inertiajs/vue3'
 import { useToast } from 'vue-toastification'
 import ShowLessReadMore from '@/Components/App/ShowLessReadMore.vue'
 import EditDeleteMenu from '@/Components/App/EditDeleteMenu.vue'
@@ -13,6 +13,7 @@ import { MenuItem } from '@headlessui/vue'
 import { ClipboardIcon, EyeIcon } from '@heroicons/vue/24/outline'
 import useCopy from '@/Composables/useCopy.js'
 import { isImage, isVideo } from '@/Composables/helper.js'
+import { MapPinIcon } from '@heroicons/vue/24/outline/index.js'
 
 const props = defineProps({
   post: Object,
@@ -21,6 +22,8 @@ const props = defineProps({
 const authUser = usePage().props.auth.user
 const isPostOwner = computed(() => props.post.user.id === authUser.id)
 const isAdmin = computed(() => props.post.group?.role === 'admin')
+const isProfilePage = computed(() => window.location.pathname.includes('user'))
+const isGroupPage = computed(() => window.location.pathname.includes('groups'))
 
 const postBody = computed(() =>
   props.post.description?.replace(/(#\w+)(?![^<]*<\/a>)/g, (match, group) => {
@@ -63,6 +66,20 @@ const copyUrl = () => {
   const url = route('posts.show', props.post.id)
   useCopy(url)
 }
+
+const pinUnpinPost = () => {
+  const form = useForm({})
+
+  form.post(route('posts.pin', props.post.id), {
+    preserveScroll: true,
+    onSuccess: () => {
+      useToast().success('Post pinned successfully')
+    },
+    onError: () => {
+      useToast().error('Post pinned failed')
+    },
+  })
+}
 </script>
 
 <template>
@@ -71,38 +88,60 @@ const copyUrl = () => {
   >
     <div class="flex items-center justify-between px-2 py-4">
       <PostUserHeader :created_at="post.created_at" :group="post.group" :user="post.user" />
-      <EditDeleteMenu
-        :isAdmin="isAdmin"
-        :isOwner="isPostOwner"
-        @delete="deletePost"
-        @edit="openEditModel"
-      >
-        <MenuItem v-slot="{ active }">
-          <Link
-            :class="[
-              active ? 'bg-violet-500 text-white' : 'text-gray-900 dark:text-gray-100',
-              'group flex w-full items-center gap-1 rounded-md px-2 py-2 text-sm',
-            ]"
-            :href="route('posts.show', post.id)"
-          >
-            <EyeIcon class="h-5 w-5" />
-            Open Post
-          </Link>
-        </MenuItem>
+      <div class="flex items-center gap-1">
+        <MapPinIcon
+          v-if="(isProfilePage || isGroupPage) && post.is_pinned"
+          class="h-5 w-5 text-gray-200"
+        />
+        <EditDeleteMenu
+          :isAdmin="isAdmin"
+          :isOwner="isPostOwner"
+          @delete="deletePost"
+          @edit="openEditModel"
+        >
+          <MenuItem v-slot="{ active }">
+            <Link
+              :class="[
+                active ? 'bg-violet-500 text-white' : 'text-gray-900 dark:text-gray-100',
+                'group flex w-full items-center gap-1 rounded-md px-2 py-2 text-sm',
+              ]"
+              :href="route('posts.show', post.id)"
+            >
+              <EyeIcon class="h-5 w-5" />
+              Open Post
+            </Link>
+          </MenuItem>
 
-        <MenuItem v-slot="{ active }">
-          <button
-            :class="[
-              active ? 'bg-violet-500 text-white' : 'text-gray-900 dark:text-gray-100',
-              'group flex w-full items-center gap-1 rounded-md px-2 py-2 text-sm',
-            ]"
-            @click="copyUrl"
+          <MenuItem v-slot="{ active }">
+            <button
+              :class="[
+                active ? 'bg-violet-500 text-white' : 'text-gray-900 dark:text-gray-100',
+                'group flex w-full items-center gap-1 rounded-md px-2 py-2 text-sm',
+              ]"
+              @click="copyUrl"
+            >
+              <ClipboardIcon class="h-5 w-5" />
+              Copy Url
+            </button>
+          </MenuItem>
+
+          <MenuItem
+            v-if="(isProfilePage && isPostOwner) || (isGroupPage && isAdmin)"
+            v-slot="{ active }"
           >
-            <ClipboardIcon class="h-5 w-5" />
-            Copy Url
-          </button>
-        </MenuItem>
-      </EditDeleteMenu>
+            <button
+              :class="[
+                active ? 'bg-violet-500 text-white' : 'text-gray-900 dark:text-gray-100',
+                'group flex w-full items-center gap-1 rounded-md px-2 py-2 text-sm',
+              ]"
+              @click="pinUnpinPost"
+            >
+              <MapPinIcon class="h-5 w-5" />
+              {{ post.is_pinned ? 'Unpin' : 'pin' }}
+            </button>
+          </MenuItem>
+        </EditDeleteMenu>
+      </div>
     </div>
     <div class="ck-content-output mb-3">
       <ShowLessReadMore :content="postBody" />

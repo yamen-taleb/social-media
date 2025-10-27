@@ -21,19 +21,21 @@ class PostService
     public function getGroupPosts($groupId)
     {
         return $this->baseQuery()
-            ->where('group_id', $groupId);
+            ->where('group_id', $groupId)
+            ->orderBy('is_pinned', 'desc')
+            ->orderByRaw('CASE WHEN is_pinned = 1 THEN updated_at ELSE created_at END DESC');
     }
 
     protected function baseQuery()
     {
         return Post::query()
-            ->withCommonRelations()
-            ->orderBy('posts.created_at', 'desc');
+            ->withCommonRelations();
     }
 
     public function getHomePosts($user, $followingIds, $groupIds)
     {
         return $this->baseQuery()
+            ->with('group.currentUser')
             ->where(function($query) use ($user, $followingIds, $groupIds) {
                 // User's own posts
                 $query->where('posts.user_id', $user->id);
@@ -50,7 +52,8 @@ class PostService
                 if ($groupIds->filter()->isNotEmpty()) {
                     $query->orWhereIn('posts.group_id', $groupIds);
                 }
-            });
+            })
+            ->latest('posts.created_at');
     }
 
     public function create(array $post)
@@ -124,5 +127,16 @@ class PostService
             ->where('title', 'like', "%{$search}%")
             ->orWhere('description', 'like', "%{$search}%")
             ->paginate(3);
+    }
+
+    public function pin(Post $post)
+    {
+        if ($post->group_id)
+            Gate::authorize('pinOnGroup', $post);
+        else
+            Gate::authorize('pinOnProfile', $post);
+
+        $post->is_pinned = !$post->is_pinned;
+        $post->save();
     }
 }
