@@ -69,11 +69,11 @@ const updateAvatar = () => {
     ></div>
     <div
       v-if="showChangeImage && allowedToUpdated"
-      class="relative mt-3 rounded-md bg-white p-2 text-gray-600 shadow-md hover:text-gray-700"
+      class="relative mt-3 rounded-md bg-white p-2 text-gray-600 shadow-md hover:text-gray-700 dark:bg-gray-800 dark:text-gray-200"
     >
       <div
         v-if="!showEditControls && allowedToUpdated"
-        class="flex items-center gap-2 hover:bg-gray-50"
+        class="flex cursor-pointer items-center gap-2 hover:bg-gray-50 dark:hover:bg-gray-800"
       >
         <PhotoIcon class="h-4 w-4" />
         <span class="text-xs"> Choose picture </span>
@@ -85,11 +85,17 @@ const updateAvatar = () => {
         />
       </div>
       <div v-else-if="allowedToUpdated" class="flex items-center gap-3 text-xs">
-        <button class="mx-auto text-red-500 hover:text-red-600" @click.stop="resetImage">
+        <button
+          class="mx-auto text-red-500 transition-colors hover:text-red-600 dark:text-red-600 dark:hover:text-red-500"
+          @click.stop="resetImage"
+        >
           Cancel
         </button>
-        <span class="h-4 border-l border-gray-300"></span>
-        <button class="mx-auto" @click.stop="updateAvatar">
+        <span class="h-4 border-l border-gray-300 dark:text-gray-200"></span>
+        <button
+          class="mx-auto transition-colors dark:text-gray-200 dark:hover:text-white"
+          @click.stop="updateAvatar"
+        >
           {{ imageForm.processing ? 'Saving...' : 'Save' }}
         </button>
       </div>

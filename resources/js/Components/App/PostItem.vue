@@ -91,7 +91,7 @@ const pinUnpinPost = () => {
       <div class="flex items-center gap-1">
         <MapPinIcon
           v-if="(isProfilePage || isGroupPage) && post.is_pinned"
-          class="h-5 w-5 text-gray-200"
+          class="h-5 w-5 text-gray-600 dark:text-gray-200"
         />
         <EditDeleteMenu
           :isAdmin="isAdmin"

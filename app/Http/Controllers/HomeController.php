@@ -22,14 +22,15 @@ class HomeController extends Controller
     {
         $user = Auth::user();
         $followingIds = $user->following()->pluck('users.id');
-        $groups = $this->groupService->groups();
+        $groups = $this->groupService->groups()->paginate(5);
         $groupIds = $groups->pluck('id');
 
         $posts = $this->postService->getHomePosts($user, $followingIds, $groupIds)->paginate(5);
 
         return Inertia::render('Home', [
             'posts' => Inertia::scroll(fn() => PostResource::collection($posts)),
-            'groups' => GroupResource::collection($groups)
+            'groups' => Inertia::scroll(fn() => GroupResource::collection($groups)),
+            'followers' => Inertia::scroll(fn() => UserSearchResource::collection($user->followers()->paginate(5))),
         ]);
     }
 

@@ -10,7 +10,11 @@ const props = defineProps({
     type: Object,
   },
   groups: {
-    type: Array,
+    type: Object,
+  },
+  followers: {
+    type: Object,
+    required: true,
   },
 })
 </script>
@@ -26,7 +30,7 @@ const props = defineProps({
         <PostList :posts="posts.data" />
       </div>
       <div class="hidden lg:col-span-3 lg:block">
-        <FollowingList />
+        <FollowingList :followers />
       </div>
     </div>
   </AuthenticatedLayout>

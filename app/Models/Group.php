@@ -37,8 +37,7 @@ class Group extends Model
     public function currentUser(): HasOne
     {
         return $this->hasOne(GroupUser::class)
-            ->where('user_id', Auth::id())
-            ->withDefault();
+            ->where('user_id', Auth::id());
     }
 
     public function usersRequests(): BelongsToMany

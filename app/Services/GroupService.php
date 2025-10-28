@@ -34,8 +34,7 @@ class GroupService
         return Auth::user()
             ->groups()
             ->select(['groups.id', 'groups.name', 'groups.slug', 'groups.description', 'groups.thumbnail_path'])
-            ->orderBy('pivot_created_at', 'desc')
-            ->get();
+            ->orderBy('pivot_created_at', 'desc');
     }
 
     public function create(array $params)

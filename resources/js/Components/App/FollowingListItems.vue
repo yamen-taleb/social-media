@@ -1,17 +1,30 @@
 <script setup>
 import FollowingItem from '@/Components/App/FollowingItem.vue'
+import { InfiniteScroll } from '@inertiajs/vue3'
+
+defineProps({
+  followers: {
+    type: Object,
+    required: true,
+  },
+})
 </script>
 
 <template>
-  <div class="scrollbar-thin flex-1 overflow-y-auto py-6">
+  <div class="scrollbar-thin flex-1 overflow-y-auto pt-6">
     <div class="text-center font-semibold text-gray-400 dark:text-gray-500" v-if="false">
-      You don't have friends yet!
+      You don't have followers yet!
     </div>
     <div v-else class="space-y-2">
-      <FollowingItem image="https://picsum.photos/100" name="Laravel Developers" />
-      <FollowingItem image="https://picsum.photos/100" name="Vue Developers" />
-      <FollowingItem image="https://picsum.photos/100" name="Laravel Developers" />
-      <FollowingItem image="https://picsum.photos/100" name="Vue Developers" />
+      <InfiniteScroll data="followers" preserve-url>
+        <FollowingItem
+          v-for="follower in followers.data"
+          :key="follower.id"
+          :name="follower.name"
+          :image="follower.avatar"
+          :username="follower.username"
+        />
+      </InfiniteScroll>
     </div>
   </div>
 </template>

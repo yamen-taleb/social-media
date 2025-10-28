@@ -41,7 +41,7 @@ const updateCover = () => {
     <img :src="showImagePreview" alt="Cover photo" class="h-[200px] w-full object-cover" />
     <div
       v-if="!showEditControls && allowedToUpdated"
-      class="absolute right-1 top-1 flex cursor-pointer items-center gap-1 rounded bg-gray-200 p-1 text-gray-700 opacity-0 transition-all group-hover/cover:opacity-100"
+      class="absolute right-1 top-1 flex cursor-pointer items-center gap-1 rounded bg-gray-200 p-1 text-gray-700 opacity-0 transition-all group-hover/cover:opacity-100 dark:bg-gray-800 dark:text-gray-300"
     >
       <Photo />
       Edit cover
@@ -56,7 +56,7 @@ const updateCover = () => {
       class="absolute right-1 top-1 flex cursor-pointer items-center gap-1 rounded p-1 opacity-0 transition-all group-hover/cover:opacity-100"
     >
       <button
-        class="flex items-center gap-1 rounded bg-red-500 p-2 text-white hover:bg-red-600"
+        class="flex items-center gap-1 rounded bg-red-500 p-2 text-white hover:bg-red-600 dark:text-gray-100"
         @click="resetImage"
       >
         <XMarkIcon class="h-5 w-5" />
@@ -64,7 +64,7 @@ const updateCover = () => {
       </button>
       <button
         :disabled="imageForm.processing"
-        class="flex items-center gap-1 rounded bg-gray-900 p-2 text-white hover:bg-gray-800"
+        class="flex items-center gap-1 rounded bg-gray-900 p-2 text-white hover:bg-gray-800 dark:text-gray-100"
         @click="updateCover"
       >
         <CheckCircleIcon class="h-5 w-5" />
