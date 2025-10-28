@@ -5,7 +5,7 @@ import GroupCreateModel from '@/Components/App/GroupCreateModel.vue'
 
 defineProps({
   groups: {
-    type: Array,
+    type: Object,
     required: true,
   },
 })

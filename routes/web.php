@@ -4,6 +4,7 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\FollowerController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PostAttachmentController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
@@ -58,6 +59,10 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/search', [HomeController::class, 'search'])->name('search');
     Route::get('/searchPage/{search}', SearchController::class)->name('searchPage');
+
+    Route::delete('/notifications/{notificationId}', [NotificationController::class, 'destroy'])->name('notifications.destroy');
+    Route::delete('/notifications', [NotificationController::class, 'markAllRead'])->name('notifications.markAllRead');
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
 });
 
 Route::get('/groups/{group}/invitations/accept/{token}', [GroupController::class, 'acceptInvitation'])

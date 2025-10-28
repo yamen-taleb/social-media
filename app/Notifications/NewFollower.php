@@ -27,7 +27,7 @@ class NewFollower extends Notification implements ShouldQueue
      */
     public function via(object $notifiable): array
     {
-        return ['mail'];
+        return ['database', 'mail'];
     }
 
     /**
@@ -52,7 +52,10 @@ class NewFollower extends Notification implements ShouldQueue
     public function toArray(object $notifiable): array
     {
         return [
-            //
+            'message' => "{$this->follower->name} has just followed you",
+            'user_url' => route('profile', $this->follower->username),
+            'avatar' => $this->follower->avatar_path ? url('storage/' . $this->follower->avatar_path) : null,
+            'action' => null,
         ];
     }
 }

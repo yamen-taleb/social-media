@@ -7,6 +7,7 @@ import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue'
 import { Link, usePage } from '@inertiajs/vue3'
 import GlobalSearch from '@/Components/App/GlobalSearch.vue'
 import ThemeToggle from '@/Components/ThemeToggle.vue'
+import Notifications from '@/Components/Notifications.vue'
 
 const showingNavigationDropdown = ref(false)
 
@@ -33,6 +34,7 @@ const authUser = usePage().props.auth.user
 
           <div class="hidden gap-4 sm:ms-6 sm:flex sm:items-center">
             <ThemeToggle />
+            <Notifications />
             <!-- Settings Dropdown -->
             <div class="relative ms-3">
               <Dropdown v-if="authUser" align="right" width="48">

@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Http\Requests\StorePostRequest;
+use App\Http\Resources\NotificationsResource;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
@@ -37,6 +38,11 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user() ? new UserResource($request->user()) : null,
             ],
             'attachmentExtensions' => explode(',', StorePostRequest::$attachmentExtensions),
+            'notifications' => auth()->check() ? NotificationsResource::collection(auth()->user()
+                ->notifications()
+                ->latest()
+                ->paginate(5)) : null,
+            'unread' => auth()->check() ? auth()->user()->unreadNotifications->count() : 0,
         ];
     }
 }

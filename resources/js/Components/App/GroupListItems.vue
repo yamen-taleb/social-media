@@ -5,7 +5,7 @@ import { InfiniteScroll } from '@inertiajs/vue3'
 
 defineProps({
   groups: {
-    type: Array,
+    type: Object,
     required: true,
   },
 })
