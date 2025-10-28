@@ -18,7 +18,7 @@ defineProps({
       <img
         :src="group.thumbnail"
         alt="Group thumbnail"
-        class="h-12 w-12 flex-1 rounded-full border border-gray-200 dark:border-gray-600"
+        class="h-12 w-12 rounded-full border border-gray-200 object-cover dark:border-gray-600"
         loading="lazy"
       />
       <div class="overflow-hidden">

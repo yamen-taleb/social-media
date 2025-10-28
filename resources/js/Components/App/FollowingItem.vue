@@ -16,7 +16,8 @@ defineProps({
       <img
         :src="image"
         alt="image"
-        class="h-12 w-12 rounded-full border border-gray-200 dark:border-gray-600"
+        class="h-12 w-12 rounded-full border border-gray-200 object-cover dark:border-gray-600"
+        loading="lazy"
       />
       <div class="flex-1">
         <h3 class="text-md font-semibold text-gray-900 dark:text-gray-100">{{ name }}</h3>

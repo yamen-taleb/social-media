@@ -114,7 +114,7 @@ select {
   background-repeat: no-repeat;
   background-size: 1.5em 1.5em;
   padding-right: 2.5rem;
-  color-adjust: exact;
+  print-color-adjust: exact;
 }
 </style>
 
