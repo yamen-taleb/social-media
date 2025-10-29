@@ -5,7 +5,7 @@ import { createInertiaApp } from '@inertiajs/vue3'
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers'
 import { createApp, h } from 'vue'
 import { ZiggyVue } from '../../vendor/tightenco/ziggy'
-import { useToast } from 'vue-toastification'
+import Toast from 'vue-toastification'
 import 'vue-toastification/dist/index.css'
 
 // Lazy load heavy components
@@ -22,10 +22,8 @@ createInertiaApp({
     const app = createApp({ render: () => h(App, props) })
 
     app.use(plugin)
+    app.use(Toast)
     app.use(ZiggyVue)
-
-    // Register toast as a global property
-    app.config.globalProperties.$toast = useToast()
 
     // Register global components
     app.component('RichEditor', RichEditor)

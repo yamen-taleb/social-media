@@ -11,7 +11,7 @@ defineProps({
 </script>
 
 <template>
-  <div class="scrollbar-thin flex-1 overflow-y-auto pt-6">
+  <div class="scrollbar-thin flex-1 overflow-y-auto">
     <div class="text-center font-semibold text-gray-400 dark:text-gray-500" v-if="false">
       You don't have followers yet!
     </div>

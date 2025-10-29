@@ -79,7 +79,7 @@ class PostService
 
                 Notification::send(
                     $group->users,
-                    new CreateGroupPost($postRecord->user, $group->name, $postRecord->id)
+                    new CreateGroupPost($postRecord->user, $group->name, $postRecord->id, $group->thumbnail_path)
                 );
             }
         });

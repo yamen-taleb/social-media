@@ -210,6 +210,7 @@ const loadSubComments = () => {
     <EditDeleteMenu
       v-if="(isCommentOwner || isPostOwner) && currentComment?.id !== comment.id"
       :isOwner="isCommentOwner"
+      :isPostOwner="isPostOwner"
       class="opacity-0 transition-all duration-200 group-hover:opacity-100"
       @delete="emit('delete', comment)"
       @edit="editComment"

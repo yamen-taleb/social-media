@@ -15,7 +15,7 @@ class CreateGroupPost extends Notification implements ShouldQueue
     /**
      * Create a new notification instance.
      */
-    public function __construct(public User $user, public string $group, public int $postId)
+    public function __construct(public User $user, public string $group, public int $postId, public ?string $thumbnail)
     {
         //
     }
@@ -27,7 +27,7 @@ class CreateGroupPost extends Notification implements ShouldQueue
      */
     public function via(object $notifiable): array
     {
-        return ['mail'];
+        return ['mail', 'database'];
     }
 
     /**
@@ -51,7 +51,10 @@ class CreateGroupPost extends Notification implements ShouldQueue
     public function toArray(object $notifiable): array
     {
         return [
-            //
+            'message' => "New post in {$this->group} by {$this->user->name}",
+            'avatar' => $this->thumbnail ? url('storage/' . $this->thumbnail) : null,
+            'url' => route('posts.show', $this->postId),
+            'action' => null,
         ];
     }
 }

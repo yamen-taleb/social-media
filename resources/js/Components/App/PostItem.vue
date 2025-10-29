@@ -13,7 +13,7 @@ import { MenuItem } from '@headlessui/vue'
 import { ClipboardIcon, EyeIcon } from '@heroicons/vue/24/outline'
 import useCopy from '@/Composables/useCopy.js'
 import { isImage, isVideo } from '@/Composables/helper.js'
-import { MapPinIcon } from '@heroicons/vue/24/outline/index.js'
+import PinIcon from '@/Components/PinIcon.vue'
 
 const props = defineProps({
   post: Object,
@@ -89,10 +89,7 @@ const pinUnpinPost = () => {
     <div class="flex items-center justify-between px-2 py-4">
       <PostUserHeader :created_at="post.created_at" :group="post.group" :user="post.user" />
       <div class="flex items-center gap-1">
-        <MapPinIcon
-          v-if="(isProfilePage || isGroupPage) && post.is_pinned"
-          class="h-5 w-5 text-gray-600 dark:text-gray-200"
-        />
+        <PinIcon v-if="(isProfilePage || isGroupPage) && post.is_pinned" />
         <EditDeleteMenu
           :isAdmin="isAdmin"
           :isOwner="isPostOwner"
@@ -136,7 +133,7 @@ const pinUnpinPost = () => {
               ]"
               @click="pinUnpinPost"
             >
-              <MapPinIcon class="h-5 w-5" />
+              <PinIcon />
               {{ post.is_pinned ? 'Unpin' : 'pin' }}
             </button>
           </MenuItem>

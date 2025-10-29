@@ -27,7 +27,7 @@ class DeleteCommentByPostOwner extends Notification implements ShouldQueue
      */
     public function via(object $notifiable): array
     {
-        return ['mail'];
+        return ['mail', 'database'];
     }
 
     /**
@@ -52,7 +52,10 @@ class DeleteCommentByPostOwner extends Notification implements ShouldQueue
     public function toArray(object $notifiable): array
     {
         return [
-            //
+            'message' => "Your comment on {$this->owner}'s post has been removed by the post owner.",
+            'avatar' => $this->user->avatar_path ? url('storage/' . $this->user->avatar_path) : null,
+            'url' => route('posts.show', $this->postId),
+            'action' => null,
         ];
     }
 }

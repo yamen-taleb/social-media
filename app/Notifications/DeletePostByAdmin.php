@@ -28,7 +28,7 @@ class DeletePostByAdmin extends Notification implements ShouldQueue
      */
     public function via(object $notifiable): array
     {
-        return ['mail'];
+        return ['mail', 'database'];
     }
 
     /**
@@ -53,7 +53,10 @@ class DeletePostByAdmin extends Notification implements ShouldQueue
     public function toArray(object $notifiable): array
     {
         return [
-            //
+            'message' => "Your post in {$this->group->name} has been removed by an administrator.",
+            'avatar' => $this->group->thumbnail_path ? url('storage/' . $this->group->thumbnail_path) : null,
+            'url' => route('groups.show', $this->group->slug),
+            'action' => null,
         ];
     }
 }

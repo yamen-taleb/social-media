@@ -27,7 +27,7 @@ class UserRemovedFromGroup extends Notification implements ShouldQueue
      */
     public function via(object $notifiable): array
     {
-        return ['mail'];
+        return ['mail', 'database'];
     }
 
     /**
@@ -49,7 +49,10 @@ class UserRemovedFromGroup extends Notification implements ShouldQueue
     public function toArray(object $notifiable): array
     {
         return [
-            //
+            'message' => "You have been removed from {$this->group->name}",
+            'avatar' => $this->group->thumbnail_path ? url('storage/' . $this->group->thumbnail_path) : null,
+            'url' => route('groups.show', $this->group->slug),
+            'action' => null,
         ];
     }
 }

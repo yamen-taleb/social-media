@@ -30,7 +30,7 @@ class PostReaction extends Notification implements ShouldQueue
      */
     public function via(object $notifiable): array
     {
-        return ['mail'];
+        return ['mail', 'database'];
     }
 
     public function toMail(object $notifiable): MailMessage
@@ -92,7 +92,10 @@ class PostReaction extends Notification implements ShouldQueue
     public function toArray(object $notifiable): array
     {
         return [
-            //
+            'message' => $this->getMessage($this->reactable instanceof \App\Models\Comment, $this->getReactionEmoji($this->reactionType)),
+            'url' => route('posts.show', $this->reactable instanceof \App\Models\Comment ? $this->reactable->post_id : $this->reactable),
+            'avatar' => $this->reactor->avatar_path ? url('storage/' . $this->reactor->avatar_path) : null,
+            'action' => null,
         ];
     }
 }

@@ -28,7 +28,7 @@ class RequestToJoin extends Notification implements ShouldQueue
      */
     public function via(object $notifiable): array
     {
-        return ['mail'];
+        return ['mail', 'database'];
     }
 
     /**
@@ -50,7 +50,10 @@ class RequestToJoin extends Notification implements ShouldQueue
     public function toArray(object $notifiable): array
     {
         return [
-            //
+            'message' => "{$this->user->name} requested to join {$this->group->name}",
+            'avatar' => $this->user->avatar_path ? url('storage/' . $this->user->avatar_path) : null,
+            'url' => route('groups.show', $this->group->slug),
+            'action' => null,
         ];
     }
 }

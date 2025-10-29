@@ -27,7 +27,7 @@ class CreatePostComment extends Notification implements ShouldQueue
      */
     public function via(object $notifiable): array
     {
-        return ['mail'];
+        return ['mail', 'database'];
     }
 
     /**
@@ -51,7 +51,10 @@ class CreatePostComment extends Notification implements ShouldQueue
     public function toArray(object $notifiable): array
     {
         return [
-            //
+            'message' => "New comment on your post by {$this->user->name}",
+            'avatar' => $this->user->avatar_path ? url('storage/' . $this->user->avatar_path) : null,
+            'url' => route('posts.show', $this->postId),
+            'action' => null,
         ];
     }
 }

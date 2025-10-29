@@ -4,6 +4,7 @@ import { BellIcon, XMarkIcon } from '@heroicons/vue/24/outline/index.js'
 import { Link, usePage } from '@inertiajs/vue3'
 import axiosClient from '@/axiosClient.js'
 import { useToast } from 'vue-toastification'
+import PrimaryButton from '@/Components/PrimaryButton.vue'
 
 const isOpen = ref(false)
 const dropdown = ref(null)
@@ -30,12 +31,12 @@ const notifications = ref(usePage().props.notifications?.data)
 const unreadCount = ref(usePage().props.unread)
 const nextUrl = ref(usePage().props.notifications?.links?.next)
 
-const deleteNotification = (id) => {
+const deleteNotification = (notification) => {
   axiosClient
-    .delete(route('notifications.destroy', id))
+    .delete(route('notifications.destroy', notification.id))
     .then(() => {
-      notifications.value = notifications.value.filter((n) => n.id !== id)
-      unreadCount.value = unreadCount.value - 1
+      notifications.value = notifications.value.filter((n) => n.id !== notification.id)
+      if (!notification.read) unreadCount.value = unreadCount.value - 1
     })
     .catch(() => {
       useToast().error('Failed to delete notification')
@@ -57,11 +58,17 @@ const markAllAsRead = () => {
 const loadMore = () => {
   if (nextUrl.value)
     axiosClient
-      .get(route('notifications.index'), {
-        params: {
-          page: usePage().props.notifications.meta.current_page + 1,
+      .get(
+        route('notifications.index'),
+        {
+          params: {
+            page: usePage().props.notifications.meta.current_page + 1,
+          },
         },
-      })
+        {
+          preserveScroll: true,
+        }
+      )
       .then(({ data }) => {
         notifications.value = [...notifications.value, ...data.data]
         nextUrl.value = data.links.next
@@ -116,7 +123,7 @@ const loadMore = () => {
           </div>
         </div>
 
-        <div class="scrollbar-thin max-h-96 overflow-y-auto">
+        <div class="hide-scrollbar max-h-96 overflow-y-auto">
           <div v-if="notifications?.length === 0" class="px-4 py-6 text-center">
             <p class="text-sm text-gray-500 dark:text-gray-400">No new notifications</p>
           </div>
@@ -125,8 +132,8 @@ const loadMore = () => {
             <Link
               v-for="notification in notifications"
               :key="notification.id"
-              :href="notification.user_url"
-              class="relative flex items-center gap-2 border-b border-gray-100 px-4 py-3 text-sm transition-colors hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-700"
+              :href="notification.url"
+              class="relative flex items-center gap-2 border-b border-gray-100 px-4 py-3 pr-6 text-sm transition-colors hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-700"
               :class="{ 'bg-blue-50 dark:bg-gray-700/50': !notification.read }"
             >
               <img
@@ -137,17 +144,26 @@ const loadMore = () => {
                 width="56"
                 height="56"
                 sizes="(max-width: 640px) 100vw, 50vw"
-                class="h-12 w-12 rounded-full border-2 border-gray-200 object-cover transition-all hover:border-blue-700 dark:border-gray-600 dark:hover:border-indigo-800"
+                class="h-12 w-12 shrink-0 place-self-start rounded-full border-2 border-gray-200 object-cover transition-all hover:border-blue-700 dark:border-gray-600 dark:hover:border-indigo-800"
               />
               <div>
                 <p class="text-sm text-gray-700 dark:text-gray-200">{{ notification.message }}</p>
                 <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
                   {{ notification.time }}
                 </p>
+                <Link
+                  v-if="notification.action"
+                  :method="notification.action?.method"
+                  :href="notification.action?.url"
+                >
+                  <PrimaryButton padding="px-2 py-1" class="mt-3">
+                    {{ notification.action.buttonText }}
+                  </PrimaryButton>
+                </Link>
               </div>
               <button
                 class="absolute right-2 top-2 rounded-full p-1.5 text-gray-500 transition-colors hover:bg-gray-200 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-gray-200"
-                @click.prevent="deleteNotification(notification.id)"
+                @click.prevent="deleteNotification(notification)"
                 aria-label="Dismiss notification"
               >
                 <XMarkIcon class="h-3.5 w-3.5" />

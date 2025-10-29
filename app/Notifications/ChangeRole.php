@@ -27,7 +27,7 @@ class ChangeRole extends Notification implements ShouldQueue
      */
     public function via(object $notifiable): array
     {
-        return ['mail'];
+        return ['mail', 'database'];
     }
 
     /**
@@ -50,12 +50,10 @@ class ChangeRole extends Notification implements ShouldQueue
     {
 
         return [
-            'group_id' => $this->group->id,
-            'group_name' => $this->group->name,
-            'new_role' => $this->role,
             'message' => "Your role in {$this->group->name} has been updated to ".ucfirst($this->role),
-            'action_url' => route('groups.show', $this->group),
-            'action_text' => 'View Group',
+            'avatar' => $this->group->thumbnail_path ? url('storage/' . $this->group->thumbnail_path) : null,
+            'url' => route('groups.show', $this->group->slug),
+            'action' => null,
         ];
     }
 }

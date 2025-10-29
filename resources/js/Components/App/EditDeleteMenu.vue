@@ -11,6 +11,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  isPostOwner: {
+    type: Boolean,
+    default: false,
+  },
 })
 const emit = defineEmits(['edit', 'delete'])
 </script>
@@ -52,7 +56,7 @@ const emit = defineEmits(['edit', 'delete'])
             </button>
           </MenuItem>
 
-          <MenuItem v-if="isAdmin || isOwner" v-slot="{ active }">
+          <MenuItem v-if="isAdmin || isOwner || isPostOwner" v-slot="{ active }">
             <button
               :class="[
                 active ? 'bg-red-500 text-white' : 'text-gray-900 dark:text-gray-100',
