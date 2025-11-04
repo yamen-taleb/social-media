@@ -2,8 +2,8 @@
 
 namespace App\Http\Resources;
 
-use App\RoleEnum;
-use App\UserApprovalEnum;
+use App\Enums\RoleEnum;
+use App\Enums\UserApprovalEnum;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Storage;

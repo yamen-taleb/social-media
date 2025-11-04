@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use App\RoleEnum;
-use App\UserApprovalEnum;
+use App\Enums\RoleEnum;
+use App\Enums\UserApprovalEnum;
 use Illuminate\Database\Eloquent\Model;
 
 class GroupUser extends Model

@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\ReactionEnum;
+use App\Enums\ReactionEnum;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 

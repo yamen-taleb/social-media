@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\UserApprovalEnum;
 use App\Models\GroupUser;
 use App\Models\User;
-use App\UserApprovalEnum;
 use Illuminate\Foundation\Http\FormRequest;
 
 class addMemberRequest extends FormRequest

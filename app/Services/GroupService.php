@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Enums\RoleEnum;
+use App\Enums\UserApprovalEnum;
 use App\Http\Requests\addMemberRequest;
 use App\Http\Requests\SearchUserGroupRequest;
 use App\Http\Requests\UpdateRoleRequest;
@@ -13,8 +15,6 @@ use App\Notifications\AcceptToJoin;
 use App\Notifications\ChangeRole;
 use App\Notifications\RequestToJoin;
 use App\Notifications\UserRemovedFromGroup;
-use App\RoleEnum;
-use App\UserApprovalEnum;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;

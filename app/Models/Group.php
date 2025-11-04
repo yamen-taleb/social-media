@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use App\RoleEnum;
-use App\UserApprovalEnum;
+use App\Enums\RoleEnum;
+use App\Enums\UserApprovalEnum;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;

@@ -2,9 +2,9 @@
 
 namespace App\Policies;
 
+use App\Enums\RoleEnum;
 use App\Models\Group;
 use App\Models\User;
-use App\RoleEnum;
 
 class GroupPolicy
 {
