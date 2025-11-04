@@ -5,9 +5,11 @@ import { Link, usePage } from '@inertiajs/vue3'
 import axiosClient from '@/axiosClient.js'
 import { useToast } from 'vue-toastification'
 import PrimaryButton from '@/Components/PrimaryButton.vue'
+import Loading from '@/Components/App/Loading.vue'
 
 const isOpen = ref(false)
 const dropdown = ref(null)
+const isLoadingMoreComments = ref(false)
 
 const toggleDropdown = () => {
   isOpen.value = !isOpen.value
@@ -55,8 +57,10 @@ const markAllAsRead = () => {
     })
 }
 
-const loadMore = () => {
-  if (nextUrl.value)
+const loadMore = (event) => {
+  event.stopPropagation()
+  if (nextUrl.value) {
+    isLoadingMoreComments.value = true
     axiosClient
       .get(
         route('notifications.index'),
@@ -76,6 +80,10 @@ const loadMore = () => {
       .catch((e) => {
         useToast().error('Failed to load more notifications' + e)
       })
+      .finally(() => {
+        isLoadingMoreComments.value = false
+      })
+  }
 }
 </script>
 
@@ -176,11 +184,13 @@ const loadMore = () => {
           class="border-t border-gray-200 bg-gray-50 px-4 py-2 text-center dark:border-gray-700 dark:bg-gray-800/50"
           v-if="nextUrl"
         >
+          <Loading v-if="isLoadingMoreComments" />
           <button
+            v-else
             @click="loadMore"
             class="block py-2 text-sm font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
           >
-            View preview notifications
+            View previous notifications
           </button>
         </div>
       </div>

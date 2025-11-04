@@ -7,6 +7,7 @@ use App\Http\Requests\UpdatePostRequest;
 use App\Http\Resources\PostResource;
 use App\Models\Post;
 use App\Services\PostService;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 
 class PostController extends Controller
@@ -80,12 +81,20 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
+        Gate::authorize('delete', $post);
+
         $this->postService->delete($post);
+
         return redirect()->back();
     }
 
     public function pin(Post $post)
     {
+        if ($post->group_id)
+            Gate::authorize('pinOnGroup', $post);
+        else
+            Gate::authorize('pinOnProfile', $post);
+
         $this->postService->pin($post);
         return back();
     }

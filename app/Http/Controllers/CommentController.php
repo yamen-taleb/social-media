@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateCommentRequest;
 use App\Http\Resources\CommentResource;
 use App\Models\Comment;
 use App\Services\CommentService;
+use Illuminate\Support\Facades\Gate;
 
 class CommentController extends Controller
 {
@@ -86,7 +87,10 @@ class CommentController extends Controller
      */
     public function destroy(Comment $comment)
     {
+        Gate::authorize('delete', $comment);
+
         $this->commentService->delete($comment);
+
         return back();
     }
 }

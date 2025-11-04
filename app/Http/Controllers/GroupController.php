@@ -136,7 +136,10 @@ class GroupController extends Controller
 
     public function handleRequest(Group $group, User $user)
     {
+        Gate::authorize('update', $group);
+
         $action = request()->input('action');
+
         $this->groupService->handleRequest($group, $user, $action);
         return back();
     }
@@ -155,7 +158,10 @@ class GroupController extends Controller
 
     public function removeMember(Group $group, User $user)
     {
+        Gate::authorize('removeMember', [$group, $user->id]);
+
         $this->groupService->removeMember($group, $user);
+
         return back();
     }
 }

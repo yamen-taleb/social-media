@@ -21,9 +21,9 @@ class HomeController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $followingIds = $user->following()->pluck('users.id');
+        $followingIds = $user->following()->select('users.id')->pluck('users.id');
         $groups = $this->groupService->groups()->paginate(5);
-        $groupIds = $groups->pluck('id');
+        $groupIds = $groups->modelKeys();
 
         $posts = $this->postService->getHomePosts($user, $followingIds, $groupIds)->paginate(5);
 

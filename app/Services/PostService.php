@@ -7,7 +7,6 @@ use App\Notifications\CreateGroupPost;
 use App\Notifications\DeletePostByAdmin;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Notification;
 
 class PostService
@@ -32,7 +31,7 @@ class PostService
             ->withCommonRelations();
     }
 
-    public function getHomePosts($user, $followingIds, $groupIds)
+    public function getHomePosts($user, $followingIds, array $groupIds)
     {
         return $this->baseQuery()
             ->with('group.currentUser')
@@ -49,7 +48,7 @@ class PostService
                 }
 
                 // Posts from user's groups
-                if ($groupIds->filter()->isNotEmpty()) {
+                if (count($groupIds) > 0) {
                     $query->orWhereIn('posts.group_id', $groupIds);
                 }
             })
@@ -99,8 +98,6 @@ class PostService
 
     public function delete(Post $post)
     {
-        Gate::authorize('delete', $post);
-
         $group = $post->group;
         $isAdminDeletion = Auth::id() !== $post->user_id;
 
@@ -131,11 +128,6 @@ class PostService
 
     public function pin(Post $post)
     {
-        if ($post->group_id)
-            Gate::authorize('pinOnGroup', $post);
-        else
-            Gate::authorize('pinOnProfile', $post);
-
         $post->is_pinned = !$post->is_pinned;
         $post->save();
     }

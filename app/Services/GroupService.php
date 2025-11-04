@@ -17,7 +17,6 @@ use App\RoleEnum;
 use App\UserApprovalEnum;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
@@ -141,8 +140,6 @@ class GroupService
      */
     public function handleRequest(Group $group, User $user, string $action)
     {
-        Gate::authorize('update', $group);
-
         $status = $action === 'accept' ? UserApprovalEnum::APPROVED : UserApprovalEnum::REJECTED;
 
         if ($status === UserApprovalEnum::APPROVED) {
@@ -200,8 +197,6 @@ class GroupService
 
     public function removeMember(Group $group, User $user)
     {
-        Gate::authorize('removeMember', [$group, $user->id]);
-
         $groupUser = GroupUser::query()
             ->where('user_id', $user->id)
             ->where('group_id', $group->id)

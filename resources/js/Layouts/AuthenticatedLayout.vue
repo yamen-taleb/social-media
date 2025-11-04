@@ -4,10 +4,11 @@ import ApplicationLogo from '@/Components/ApplicationLogo.vue'
 import Dropdown from '@/Components/Dropdown.vue'
 import DropdownLink from '@/Components/DropdownLink.vue'
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue'
-import { Link, usePage } from '@inertiajs/vue3'
+import { Deferred, Link, usePage } from '@inertiajs/vue3'
 import GlobalSearch from '@/Components/App/GlobalSearch.vue'
 import ThemeToggle from '@/Components/ThemeToggle.vue'
 import Notifications from '@/Components/Notifications.vue'
+import { BellIcon } from '@heroicons/vue/24/outline/index.js'
 
 const showingNavigationDropdown = ref(false)
 
@@ -34,7 +35,18 @@ const authUser = usePage().props.auth.user
 
           <div class="hidden gap-4 sm:ms-6 sm:flex sm:items-center">
             <ThemeToggle />
-            <Notifications />
+            <Deferred data="notifications">
+              <template #fallback>
+                <button
+                  class="rounded-full p-2 text-gray-600 transition-all duration-200 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-white dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-blue-500 dark:focus:ring-offset-gray-900"
+                  aria-label="Notifications"
+                  aria-haspopup="true"
+                >
+                  <BellIcon class="h-5 w-5" />
+                </button>
+              </template>
+              <Notifications />
+            </Deferred>
             <!-- Settings Dropdown -->
             <div class="relative ms-3">
               <Dropdown v-if="authUser" align="right" width="48">

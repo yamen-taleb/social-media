@@ -6,7 +6,6 @@ use App\Models\Comment;
 use App\Notifications\CreatePostComment;
 use App\Notifications\DeleteCommentByPostOwner;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Notification;
 
 class CommentService
@@ -55,8 +54,6 @@ class CommentService
 
     public function delete(Comment $comment)
     {
-        Gate::authorize('delete', $comment);
-
         if (!$comment->isOwner()) {
             $user = $comment->user;
             Notification::send($user, new DeleteCommentByPostOwner($user, Auth::user()->name, $comment->post_id));

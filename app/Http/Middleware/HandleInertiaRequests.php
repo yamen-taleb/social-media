@@ -6,6 +6,7 @@ use App\Http\Requests\StorePostRequest;
 use App\Http\Resources\NotificationsResource;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
@@ -35,14 +36,14 @@ class HandleInertiaRequests extends Middleware
         return [
             ...parent::share($request),
             'auth' => [
-                'user' => $request->user() ? new UserResource($request->user()) : null,
+                'user' => $request->user() ? Inertia::defer(fn() => new UserResource($request->user())) : null,
             ],
             'attachmentExtensions' => explode(',', StorePostRequest::$attachmentExtensions),
-            'notifications' => auth()->check() ? NotificationsResource::collection(auth()->user()
+            'notifications' => auth()->check() ? Inertia::defer(fn() =>NotificationsResource::collection(auth()->user()
                 ->notifications()
                 ->latest()
-                ->paginate(5)) : null,
-            'unread' => auth()->check() ? auth()->user()->unreadNotifications->count() : 0,
+                ->paginate(5))) : null,
+            'unread' => auth()->check() ? Inertia::defer(fn() => auth()->user()->unreadNotifications->count()) : 0,
         ];
     }
 }
